@@ -25,7 +25,9 @@ def test_corpus_de_codigo_tem_documentos_reais(tmp_path: Path) -> None:
     """O corpus de código deve conter documentos de tamanho real."""
     tokenizer_dir = Path("datasets_storage/processed/tokenizer")
     if not tokenizer_dir.exists():
-        pytest.skip("tokenizer ausente")
+        tokenizer_dir = Path("tokenizers/tokenizer")
+    if not tokenizer_dir.exists():
+        pytest.skip("tokenizer ausente (datasets_storage/processed/tokenizer ou tokenizers/tokenizer)")
 
     pasta = tmp_path / "raw" / "python" / "repo"
     pasta.mkdir(parents=True)

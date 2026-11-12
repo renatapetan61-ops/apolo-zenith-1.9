@@ -20,6 +20,10 @@ from tokenizer.tokenizer import BPETokenizer
 RAIZ = Path(__file__).resolve().parents[1]
 CHECKPOINT = RAIZ / "checkpoints" / "apolo-lm-tiny" / "checkpoints" / "final"
 DADOS = RAIZ / "datasets_storage" / "processed"
+#: Cópia dos pesos do Language Core versionada no repositório (usada quando
+#: os checkpoints de treino não estão presentes, ex.: em um clone novo).
+MODELO_VERSIONADO = RAIZ / "models" / "language" / "apolo-lm-tiny"
+TOKENIZER_VERSIONADO = RAIZ / "tokenizers" / "tokenizer"
 
 
 def _localizar_checkpoint() -> Optional[Path]:
@@ -30,6 +34,8 @@ def _localizar_checkpoint() -> Optional[Path]:
         for nome in ("best", "final"):
             if (raiz / nome).exists():
                 return raiz / nome
+    if (MODELO_VERSIONADO / "model.pt").exists():
+        return MODELO_VERSIONADO
     return None
 
 
@@ -47,6 +53,8 @@ def artefatos():
     tokenizer_dir = caminho / "tokenizer"
     if not tokenizer_dir.exists():
         tokenizer_dir = DADOS / "tokenizer"
+    if not tokenizer_dir.exists():
+        tokenizer_dir = TOKENIZER_VERSIONADO
     tokenizer = BPETokenizer.load(tokenizer_dir)
     return modelo, tokenizer
 
