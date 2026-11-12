@@ -1,0 +1,27 @@
+# Configuração do cliente mobile e da comunicação com o servidor externo.
+#
+# O celular NUNCA executa treinamento pesado: apenas inferência local com
+# modelos compactados e controle remoto do servidor de treinamento.
+
+mobile:
+  threads: 2                    # limite de threads do PyTorch no aparelho
+  batch_size: 1
+  quantizacao: int8             # off | int8 | int4 (depende do backend)
+  max_new_tokens: 128
+  temperatura: 0.8
+  top_k: 40
+  top_p: 0.92
+  limite_ram_mb: 512
+  usar_cache: true              # KV Cache para respostas rápidas
+
+servidor:
+  host: 0.0.0.0
+  porta: 8080
+  caminho_modelos: checkpoints
+  caminho_logs: logs
+
+# Limites de orçamento de energia/temperatura do dispositivo.
+energia:
+  max_tokens_por_minuto: 600
+  pausar_por_temperatura_c: 42.0
+  permitir_aceleracao: false

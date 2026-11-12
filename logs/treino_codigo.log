@@ -1,0 +1,673 @@
+[dados] treino=36426 sequências (2,331,286 tokens) | validação=2251 sequências (144,101 tokens)
+[modelo] continuando a partir de checkpoints/apolo-lm-tiny/checkpoints/best
+[modelo] parâmetros=1,901,696
+  passo     1/3000 | perda 6.9614 | lr 6.30e-05 | 186 tok/s | elapsed 1s
+  passo    10/3000 | perda 6.2147 | lr 9.00e-05 | 464 tok/s | elapsed 6s
+  passo    20/3000 | perda 4.8065 | lr 1.20e-04 | 530 tok/s | elapsed 10s
+  passo    30/3000 | perda 5.1942 | lr 1.50e-04 | 552 tok/s | elapsed 14s
+  passo    40/3000 | perda 5.2120 | lr 1.80e-04 | 569 tok/s | elapsed 18s
+  passo    50/3000 | perda 4.5440 | lr 2.10e-04 | 578 tok/s | elapsed 22s
+  [validação] passo 50 | perda 5.4880 | ppl 241.77
+  passo    60/3000 | perda 5.9209 | lr 2.40e-04 | 484 tok/s | elapsed 32s
+  passo    70/3000 | perda 4.5266 | lr 2.70e-04 | 500 tok/s | elapsed 36s
+  passo    80/3000 | perda 5.4963 | lr 3.00e-04 | 513 tok/s | elapsed 40s
+  passo    90/3000 | perda 5.4866 | lr 3.00e-04 | 521 tok/s | elapsed 44s
+  passo   100/3000 | perda 5.4270 | lr 3.00e-04 | 527 tok/s | elapsed 49s
+  [validação] passo 100 | perda 4.9614 | ppl 142.79
+  passo   110/3000 | perda 4.6803 | lr 3.00e-04 | 494 tok/s | elapsed 57s
+  passo   120/3000 | perda 4.8229 | lr 3.00e-04 | 505 tok/s | elapsed 61s
+  passo   130/3000 | perda 5.6284 | lr 3.00e-04 | 504 tok/s | elapsed 66s
+  passo   140/3000 | perda 4.2161 | lr 3.00e-04 | 513 tok/s | elapsed 70s
+  passo   150/3000 | perda 4.2386 | lr 3.00e-04 | 520 tok/s | elapsed 74s
+  [validação] passo 150 | perda 4.6168 | ppl 101.17
+  passo   160/3000 | perda 4.6740 | lr 3.00e-04 | 500 tok/s | elapsed 82s
+  passo   170/3000 | perda 4.6117 | lr 2.99e-04 | 507 tok/s | elapsed 86s
+  passo   180/3000 | perda 4.1365 | lr 2.99e-04 | 514 tok/s | elapsed 90s
+  passo   190/3000 | perda 3.9256 | lr 2.99e-04 | 514 tok/s | elapsed 95s
+  passo   200/3000 | perda 4.5102 | lr 2.99e-04 | 515 tok/s | elapsed 99s
+  [validação] passo 200 | perda 4.4931 | ppl 89.39
+  passo   210/3000 | perda 4.0017 | lr 2.99e-04 | 491 tok/s | elapsed 110s
+  passo   220/3000 | perda 4.7367 | lr 2.99e-04 | 492 tok/s | elapsed 114s
+  passo   230/3000 | perda 3.7765 | lr 2.98e-04 | 496 tok/s | elapsed 119s
+  passo   240/3000 | perda 3.7087 | lr 2.98e-04 | 501 tok/s | elapsed 123s
+  passo   250/3000 | perda 4.5414 | lr 2.98e-04 | 502 tok/s | elapsed 128s
+  [validação] passo 250 | perda 4.3295 | ppl 75.91
+  passo   260/3000 | perda 4.3169 | lr 2.98e-04 | 490 tok/s | elapsed 136s
+  passo   270/3000 | perda 4.0010 | lr 2.98e-04 | 495 tok/s | elapsed 140s
+  passo   280/3000 | perda 4.1129 | lr 2.97e-04 | 498 tok/s | elapsed 144s
+  passo   290/3000 | perda 3.5586 | lr 2.97e-04 | 502 tok/s | elapsed 148s
+  passo   300/3000 | perda 3.4428 | lr 2.97e-04 | 505 tok/s | elapsed 152s
+  [validação] passo 300 | perda 4.2586 | ppl 70.71
+  passo   310/3000 | perda 3.9307 | lr 2.96e-04 | 492 tok/s | elapsed 161s
+  passo   320/3000 | perda 3.4835 | lr 2.96e-04 | 494 tok/s | elapsed 166s
+  passo   330/3000 | perda 3.0718 | lr 2.96e-04 | 498 tok/s | elapsed 170s
+  passo   340/3000 | perda 3.7638 | lr 2.95e-04 | 501 tok/s | elapsed 174s
+  passo   350/3000 | perda 4.8385 | lr 2.95e-04 | 504 tok/s | elapsed 178s
+  [validação] passo 350 | perda 4.1715 | ppl 64.81
+  passo   360/3000 | perda 4.0076 | lr 2.95e-04 | 471 tok/s | elapsed 196s
+  passo   370/3000 | perda 4.2346 | lr 2.94e-04 | 470 tok/s | elapsed 202s
+  passo   380/3000 | perda 3.5626 | lr 2.94e-04 | 466 tok/s | elapsed 209s
+  passo   390/3000 | perda 3.5341 | lr 2.93e-04 | 468 tok/s | elapsed 213s
+  passo   400/3000 | perda 3.5326 | lr 2.93e-04 | 468 tok/s | elapsed 219s
+  [validação] passo 400 | perda 4.0558 | ppl 57.73
+  passo   410/3000 | perda 4.1276 | lr 2.93e-04 | 458 tok/s | elapsed 229s
+  passo   420/3000 | perda 4.4376 | lr 2.92e-04 | 460 tok/s | elapsed 234s
+  passo   430/3000 | perda 2.7671 | lr 2.92e-04 | 461 tok/s | elapsed 239s
+  passo   440/3000 | perda 4.3468 | lr 2.91e-04 | 463 tok/s | elapsed 244s
+  passo   450/3000 | perda 3.8955 | lr 2.91e-04 | 464 tok/s | elapsed 248s
+  [validação] passo 450 | perda 4.0065 | ppl 54.95
+  passo   460/3000 | perda 4.0237 | lr 2.90e-04 | 456 tok/s | elapsed 258s
+  passo   470/3000 | perda 3.2537 | lr 2.90e-04 | 458 tok/s | elapsed 263s
+  passo   480/3000 | perda 3.5656 | lr 2.89e-04 | 459 tok/s | elapsed 268s
+  passo   490/3000 | perda 3.3306 | lr 2.89e-04 | 460 tok/s | elapsed 273s
+  passo   500/3000 | perda 4.2512 | lr 2.88e-04 | 462 tok/s | elapsed 277s
+  [validação] passo 500 | perda 3.9282 | ppl 50.81
+  passo   510/3000 | perda 3.5056 | lr 2.87e-04 | 454 tok/s | elapsed 287s
+  passo   520/3000 | perda 3.3500 | lr 2.87e-04 | 456 tok/s | elapsed 292s
+  passo   530/3000 | perda 3.9590 | lr 2.86e-04 | 457 tok/s | elapsed 297s
+  passo   540/3000 | perda 3.5563 | lr 2.86e-04 | 459 tok/s | elapsed 301s
+  passo   550/3000 | perda 3.2978 | lr 2.85e-04 | 461 tok/s | elapsed 306s
+  [validação] passo 550 | perda 3.8791 | ppl 48.38
+  passo   560/3000 | perda 4.0080 | lr 2.84e-04 | 455 tok/s | elapsed 315s
+  passo   570/3000 | perda 4.1696 | lr 2.84e-04 | 456 tok/s | elapsed 320s
+  passo   580/3000 | perda 3.7826 | lr 2.83e-04 | 457 tok/s | elapsed 325s
+  passo   590/3000 | perda 4.1171 | lr 2.82e-04 | 458 tok/s | elapsed 330s
+  passo   600/3000 | perda 3.5216 | lr 2.82e-04 | 460 tok/s | elapsed 334s
+  [validação] passo 600 | perda 3.8214 | ppl 45.67
+  passo   610/3000 | perda 3.0876 | lr 2.81e-04 | 454 tok/s | elapsed 344s
+  passo   620/3000 | perda 3.1681 | lr 2.80e-04 | 455 tok/s | elapsed 349s
+  passo   630/3000 | perda 3.7588 | lr 2.80e-04 | 456 tok/s | elapsed 354s
+  passo   640/3000 | perda 3.4238 | lr 2.79e-04 | 457 tok/s | elapsed 358s
+  passo   650/3000 | perda 3.5640 | lr 2.78e-04 | 459 tok/s | elapsed 363s
+  [validação] passo 650 | perda 3.7983 | ppl 44.63
+  passo   660/3000 | perda 3.4964 | lr 2.77e-04 | 454 tok/s | elapsed 372s
+  passo   670/3000 | perda 3.3679 | lr 2.77e-04 | 455 tok/s | elapsed 377s
+  passo   680/3000 | perda 3.1453 | lr 2.76e-04 | 456 tok/s | elapsed 382s
+  passo   690/3000 | perda 3.9300 | lr 2.75e-04 | 457 tok/s | elapsed 387s
+  passo   700/3000 | perda 3.6611 | lr 2.74e-04 | 458 tok/s | elapsed 391s
+  [validação] passo 700 | perda 3.7730 | ppl 43.51
+  passo   710/3000 | perda 2.8349 | lr 2.73e-04 | 453 tok/s | elapsed 401s
+  passo   720/3000 | perda 3.5384 | lr 2.73e-04 | 454 tok/s | elapsed 406s
+  passo   730/3000 | perda 3.9280 | lr 2.72e-04 | 455 tok/s | elapsed 410s
+  passo   740/3000 | perda 2.8383 | lr 2.71e-04 | 456 tok/s | elapsed 415s
+  passo   750/3000 | perda 3.5936 | lr 2.70e-04 | 457 tok/s | elapsed 420s
+  [validação] passo 750 | perda 3.7096 | ppl 40.84
+  passo   760/3000 | perda 3.1656 | lr 2.69e-04 | 452 tok/s | elapsed 430s
+  passo   770/3000 | perda 3.8665 | lr 2.68e-04 | 453 tok/s | elapsed 435s
+  passo   780/3000 | perda 3.8369 | lr 2.68e-04 | 454 tok/s | elapsed 439s
+  passo   790/3000 | perda 3.5863 | lr 2.67e-04 | 455 tok/s | elapsed 444s
+  passo   800/3000 | perda 3.2428 | lr 2.66e-04 | 456 tok/s | elapsed 449s
+  [validação] passo 800 | perda 3.6241 | ppl 37.49
+  passo   810/3000 | perda 3.5759 | lr 2.65e-04 | 452 tok/s | elapsed 459s
+  passo   820/3000 | perda 4.3575 | lr 2.64e-04 | 453 tok/s | elapsed 464s
+  passo   830/3000 | perda 4.3762 | lr 2.63e-04 | 443 tok/s | elapsed 479s
+  passo   840/3000 | perda 3.4980 | lr 2.62e-04 | 444 tok/s | elapsed 484s
+  passo   850/3000 | perda 3.5831 | lr 2.61e-04 | 445 tok/s | elapsed 489s
+  [validação] passo 850 | perda 3.6041 | ppl 36.75
+  passo   860/3000 | perda 3.9062 | lr 2.60e-04 | 441 tok/s | elapsed 499s
+  passo   870/3000 | perda 3.9484 | lr 2.59e-04 | 443 tok/s | elapsed 503s
+  passo   880/3000 | perda 3.2262 | lr 2.58e-04 | 443 tok/s | elapsed 508s
+  passo   890/3000 | perda 3.4647 | lr 2.57e-04 | 444 tok/s | elapsed 513s
+  passo   900/3000 | perda 3.7638 | lr 2.56e-04 | 445 tok/s | elapsed 517s
+  [validação] passo 900 | perda 3.5887 | ppl 36.19
+  passo   910/3000 | perda 2.9168 | lr 2.55e-04 | 443 tok/s | elapsed 526s
+  passo   920/3000 | perda 3.3249 | lr 2.54e-04 | 444 tok/s | elapsed 530s
+  passo   930/3000 | perda 2.8928 | lr 2.53e-04 | 445 tok/s | elapsed 535s
+  passo   940/3000 | perda 4.0370 | lr 2.52e-04 | 447 tok/s | elapsed 539s
+  passo   950/3000 | perda 3.1496 | lr 2.51e-04 | 447 tok/s | elapsed 544s
+  [validação] passo 950 | perda 3.5543 | ppl 34.96
+  passo   960/3000 | perda 3.1063 | lr 2.50e-04 | 442 tok/s | elapsed 556s
+  passo   970/3000 | perda 2.8486 | lr 2.49e-04 | 442 tok/s | elapsed 562s
+  passo   980/3000 | perda 3.2279 | lr 2.48e-04 | 443 tok/s | elapsed 567s
+  passo   990/3000 | perda 3.0616 | lr 2.47e-04 | 444 tok/s | elapsed 571s
+  passo  1000/3000 | perda 4.4162 | lr 2.46e-04 | 445 tok/s | elapsed 576s
+  [validação] passo 1000 | perda 3.5127 | ppl 33.54
+  passo  1010/3000 | perda 2.9561 | lr 2.45e-04 | 434 tok/s | elapsed 596s
+  passo  1020/3000 | perda 3.5265 | lr 2.44e-04 | 434 tok/s | elapsed 601s
+  passo  1030/3000 | perda 3.2227 | lr 2.43e-04 | 434 tok/s | elapsed 608s
+  passo  1040/3000 | perda 4.0286 | lr 2.41e-04 | 435 tok/s | elapsed 612s
+  passo  1050/3000 | perda 3.2848 | lr 2.40e-04 | 436 tok/s | elapsed 616s
+  [validação] passo 1050 | perda 3.4951 | ppl 32.95
+  passo  1060/3000 | perda 3.5179 | lr 2.39e-04 | 432 tok/s | elapsed 628s
+  passo  1070/3000 | perda 3.5897 | lr 2.38e-04 | 433 tok/s | elapsed 632s
+  passo  1080/3000 | perda 3.5350 | lr 2.37e-04 | 433 tok/s | elapsed 639s
+  passo  1090/3000 | perda 4.0629 | lr 2.36e-04 | 433 tok/s | elapsed 644s
+  passo  1100/3000 | perda 3.2406 | lr 2.35e-04 | 433 tok/s | elapsed 650s
+  [validação] passo 1100 | perda 3.4567 | ppl 31.71
+  passo  1110/3000 | perda 3.6373 | lr 2.34e-04 | 429 tok/s | elapsed 663s
+  passo  1120/3000 | perda 2.7891 | lr 2.32e-04 | 429 tok/s | elapsed 669s
+  passo  1130/3000 | perda 3.6622 | lr 2.31e-04 | 426 tok/s | elapsed 678s
+  passo  1140/3000 | perda 2.1158 | lr 2.30e-04 | 427 tok/s | elapsed 684s
+  passo  1150/3000 | perda 2.7032 | lr 2.29e-04 | 427 tok/s | elapsed 690s
+  [validação] passo 1150 | perda 3.4551 | ppl 31.66
+  passo  1160/3000 | perda 3.3363 | lr 2.28e-04 | 424 tok/s | elapsed 700s
+  passo  1170/3000 | perda 3.4632 | lr 2.27e-04 | 424 tok/s | elapsed 707s
+  passo  1180/3000 | perda 2.7078 | lr 2.25e-04 | 424 tok/s | elapsed 713s
+  passo  1190/3000 | perda 3.4493 | lr 2.24e-04 | 423 tok/s | elapsed 719s
+  passo  1200/3000 | perda 2.9517 | lr 2.23e-04 | 423 tok/s | elapsed 725s
+  [validação] passo 1200 | perda 3.4252 | ppl 30.73
+  passo  1210/3000 | perda 3.3987 | lr 2.22e-04 | 420 tok/s | elapsed 737s
+  passo  1220/3000 | perda 2.7285 | lr 2.21e-04 | 421 tok/s | elapsed 742s
+  passo  1230/3000 | perda 2.4354 | lr 2.19e-04 | 419 tok/s | elapsed 751s
+  passo  1240/3000 | perda 2.4086 | lr 2.18e-04 | 419 tok/s | elapsed 757s
+  passo  1250/3000 | perda 3.2825 | lr 2.17e-04 | 420 tok/s | elapsed 763s
+  [validação] passo 1250 | perda 3.3926 | ppl 29.74
+  passo  1260/3000 | perda 3.2591 | lr 2.16e-04 | 417 tok/s | elapsed 774s
+  passo  1270/3000 | perda 2.8493 | lr 2.14e-04 | 417 tok/s | elapsed 780s
+  passo  1280/3000 | perda 2.0272 | lr 2.13e-04 | 418 tok/s | elapsed 785s
+  passo  1290/3000 | perda 3.1597 | lr 2.12e-04 | 418 tok/s | elapsed 790s
+  passo  1300/3000 | perda 3.2491 | lr 2.11e-04 | 418 tok/s | elapsed 795s
+  [validação] passo 1300 | perda 3.3714 | ppl 29.12
+  passo  1310/3000 | perda 2.9499 | lr 2.09e-04 | 414 tok/s | elapsed 810s
+  passo  1320/3000 | perda 3.1667 | lr 2.08e-04 | 415 tok/s | elapsed 815s
+  passo  1330/3000 | perda 3.2218 | lr 2.07e-04 | 415 tok/s | elapsed 820s
+  passo  1340/3000 | perda 3.5995 | lr 2.06e-04 | 415 tok/s | elapsed 826s
+  passo  1350/3000 | perda 2.7692 | lr 2.04e-04 | 415 tok/s | elapsed 833s
+  [validação] passo 1350 | perda 3.3529 | ppl 28.59
+  passo  1360/3000 | perda 3.4999 | lr 2.03e-04 | 413 tok/s | elapsed 842s
+  passo  1370/3000 | perda 3.1828 | lr 2.02e-04 | 414 tok/s | elapsed 847s
+  passo  1380/3000 | perda 2.9627 | lr 2.01e-04 | 415 tok/s | elapsed 851s
+  passo  1390/3000 | perda 3.0443 | lr 1.99e-04 | 416 tok/s | elapsed 855s
+  passo  1400/3000 | perda 2.5558 | lr 1.98e-04 | 417 tok/s | elapsed 860s
+  [validação] passo 1400 | perda 3.3235 | ppl 27.76
+  passo  1410/3000 | perda 3.3422 | lr 1.97e-04 | 415 tok/s | elapsed 871s
+  passo  1420/3000 | perda 2.3357 | lr 1.95e-04 | 415 tok/s | elapsed 877s
+  passo  1430/3000 | perda 3.4650 | lr 1.94e-04 | 415 tok/s | elapsed 881s
+  passo  1440/3000 | perda 2.2936 | lr 1.93e-04 | 416 tok/s | elapsed 886s
+  passo  1450/3000 | perda 2.7299 | lr 1.92e-04 | 417 tok/s | elapsed 891s
+  [validação] passo 1450 | perda 3.3082 | ppl 27.33
+  passo  1460/3000 | perda 3.0993 | lr 1.90e-04 | 415 tok/s | elapsed 901s
+  passo  1470/3000 | perda 2.6630 | lr 1.89e-04 | 416 tok/s | elapsed 905s
+  passo  1480/3000 | perda 3.6008 | lr 1.88e-04 | 417 tok/s | elapsed 909s
+  passo  1490/3000 | perda 3.4026 | lr 1.86e-04 | 418 tok/s | elapsed 913s
+  passo  1500/3000 | perda 3.0603 | lr 1.85e-04 | 419 tok/s | elapsed 917s
+  [validação] passo 1500 | perda 3.2831 | ppl 26.66
+  passo  1510/3000 | perda 3.2842 | lr 1.84e-04 | 417 tok/s | elapsed 927s
+  passo  1520/3000 | perda 2.3739 | lr 1.83e-04 | 417 tok/s | elapsed 932s
+  passo  1530/3000 | perda 3.4368 | lr 1.81e-04 | 418 tok/s | elapsed 937s
+  passo  1540/3000 | perda 2.7048 | lr 1.80e-04 | 418 tok/s | elapsed 943s
+  passo  1550/3000 | perda 2.9654 | lr 1.79e-04 | 419 tok/s | elapsed 947s
+  [validação] passo 1550 | perda 3.2701 | ppl 26.31
+  passo  1560/3000 | perda 2.6996 | lr 1.77e-04 | 418 tok/s | elapsed 956s
+  passo  1570/3000 | perda 3.0378 | lr 1.76e-04 | 418 tok/s | elapsed 962s
+  passo  1580/3000 | perda 2.5847 | lr 1.75e-04 | 418 tok/s | elapsed 967s
+  passo  1590/3000 | perda 2.3678 | lr 1.74e-04 | 419 tok/s | elapsed 972s
+  passo  1600/3000 | perda 3.0800 | lr 1.72e-04 | 420 tok/s | elapsed 976s
+  [validação] passo 1600 | perda 3.2268 | ppl 25.20
+  passo  1610/3000 | perda 2.9899 | lr 1.71e-04 | 418 tok/s | elapsed 986s
+  passo  1620/3000 | perda 3.2657 | lr 1.70e-04 | 418 tok/s | elapsed 992s
+  passo  1630/3000 | perda 2.7378 | lr 1.68e-04 | 419 tok/s | elapsed 997s
+  passo  1640/3000 | perda 2.5404 | lr 1.67e-04 | 419 tok/s | elapsed 1002s
+  passo  1650/3000 | perda 2.2652 | lr 1.66e-04 | 420 tok/s | elapsed 1007s
+  [validação] passo 1650 | perda 3.2341 | ppl 25.38
+  passo  1660/3000 | perda 3.8446 | lr 1.65e-04 | 418 tok/s | elapsed 1016s
+  passo  1670/3000 | perda 1.8947 | lr 1.63e-04 | 419 tok/s | elapsed 1020s
+  passo  1680/3000 | perda 2.6667 | lr 1.62e-04 | 420 tok/s | elapsed 1024s
+  passo  1690/3000 | perda 3.7410 | lr 1.61e-04 | 421 tok/s | elapsed 1029s
+  passo  1700/3000 | perda 3.6592 | lr 1.59e-04 | 421 tok/s | elapsed 1033s
+  [validação] passo 1700 | perda 3.2121 | ppl 24.83
+  passo  1710/3000 | perda 2.9227 | lr 1.58e-04 | 420 tok/s | elapsed 1043s
+  passo  1720/3000 | perda 3.2086 | lr 1.57e-04 | 420 tok/s | elapsed 1049s
+  passo  1730/3000 | perda 2.9818 | lr 1.56e-04 | 420 tok/s | elapsed 1054s
+  passo  1740/3000 | perda 2.7614 | lr 1.54e-04 | 420 tok/s | elapsed 1060s
+  passo  1750/3000 | perda 3.3521 | lr 1.53e-04 | 421 tok/s | elapsed 1064s
+  [validação] passo 1750 | perda 3.2120 | ppl 24.83
+  passo  1760/3000 | perda 3.1540 | lr 1.52e-04 | 420 tok/s | elapsed 1073s
+  passo  1770/3000 | perda 3.6765 | lr 1.51e-04 | 420 tok/s | elapsed 1079s
+  passo  1780/3000 | perda 3.1082 | lr 1.49e-04 | 420 tok/s | elapsed 1086s
+  passo  1790/3000 | perda 3.6446 | lr 1.48e-04 | 420 tok/s | elapsed 1091s
+  passo  1800/3000 | perda 3.5682 | lr 1.47e-04 | 420 tok/s | elapsed 1097s
+  [validação] passo 1800 | perda 3.1930 | ppl 24.36
+  passo  1810/3000 | perda 3.1041 | lr 1.46e-04 | 418 tok/s | elapsed 1108s
+  passo  1820/3000 | perda 2.7196 | lr 1.44e-04 | 419 tok/s | elapsed 1113s
+  passo  1830/3000 | perda 3.1111 | lr 1.43e-04 | 418 tok/s | elapsed 1120s
+  passo  1840/3000 | perda 3.1289 | lr 1.42e-04 | 419 tok/s | elapsed 1125s
+  passo  1850/3000 | perda 2.9988 | lr 1.41e-04 | 419 tok/s | elapsed 1129s
+  [validação] passo 1850 | perda 3.1689 | ppl 23.78
+  passo  1860/3000 | perda 3.3672 | lr 1.39e-04 | 417 tok/s | elapsed 1142s
+  passo  1870/3000 | perda 2.9303 | lr 1.38e-04 | 416 tok/s | elapsed 1150s
+  passo  1880/3000 | perda 3.0523 | lr 1.37e-04 | 416 tok/s | elapsed 1156s
+  passo  1890/3000 | perda 2.5256 | lr 1.36e-04 | 417 tok/s | elapsed 1160s
+  passo  1900/3000 | perda 3.3379 | lr 1.35e-04 | 418 tok/s | elapsed 1165s
+  [validação] passo 1900 | perda 3.1510 | ppl 23.36
+  passo  1910/3000 | perda 3.0831 | lr 1.33e-04 | 416 tok/s | elapsed 1176s
+  passo  1920/3000 | perda 3.7349 | lr 1.32e-04 | 416 tok/s | elapsed 1181s
+  passo  1930/3000 | perda 2.7574 | lr 1.31e-04 | 417 tok/s | elapsed 1185s
+  passo  1940/3000 | perda 2.9789 | lr 1.30e-04 | 417 tok/s | elapsed 1190s
+  passo  1950/3000 | perda 3.0701 | lr 1.29e-04 | 418 tok/s | elapsed 1195s
+  [validação] passo 1950 | perda 3.1440 | ppl 23.20
+  passo  1960/3000 | perda 2.9201 | lr 1.28e-04 | 417 tok/s | elapsed 1204s
+  passo  1970/3000 | perda 2.9503 | lr 1.26e-04 | 417 tok/s | elapsed 1209s
+  passo  1980/3000 | perda 2.2047 | lr 1.25e-04 | 417 tok/s | elapsed 1214s
+  passo  1990/3000 | perda 2.6728 | lr 1.24e-04 | 418 tok/s | elapsed 1220s
+  passo  2000/3000 | perda 2.8731 | lr 1.23e-04 | 418 tok/s | elapsed 1224s
+  [validação] passo 2000 | perda 3.1325 | ppl 22.93
+  passo  2010/3000 | perda 2.9147 | lr 1.22e-04 | 417 tok/s | elapsed 1235s
+  passo  2020/3000 | perda 2.4127 | lr 1.21e-04 | 417 tok/s | elapsed 1241s
+  passo  2030/3000 | perda 2.9794 | lr 1.20e-04 | 417 tok/s | elapsed 1245s
+  passo  2040/3000 | perda 2.6581 | lr 1.19e-04 | 417 tok/s | elapsed 1252s
+  passo  2050/3000 | perda 3.2945 | lr 1.17e-04 | 418 tok/s | elapsed 1256s
+  [validação] passo 2050 | perda 3.1386 | ppl 23.07
+  passo  2060/3000 | perda 3.4018 | lr 1.16e-04 | 416 tok/s | elapsed 1267s
+  passo  2070/3000 | perda 2.8785 | lr 1.15e-04 | 416 tok/s | elapsed 1272s
+  passo  2080/3000 | perda 3.5284 | lr 1.14e-04 | 416 tok/s | elapsed 1279s
+  passo  2090/3000 | perda 3.0477 | lr 1.13e-04 | 417 tok/s | elapsed 1285s
+  passo  2100/3000 | perda 4.2316 | lr 1.12e-04 | 417 tok/s | elapsed 1290s
+  [validação] passo 2100 | perda 3.1010 | ppl 22.22
+  passo  2110/3000 | perda 3.0727 | lr 1.11e-04 | 415 tok/s | elapsed 1301s
+  passo  2120/3000 | perda 3.6562 | lr 1.10e-04 | 416 tok/s | elapsed 1306s
+  passo  2130/3000 | perda 3.1169 | lr 1.09e-04 | 416 tok/s | elapsed 1312s
+  passo  2140/3000 | perda 2.7741 | lr 1.08e-04 | 416 tok/s | elapsed 1317s
+  passo  2150/3000 | perda 3.2843 | lr 1.07e-04 | 416 tok/s | elapsed 1322s
+  [validação] passo 2150 | perda 3.0992 | ppl 22.18
+  passo  2160/3000 | perda 3.3862 | lr 1.06e-04 | 415 tok/s | elapsed 1332s
+  passo  2170/3000 | perda 2.7000 | lr 1.05e-04 | 415 tok/s | elapsed 1338s
+  passo  2180/3000 | perda 2.8454 | lr 1.04e-04 | 415 tok/s | elapsed 1344s
+  passo  2190/3000 | perda 2.6252 | lr 1.03e-04 | 416 tok/s | elapsed 1348s
+  passo  2200/3000 | perda 2.6043 | lr 1.02e-04 | 416 tok/s | elapsed 1353s
+  [validação] passo 2200 | perda 3.0969 | ppl 22.13
+  passo  2210/3000 | perda 2.8379 | lr 1.01e-04 | 415 tok/s | elapsed 1362s
+  passo  2220/3000 | perda 3.2239 | lr 9.98e-05 | 416 tok/s | elapsed 1366s
+  passo  2230/3000 | perda 3.1676 | lr 9.89e-05 | 417 tok/s | elapsed 1370s
+  passo  2240/3000 | perda 2.8927 | lr 9.79e-05 | 417 tok/s | elapsed 1375s
+  passo  2250/3000 | perda 2.5801 | lr 9.70e-05 | 418 tok/s | elapsed 1379s
+  [validação] passo 2250 | perda 3.1039 | ppl 22.28
+  passo  2260/3000 | perda 2.8947 | lr 9.61e-05 | 417 tok/s | elapsed 1389s
+  passo  2270/3000 | perda 3.0318 | lr 9.51e-05 | 417 tok/s | elapsed 1394s
+  passo  2280/3000 | perda 3.1582 | lr 9.42e-05 | 417 tok/s | elapsed 1399s
+  passo  2290/3000 | perda 2.7509 | lr 9.33e-05 | 417 tok/s | elapsed 1405s
+  passo  2300/3000 | perda 3.0443 | lr 9.25e-05 | 418 tok/s | elapsed 1410s
+  [validação] passo 2300 | perda 3.0769 | ppl 21.69
+  passo  2310/3000 | perda 3.0275 | lr 9.16e-05 | 416 tok/s | elapsed 1421s
+  passo  2320/3000 | perda 2.9257 | lr 9.07e-05 | 416 tok/s | elapsed 1427s
+  passo  2330/3000 | perda 2.4736 | lr 8.99e-05 | 416 tok/s | elapsed 1433s
+  passo  2340/3000 | perda 3.1726 | lr 8.90e-05 | 416 tok/s | elapsed 1438s
+  passo  2350/3000 | perda 2.7916 | lr 8.82e-05 | 417 tok/s | elapsed 1444s
+  [validação] passo 2350 | perda 3.0700 | ppl 21.54
+  passo  2360/3000 | perda 3.2219 | lr 8.73e-05 | 415 tok/s | elapsed 1454s
+  passo  2370/3000 | perda 3.4557 | lr 8.65e-05 | 416 tok/s | elapsed 1458s
+  passo  2380/3000 | perda 2.9694 | lr 8.57e-05 | 416 tok/s | elapsed 1464s
+  passo  2390/3000 | perda 3.0292 | lr 8.49e-05 | 417 tok/s | elapsed 1469s
+  passo  2400/3000 | perda 2.3506 | lr 8.41e-05 | 417 tok/s | elapsed 1473s
+  [validação] passo 2400 | perda 3.0546 | ppl 21.21
+  passo  2410/3000 | perda 2.6219 | lr 8.34e-05 | 416 tok/s | elapsed 1484s
+  passo  2420/3000 | perda 3.4264 | lr 8.26e-05 | 416 tok/s | elapsed 1489s
+  passo  2430/3000 | perda 3.2407 | lr 8.19e-05 | 416 tok/s | elapsed 1495s
+  passo  2440/3000 | perda 2.5088 | lr 8.11e-05 | 416 tok/s | elapsed 1501s
+  passo  2450/3000 | perda 3.1516 | lr 8.04e-05 | 416 tok/s | elapsed 1506s
+  [validação] passo 2450 | perda 3.0606 | ppl 21.34
+  passo  2460/3000 | perda 3.2403 | lr 7.97e-05 | 415 tok/s | elapsed 1518s
+  passo  2470/3000 | perda 3.1732 | lr 7.90e-05 | 415 tok/s | elapsed 1524s
+  passo  2480/3000 | perda 2.3536 | lr 7.83e-05 | 415 tok/s | elapsed 1530s
+  passo  2490/3000 | perda 2.5278 | lr 7.76e-05 | 415 tok/s | elapsed 1536s
+  passo  2500/3000 | perda 2.7600 | lr 7.69e-05 | 415 tok/s | elapsed 1541s
+  [validação] passo 2500 | perda 3.0464 | ppl 21.04
+  passo  2510/3000 | perda 3.0039 | lr 7.63e-05 | 414 tok/s | elapsed 1553s
+  passo  2520/3000 | perda 3.6984 | lr 7.56e-05 | 414 tok/s | elapsed 1558s
+  passo  2530/3000 | perda 3.0886 | lr 7.50e-05 | 414 tok/s | elapsed 1564s
+  passo  2540/3000 | perda 1.8341 | lr 7.44e-05 | 414 tok/s | elapsed 1570s
+  passo  2550/3000 | perda 3.7945 | lr 7.38e-05 | 415 tok/s | elapsed 1574s
+  [validação] passo 2550 | perda 3.0474 | ppl 21.06
+  passo  2560/3000 | perda 2.9386 | lr 7.32e-05 | 414 tok/s | elapsed 1583s
+  passo  2570/3000 | perda 3.2281 | lr 7.26e-05 | 413 tok/s | elapsed 1593s
+  passo  2580/3000 | perda 2.0687 | lr 7.20e-05 | 413 tok/s | elapsed 1600s
+  passo  2590/3000 | perda 3.1623 | lr 7.15e-05 | 413 tok/s | elapsed 1606s
+  passo  2600/3000 | perda 2.7369 | lr 7.09e-05 | 413 tok/s | elapsed 1610s
+  [validação] passo 2600 | perda 3.0285 | ppl 20.67
+  passo  2610/3000 | perda 2.4986 | lr 7.04e-05 | 413 tok/s | elapsed 1619s
+  passo  2620/3000 | perda 3.0973 | lr 6.99e-05 | 412 tok/s | elapsed 1627s
+  passo  2630/3000 | perda 2.7794 | lr 6.94e-05 | 412 tok/s | elapsed 1635s
+  passo  2640/3000 | perda 3.0518 | lr 6.89e-05 | 412 tok/s | elapsed 1641s
+  passo  2650/3000 | perda 3.0437 | lr 6.84e-05 | 412 tok/s | elapsed 1646s
+  [validação] passo 2650 | perda 3.0206 | ppl 20.50
+  passo  2660/3000 | perda 3.0960 | lr 6.79e-05 | 411 tok/s | elapsed 1656s
+  passo  2670/3000 | perda 3.1899 | lr 6.75e-05 | 412 tok/s | elapsed 1661s
+  passo  2680/3000 | perda 3.3924 | lr 6.70e-05 | 412 tok/s | elapsed 1665s
+  passo  2690/3000 | perda 2.8764 | lr 6.66e-05 | 412 tok/s | elapsed 1670s
+  passo  2700/3000 | perda 2.7400 | lr 6.62e-05 | 413 tok/s | elapsed 1675s
+  [validação] passo 2700 | perda 3.0171 | ppl 20.43
+  passo  2710/3000 | perda 2.3984 | lr 6.58e-05 | 412 tok/s | elapsed 1683s
+  passo  2720/3000 | perda 3.2029 | lr 6.54e-05 | 412 tok/s | elapsed 1689s
+  passo  2730/3000 | perda 3.0508 | lr 6.50e-05 | 413 tok/s | elapsed 1693s
+  passo  2740/3000 | perda 3.1206 | lr 6.47e-05 | 413 tok/s | elapsed 1698s
+  passo  2750/3000 | perda 2.2231 | lr 6.43e-05 | 414 tok/s | elapsed 1702s
+  [validação] passo 2750 | perda 2.9978 | ppl 20.04
+  passo  2760/3000 | perda 3.3258 | lr 6.40e-05 | 413 tok/s | elapsed 1711s
+  passo  2770/3000 | perda 2.6186 | lr 6.37e-05 | 413 tok/s | elapsed 1715s
+  passo  2780/3000 | perda 4.0100 | lr 6.33e-05 | 414 tok/s | elapsed 1720s
+  passo  2790/3000 | perda 3.3764 | lr 6.30e-05 | 414 tok/s | elapsed 1724s
+  passo  2800/3000 | perda 2.6386 | lr 6.28e-05 | 414 tok/s | elapsed 1730s
+  [validação] passo 2800 | perda 3.0052 | ppl 20.19
+  passo  2810/3000 | perda 2.6644 | lr 6.25e-05 | 414 tok/s | elapsed 1738s
+  passo  2820/3000 | perda 3.7595 | lr 6.22e-05 | 414 tok/s | elapsed 1742s
+  passo  2830/3000 | perda 3.5954 | lr 6.20e-05 | 415 tok/s | elapsed 1746s
+  passo  2840/3000 | perda 3.0972 | lr 6.18e-05 | 415 tok/s | elapsed 1751s
+  passo  2850/3000 | perda 2.5814 | lr 6.16e-05 | 415 tok/s | elapsed 1756s
+  [validação] passo 2850 | perda 2.9966 | ppl 20.02
+  passo  2860/3000 | perda 3.1081 | lr 6.14e-05 | 415 tok/s | elapsed 1766s
+  passo  2870/3000 | perda 3.2507 | lr 6.12e-05 | 415 tok/s | elapsed 1771s
+  passo  2880/3000 | perda 3.2217 | lr 6.10e-05 | 415 tok/s | elapsed 1776s
+  passo  2890/3000 | perda 2.6037 | lr 6.08e-05 | 415 tok/s | elapsed 1781s
+  passo  2900/3000 | perda 2.6161 | lr 6.07e-05 | 416 tok/s | elapsed 1786s
+  [validação] passo 2900 | perda 2.9959 | ppl 20.00
+  passo  2910/3000 | perda 3.0943 | lr 6.06e-05 | 415 tok/s | elapsed 1796s
+  passo  2920/3000 | perda 2.3146 | lr 6.04e-05 | 415 tok/s | elapsed 1800s
+  passo  2930/3000 | perda 3.5952 | lr 6.03e-05 | 416 tok/s | elapsed 1805s
+  passo  2940/3000 | perda 2.5606 | lr 6.02e-05 | 416 tok/s | elapsed 1810s
+  [pausa] modo preventivo (sem sensor térmico): pausa programada após 30 min de trabalho contínuo (ciclo configurado: 30 min)
+  [pausa] retomada após 5.0 min
+  passo  2950/3000 | perda 2.7436 | lr 6.02e-05 | 357 tok/s | elapsed 2115s
+  [validação] passo 2950 | perda 2.9700 | ppl 19.49
+  passo  2960/3000 | perda 2.8736 | lr 6.01e-05 | 357 tok/s | elapsed 2125s
+  passo  2970/3000 | perda 2.8958 | lr 6.01e-05 | 357 tok/s | elapsed 2130s
+  passo  2980/3000 | perda 2.3751 | lr 6.00e-05 | 357 tok/s | elapsed 2135s
+  passo  2990/3000 | perda 2.4943 | lr 6.00e-05 | 358 tok/s | elapsed 2140s
+  passo  3000/3000 | perda 2.8768 | lr 6.00e-05 | 358 tok/s | elapsed 2146s
+  [validação] passo 3000 | perda 2.9742 | ppl 19.57
+{
+  "passos": 3000,
+  "melhor_perda_validacao": 2.9699950009584426,
+  "tempo_s": 2150.97,
+  "tokens_processados": 768000,
+  "tokens_por_segundo": 357.0,
+  "device": "cpu",
+  "amp": "None",
+  "parametros": 1901696,
+  "batch_final": 4,
+  "pausas": [
+    {
+      "motivo": "modo preventivo (sem sensor térmico): pausa programada após 30 min de trabalho contínuo (ciclo configurado: 30 min)",
+      "inicio": 1794510667.5385418,
+      "fim": 1794510968.2011147,
+      "resultado": "retomada"
+    }
+  ],
+  "tempo_pausado_s": 300.6,
+  "encerrado_por_recursos": false
+}
+{
+  "passos": 3000,
+  "melhor_perda_validacao": 2.9699950009584426,
+  "tempo_s": 2150.97,
+  "tokens_processados": 768000,
+  "tokens_por_segundo": 357.0,
+  "device": "cpu",
+  "amp": "None",
+  "parametros": 1901696,
+  "batch_final": 4,
+  "pausas": [
+    {
+      "motivo": "modo preventivo (sem sensor térmico): pausa programada após 30 min de trabalho contínuo (ciclo configurado: 30 min)",
+      "inicio": 1794510667.5385418,
+      "fim": 1794510968.2011147,
+      "resultado": "retomada"
+    }
+  ],
+  "tempo_pausado_s": 300.6,
+  "encerrado_por_recursos": false,
+  "historico": [
+    {
+      "timestamp": 1794510595.4505682,
+      "elapsed_s": 1737.944,
+      "fase": "treino",
+      "step": 2810,
+      "perda": 2.664445400238037,
+      "lr": 6.249850167922268e-05,
+      "grad_norm": 4.437161922454834,
+      "tokens_s": 413.9,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510599.3535376,
+      "elapsed_s": 1741.847,
+      "fase": "treino",
+      "step": 2820,
+      "perda": 3.7595391273498535,
+      "lr": 6.224322356740688e-05,
+      "grad_norm": 6.771623134613037,
+      "tokens_s": 414.5,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510603.3498275,
+      "elapsed_s": 1745.843,
+      "fase": "treino",
+      "step": 2830,
+      "perda": 3.5954225063323975,
+      "lr": 6.20015760803346e-05,
+      "grad_norm": 5.610423564910889,
+      "tokens_s": 415.0,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510608.0809186,
+      "elapsed_s": 1750.574,
+      "fase": "treino",
+      "step": 2840,
+      "perda": 3.0971810817718506,
+      "lr": 6.177358718927273e-05,
+      "grad_norm": 5.233518600463867,
+      "tokens_s": 415.3,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510613.4936814,
+      "elapsed_s": 1755.987,
+      "fase": "treino",
+      "step": 2850,
+      "perda": 2.581423759460449,
+      "lr": 6.155928328447334e-05,
+      "grad_norm": 4.474932670593262,
+      "tokens_s": 415.5,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510623.6428225,
+      "elapsed_s": 1766.136,
+      "fase": "treino",
+      "step": 2860,
+      "perda": 3.108059883117676,
+      "lr": 6.135868917211914e-05,
+      "grad_norm": 4.91786527633667,
+      "tokens_s": 414.6,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510628.6365721,
+      "elapsed_s": 1771.13,
+      "fase": "treino",
+      "step": 2870,
+      "perda": 3.2506868839263916,
+      "lr": 6.117182807145199e-05,
+      "grad_norm": 5.1113080978393555,
+      "tokens_s": 414.8,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510633.588173,
+      "elapsed_s": 1776.081,
+      "fase": "treino",
+      "step": 2880,
+      "perda": 3.2216761112213135,
+      "lr": 6.0998721612085205e-05,
+      "grad_norm": 5.622865676879883,
+      "tokens_s": 415.1,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510638.8543627,
+      "elapsed_s": 1781.347,
+      "fase": "treino",
+      "step": 2890,
+      "perda": 2.6036500930786133,
+      "lr": 6.0839389831499944e-05,
+      "grad_norm": 5.030292510986328,
+      "tokens_s": 415.3,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510643.754318,
+      "elapsed_s": 1786.247,
+      "fase": "treino",
+      "step": 2900,
+      "perda": 2.6160993576049805,
+      "lr": 6.069385117272578e-05,
+      "grad_norm": 5.195755958557129,
+      "tokens_s": 415.6,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510653.4108636,
+      "elapsed_s": 1795.904,
+      "fase": "treino",
+      "step": 2910,
+      "perda": 3.0943169593811035,
+      "lr": 6.056212248220589e-05,
+      "grad_norm": 4.56355619430542,
+      "tokens_s": 414.8,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510658.0250566,
+      "elapsed_s": 1800.518,
+      "fase": "treino",
+      "step": 2920,
+      "perda": 2.31463360786438,
+      "lr": 6.044421900784706e-05,
+      "grad_norm": 3.8887388706207275,
+      "tokens_s": 415.2,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510662.6219938,
+      "elapsed_s": 1805.115,
+      "fase": "treino",
+      "step": 2930,
+      "perda": 3.5952372550964355,
+      "lr": 6.034015439725467e-05,
+      "grad_norm": 5.219777584075928,
+      "tokens_s": 415.5,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510667.2463865,
+      "elapsed_s": 1809.739,
+      "fase": "treino",
+      "step": 2940,
+      "perda": 2.5606191158294678,
+      "lr": 6.0249940696152944e-05,
+      "grad_norm": 4.614778518676758,
+      "tokens_s": 415.9,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510972.2812605,
+      "elapsed_s": 2114.774,
+      "fase": "treino",
+      "step": 2950,
+      "perda": 2.7436108589172363,
+      "lr": 6.017358834699065e-05,
+      "grad_norm": 4.567871570587158,
+      "tokens_s": 357.1,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510982.1566486,
+      "elapsed_s": 2124.65,
+      "fase": "treino",
+      "step": 2960,
+      "perda": 2.8736329078674316,
+      "lr": 6.01111061877324e-05,
+      "grad_norm": 4.491732120513916,
+      "tokens_s": 356.7,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510987.0887167,
+      "elapsed_s": 2129.582,
+      "fase": "treino",
+      "step": 2970,
+      "perda": 2.8957974910736084,
+      "lr": 6.0062501450835555e-05,
+      "grad_norm": 5.368484020233154,
+      "tokens_s": 357.0,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510992.0577598,
+      "elapsed_s": 2134.551,
+      "fase": "treino",
+      "step": 2980,
+      "perda": 2.3751115798950195,
+      "lr": 6.00277797624131e-05,
+      "grad_norm": 4.4135050773620605,
+      "tokens_s": 357.4,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794510997.2499328,
+      "elapsed_s": 2139.743,
+      "fase": "treino",
+      "step": 2990,
+      "perda": 2.494316339492798,
+      "lr": 6.000694514158241e-05,
+      "grad_norm": 4.505918502807617,
+      "tokens_s": 357.7,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794511003.0812933,
+      "elapsed_s": 2145.574,
+      "fase": "treino",
+      "step": 3000,
+      "perda": 2.876840591430664,
+      "lr": 6e-05,
+      "grad_norm": 4.916775226593018,
+      "tokens_s": 358.0,
+      "memoria_mb": 0.0
+    }
+  ],
+  "verificacao_roundtrip_codigo": {
+    "ok": true,
+    "arquivos": [
+      {
+        "arquivo": "__init__.py",
+        "tokens": 825,
+        "fidelidade_caracteres": 1.0,
+        "sintaxe_ok": true
+      },
+      {
+        "arquivo": "__main__.py",
+        "tokens": 214,
+        "fidelidade_caracteres": 1.0,
+        "sintaxe_ok": true
+      },
+      {
+        "arquivo": "__init__.py",
+        "tokens": 90,
+        "fidelidade_caracteres": 1.0,
+        "sintaxe_ok": true
+      },
+      {
+        "arquivo": "config.py",
+        "tokens": 11468,
+        "fidelidade_caracteres": 1.0,
+        "sintaxe_ok": true
+      },
+      {
+        "arquivo": "registry.py",
+        "tokens": 17707,
+        "fidelidade_caracteres": 1.0,
+        "sintaxe_ok": true
+      }
+    ],
+    "detalhe": "round-trip tokenizer sobre arquivos reais do corpus de código (o modelo não é avaliado aqui)"
+  },
+  "baseline_frequencia": {
+    "perda": 1.4769,
+    "perplexidade": 4.38,
+    "token_mais_frequente": 48,
+    "frequencia": 0.2284,
+    "observacao": "baseline de frequência (prever sempre o token mais comum) — referência mínima para julgar a perplexidade"
+  }
+}

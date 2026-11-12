@@ -1,0 +1,12 @@
+{
+  "modalidade": "text",
+  "fontes": [
+    {
+      "nome": "gutenberg_pt_en",
+      "origem": "Project Gutenberg (e-books em domínio público) + Wikisource PT",
+      "url_oficial": "https://www.gutenberg.org/ebooks/search/?sort_order=downloads",
+      "licenca": "Domínio público (Project Gutenberg) / CC BY-SA 3.0 (Wikisource)",
+      "detalhe": []
+    }
+  ]
+}

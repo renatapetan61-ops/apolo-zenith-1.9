@@ -1,0 +1,12 @@
+{
+  "modalidade": "audio",
+  "fontes": [
+    {
+      "nome": "librispeech_dev_clean",
+      "origem": "OpenSLR 12 (LibriSpeech ASR corpus) — split dev-clean",
+      "url_oficial": "https://www.openslr.org/12/",
+      "licenca": "CC BY 4.0 (LibriSpeech, funded por Mozilla/NSF)",
+      "detalhe": []
+    }
+  ]
+}

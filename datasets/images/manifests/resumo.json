@@ -1,0 +1,19 @@
+{
+  "modalidade": "images",
+  "datasets": [
+    {
+      "nome": "flickr8k_test",
+      "origem": "Hugging Face Hub (jxie/flickr8k) — split de teste",
+      "url_oficial": "https://huggingface.co/datasets/jxie/flickr8k",
+      "licenca": "CC BY 2.0 (imagens do Flickr8k) / licença do dataset no Hub",
+      "formato": "Parquet (colunas: image, caption_0..caption_4)",
+      "amostras": 4000,
+      "bytes_baixado": 550927947,
+      "bytes_em_disco": 550927947,
+      "status_download": "concluido",
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado"
+    }
+  ],
+  "uso_no_treinamento": "Parquet lido por row group; imagens redimensionadas para 64x64 e normalizadas; 5 legendas por imagem. Treino contrastivo (InfoNCE) do ViT + projetor contra os embeddings de texto do Language Core."
+}

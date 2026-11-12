@@ -1,0 +1,41 @@
+[dados] treino=49842 sequências (12759787 tokens) | validação=415 sequências (106316 tokens)
+[modelo] 4 camadas, 128 dims, 4 cabeças, 256 contexto, vocab=8192 | parâmetros=1,901,696
+  [retomada] checkpoint carregado: passo 200
+  passo   220/600 | perda 6.4263 | lr 5.09e-04 | 1466 tok/s | elapsed 56s
+  passo   240/600 | perda 6.1353 | lr 4.83e-04 | 1487 tok/s | elapsed 110s
+  [validação] passo 250 | perda 6.2767 | ppl 532.04
+  passo   260/600 | perda 6.1813 | lr 4.55e-04 | 1221 tok/s | elapsed 201s
+  passo   280/600 | perda 6.2322 | lr 4.26e-04 | 1245 tok/s | elapsed 263s
+  passo   300/600 | perda 6.1275 | lr 3.95e-04 | 1259 tok/s | elapsed 325s
+  [validação] passo 300 | perda 6.1779 | ppl 482.00
+  passo   320/600 | perda 6.2576 | lr 3.63e-04 | 1253 tok/s | elapsed 392s
+  passo   340/600 | perda 6.0161 | lr 3.30e-04 | 1268 tok/s | elapsed 452s
+  [validação] passo 350 | perda 6.0918 | ppl 442.23
+  passo   360/600 | perda 6.0154 | lr 2.97e-04 | 1230 tok/s | elapsed 533s
+  passo   380/600 | perda 5.9761 | lr 2.65e-04 | 1267 tok/s | elapsed 582s
+  passo   400/600 | perda 5.9616 | lr 2.34e-04 | 1286 tok/s | elapsed 637s
+  [validação] passo 400 | perda 6.0385 | ppl 419.26
+  passo   420/600 | perda 5.9366 | lr 2.05e-04 | 1244 tok/s | elapsed 724s
+  passo   440/600 | perda 5.9285 | lr 1.77e-04 | 1265 tok/s | elapsed 777s
+  [validação] passo 450 | perda 5.9912 | ppl 399.88
+  passo   460/600 | perda 5.9946 | lr 1.51e-04 | 1178 tok/s | elapsed 904s
+  passo   480/600 | perda 6.0856 | lr 1.28e-04 | 1192 tok/s | elapsed 962s
+  passo   500/600 | perda 5.9833 | lr 1.08e-04 | 1210 tok/s | elapsed 1015s
+  [validação] passo 500 | perda 5.9585 | ppl 387.04
+  passo   520/600 | perda 5.8929 | lr 9.09e-05 | 1205 tok/s | elapsed 1088s
+  passo   540/600 | perda 5.9277 | lr 7.75e-05 | 1223 tok/s | elapsed 1139s
+  [validação] passo 550 | perda 5.9374 | ppl 378.94
+  passo   560/600 | perda 6.0928 | lr 6.78e-05 | 1217 tok/s | elapsed 1212s
+  passo   580/600 | perda 5.9570 | lr 6.20e-05 | 1215 tok/s | elapsed 1281s
+  passo   600/600 | perda 5.9002 | lr 6.00e-05 | 1214 tok/s | elapsed 1349s
+  [validação] passo 600 | perda 5.9243 | ppl 374.00
+{
+  "passos": 600,
+  "melhor_perda_validacao": 5.92425765991211,
+  "tempo_s": 1369.45,
+  "tokens_processados": 1638400,
+  "tokens_por_segundo": 1196.4,
+  "device": "cpu",
+  "amp": "None",
+  "parametros": 1901696
+}

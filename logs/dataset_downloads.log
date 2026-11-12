@@ -1,0 +1,218 @@
+[2026-11-11 20:46:39] [ok] test.parquet | 130.4 MB | sha256=f3bc4c3548ec1d9b… | 12.6s
+[2026-11-11 20:47:27] [ok] dev-clean.tar.gz | 322.3 MB | sha256=76f87d090650617f… | 47.6s
+[2026-11-11 20:55:27] [ok] "Rodrigo_Pederneiras_e_o_Grupo_Corpo"_na_Coleção_Aplauso.webm | 113.5 MB | sha256=f07a5541de6955a6… | 6.0s
+[2026-11-11 20:55:29] [ok] -Avançamos!_Depoimento_do_ministro_da_Fazenda.webm | 10.1 MB | sha256=daf33d1ad9de7bba… | 1.3s
+[2026-11-11 20:55:31] [ok] -Avançamos!_Depoimento_do_ministro_da_Saúde.webm | 13.5 MB | sha256=4ef25e6babe1b61f… | 1.5s
+[2026-11-11 20:55:44] [ok] -CPBR11_-_Palco_Makers_-_01-02-2018_01-00_-_01-45_-_O_movimento_maker_no_interior_de_SP_–.webm | 227.5 MB | sha256=17e1f162e49c79fb… | 13.6s
+[2026-11-11 20:55:46] [ok] -MaisMédicos_-_Depoimento_de_enfermeira_sobre_o_Programa_Mais_Médicos.webm | 5.2 MB | sha256=ab110d129874b668… | 1.6s
+[2026-11-11 20:55:49] [ok] -MaisMédicos_-_Municípios_do_Amapá_recebem_profissionais_do_programa.webm | 41.4 MB | sha256=c97d87044cc9e715… | 2.5s
+[2026-11-11 20:56:22] [ok] Billar_Francés.webm | 0.1 MB | sha256=ee944f64c65e5dbe… | 0.3s
+[2026-11-11 20:56:23] [ok] 1E1R_(2).webm | 0.2 MB | sha256=d1efd7a04c81ace3… | 0.3s
+[2026-11-11 20:56:24] [ok] Bevolking_2_provincie.webm | 0.2 MB | sha256=4f0dc4c4a3117113… | 0.7s
+[2026-11-11 20:56:25] [ok] Bevolking_1_provincie.webm | 0.2 MB | sha256=dea058e4f0cb6ad9… | 0.7s
+[2026-11-11 20:56:25] [ok] Animación_de_un_Abridor_de_botellas_o_abrebotellas.webm | 0.3 MB | sha256=c0c04df883b7d6a4… | 0.3s
+[2026-11-11 20:56:26] [ok] Bevolking_1_gemeente.webm | 0.3 MB | sha256=b181bac0b23b696b… | 0.7s
+[2026-11-11 20:56:27] [ok] Bevolking_2_gemeente.webm | 0.4 MB | sha256=80890011693c0725… | 0.5s
+[2026-11-11 20:56:27] [ok] Bajar_fader.webm | 0.5 MB | sha256=fe0c226cd0400245… | 0.4s
+[2026-11-11 20:56:28] [ok] 1Editor1Reference_-_Tutorial.webm | 0.7 MB | sha256=0fe5ee5fda372794… | 0.4s
+[2026-11-11 20:56:29] [ok] Abrazo_(Lengua_de_señas_mexicana).webm | 0.8 MB | sha256=e185b2afee23ec64… | 0.7s
+[2026-11-11 20:56:29] [erro] https://upload.wikimedia.org/wikipedia/commons/4/47/Akhfennir_beach_VID.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:30] [erro] https://upload.wikimedia.org/wikipedia/commons/d/d0/Abertas_inscri%C3%A7%C3%B5es_para_pr%C3%AAmio_que_incentiva_projetos_ligados_a_arte_nas_ruas.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:30] [erro] https://upload.wikimedia.org/wikipedia/commons/8/83/Antigua_catedral_de_C%C3%A1diz_-_Fase_4.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:30] [erro] https://upload.wikimedia.org/wikipedia/commons/9/95/Bandeira_cabo_verde.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:30] [erro] https://upload.wikimedia.org/wikipedia/commons/1/10/Akhfennir_beach_2.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:31] [erro] https://upload.wikimedia.org/wikipedia/commons/1/1e/A_visitar_ilha_de_santiago_cabo_verde.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:31] [erro] https://upload.wikimedia.org/wikipedia/commons/c/c0/Animaci%C3%B3n_plano_de_una_casa.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:31] [erro] https://upload.wikimedia.org/wikipedia/commons/d/d9/177_day_spin_up_zonal_velocity.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:32] [erro] https://upload.wikimedia.org/wikipedia/commons/0/05/An_old_clip_of_the_Bedouins_from_the_Balushi_tribe_in_Makran..webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:32] [erro] https://upload.wikimedia.org/wikipedia/commons/1/1b/AI_face_Impersonation.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:32] [erro] https://upload.wikimedia.org/wikipedia/commons/c/c4/Adinkra_Nkyea_A-Y_Twi_Kasa_%28Akan_Nkyea%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:32] [erro] https://upload.wikimedia.org/wikipedia/commons/c/c3/Black_Reveal_2_--FREE_FOOTAGE--.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:33] [erro] https://upload.wikimedia.org/wikipedia/commons/a/a9/2018%E5%B9%B412%E6%9C%8827%E6%97%A5_%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A15%E5%BC%8F%E8%BD%BB%E5%9E%8B%E5%9D%A6%E5%85%8B%E5%B7%B2%E5%88%97%E8%A3%85%E9%83%A8%E9%98%9F.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:33] [erro] https://upload.wikimedia.org/wikipedia/commons/9/9d/Antigua_catedral_de_C%C3%A1diz_-_Fase_2.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 20:56:33] [erro] https://upload.wikimedia.org/wikipedia/commons/a/a7/Awawawa.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original: erro de rede: HTTPError: HTTP Error 429: Your bot is making too many requests. Please reduce your request rate or contact bot-traffic@wikimedia.org (f263c81)
+[2026-11-11 21:02:42] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.3s
+[2026-11-11 21:02:43] [ok] requests.tar.gz | 3.2 MB | sha256=8aac24b529ea80ab… | 0.7s
+[2026-11-11 21:02:43] [erro] https://codeload.github.com/expressjs/express/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:43] [ok] express.tar.gz | 0.1 MB | sha256=566baec148f79296… | 0.3s
+[2026-11-11 21:02:44] [ok] axios.tar.gz | 0.6 MB | sha256=dd024b40b3682d1b… | 0.3s
+[2026-11-11 21:02:49] [ok] TypeScript.tar.gz | 26.8 MB | sha256=33d391b69bd04434… | 4.8s
+[2026-11-11 21:02:50] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:50] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:50] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:50] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:51] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:51] [erro] https://codeload.github.com/sqlite/sqlite/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:54] [ok] sqlite.tar.gz | 12.9 MB | sha256=e5937a9eecf4ecd7… | 2.8s
+[2026-11-11 21:02:54] [erro] https://codeload.github.com/nlohmann/json/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:55] [ok] json.tar.gz | 9.2 MB | sha256=09837a85a8308b5f… | 0.7s
+[2026-11-11 21:02:57] [ok] protobuf.tar.gz | 7.5 MB | sha256=d07b50dbeeed675a… | 1.4s
+[2026-11-11 21:02:58] [ok] spring-boot.tar.gz | 6.2 MB | sha256=6aa16b508c2dd462… | 1.2s
+[2026-11-11 21:02:59] [erro] https://codeload.github.com/serde-rs/serde/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:02:59] [ok] serde.tar.gz | 0.2 MB | sha256=76d1bb4830fc083b… | 0.3s
+[2026-11-11 21:03:00] [erro] https://codeload.github.com/rust-lang/cargo/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:01] [ok] cargo.tar.gz | 4.3 MB | sha256=79071216de9136e4… | 0.9s
+[2026-11-11 21:03:01] [erro] https://codeload.github.com/gin-gonic/gin/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:02] [ok] gin.tar.gz | 0.2 MB | sha256=109d36477b93bb1d… | 0.6s
+[2026-11-11 21:03:02] [ok] cobra.tar.gz | 0.2 MB | sha256=d6121a77ab94decf… | 0.3s
+[2026-11-11 21:03:03] [ok] okhttp.tar.gz | 2.1 MB | sha256=563e804c05261fde… | 0.7s
+[2026-11-11 21:03:05] [ok] django.tar.gz | 10.1 MB | sha256=08ac76a29d28d9fc… | 1.6s
+[2026-11-11 21:03:06] [erro] https://codeload.github.com/square/retrofit/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:06] [erro] https://codeload.github.com/square/retrofit/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:06] [erro] https://codeload.github.com/square/retrofit/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:06] [ok] retrofit.tar.gz | 0.9 MB | sha256=17b7728d8cfa4455… | 0.4s
+[2026-11-11 21:03:07] [erro] https://codeload.github.com/necolas/normalize.css/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:07] [ok] normalize.css.tar.gz | 0.0 MB | sha256=81d5261bb81fc19b… | 0.2s
+[2026-11-11 21:03:09] [ok] bootstrap.tar.gz | 15.1 MB | sha256=c515dd15d869edb3… | 1.8s
+[2026-11-11 21:03:10] [erro] https://codeload.github.com/apache/superset/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:21] [ok] superset.tar.gz | 150.3 MB | sha256=bb8f90927dd090c9… | 11.3s
+[2026-11-11 21:03:21] [erro] https://codeload.github.com/apache/superset/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:22] [erro] https://codeload.github.com/apache/superset/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:22] [erro] https://codeload.github.com/apache/superset/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:22] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:23] [ok] sql.js.tar.gz | 0.2 MB | sha256=4a4fc930927cc58b… | 0.3s
+[2026-11-11 21:03:23] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:23] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:23] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:24] [erro] https://codeload.github.com/git/git/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:26] [ok] git.tar.gz | 12.3 MB | sha256=14f8d12305cd2b7e… | 2.1s
+[2026-11-11 21:03:27] [ok] bash.tar.gz | 0.0 MB | sha256=17eccf301155bae2… | 0.2s
+[2026-11-11 21:03:27] [erro] https://codeload.github.com/bash/bash/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:27] [erro] https://codeload.github.com/bash/bash/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:27] [erro] https://codeload.github.com/bash/bash/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:28] [erro] https://codeload.github.com/bash/bash/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:28] [erro] https://codeload.github.com/koalaman/shellcheck/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:03:28] [ok] shellcheck.tar.gz | 0.5 MB | sha256=bf9cf00a7771a9cc… | 0.3s
+[2026-11-11 21:04:39] [ok] superset.tar.gz | 150.3 MB | sha256=bb8f90927dd090c9… | 11.3s
+[2026-11-11 21:04:39] [erro] https://codeload.github.com/bash/bash/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:04:40] [ok] redis.tar.gz | 5.2 MB | sha256=b0f5500a692e2753… | 0.9s
+[2026-11-11 21:05:06] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.3s
+[2026-11-11 21:05:07] [ok] requests.tar.gz | 3.2 MB | sha256=8aac24b529ea80ab… | 0.4s
+[2026-11-11 21:05:08] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:09] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:09] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:09] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:09] [erro] https://codeload.github.com/redis/redis/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:11] [ok] cobra.tar.gz | 0.2 MB | sha256=d6121a77ab94decf… | 0.3s
+[2026-11-11 21:05:13] [erro] https://codeload.github.com/necolas/normalize.css/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:14] [ok] normalize.css.tar.gz | 0.0 MB | sha256=81d5261bb81fc19b… | 0.3s
+[2026-11-11 21:05:15] [ok] bootstrap.tar.gz | 15.1 MB | sha256=c515dd15d869edb3… | 1.1s
+[2026-11-11 21:05:15] [erro] https://codeload.github.com/apache/superset/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:22] [ok] superset.tar.gz | 150.3 MB | sha256=bb8f90927dd090c9… | 7.0s
+[2026-11-11 21:05:24] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:24] [ok] sql.js.tar.gz | 0.2 MB | sha256=4a4fc930927cc58b… | 0.3s
+[2026-11-11 21:05:24] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:25] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:25] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:25] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:05:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:07:21] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.3s
+[2026-11-11 21:07:56] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.4s
+[2026-11-11 21:07:57] [ok] requests.tar.gz | 3.2 MB | sha256=8aac24b529ea80ab… | 0.5s
+[2026-11-11 21:07:59] [ok] redis.tar.gz | 5.2 MB | sha256=b0f5500a692e2753… | 1.1s
+[2026-11-11 21:08:02] [ok] cobra.tar.gz | 0.2 MB | sha256=d6121a77ab94decf… | 0.9s
+[2026-11-11 21:08:04] [erro] https://codeload.github.com/necolas/normalize.css/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:04] [ok] normalize.css.tar.gz | 0.0 MB | sha256=81d5261bb81fc19b… | 0.2s
+[2026-11-11 21:08:06] [ok] bootstrap.tar.gz | 15.1 MB | sha256=c515dd15d869edb3… | 1.1s
+[2026-11-11 21:08:07] [ok] sql.js.tar.gz | 0.2 MB | sha256=4a4fc930927cc58b… | 0.3s
+[2026-11-11 21:08:07] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:07] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:07] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:07] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:08] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:08] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:08] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:09] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:08:09] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:00] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.3s
+[2026-11-11 21:09:16] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.2s
+[2026-11-11 21:09:16] [ok] requests.tar.gz | 3.2 MB | sha256=8aac24b529ea80ab… | 0.4s
+[2026-11-11 21:09:20] [ok] cobra.tar.gz | 0.2 MB | sha256=d6121a77ab94decf… | 0.3s
+[2026-11-11 21:09:22] [erro] https://codeload.github.com/necolas/normalize.css/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:22] [ok] normalize.css.tar.gz | 0.0 MB | sha256=81d5261bb81fc19b… | 0.2s
+[2026-11-11 21:09:24] [ok] bootstrap.tar.gz | 15.1 MB | sha256=c515dd15d869edb3… | 1.1s
+[2026-11-11 21:09:24] [ok] sql.js.tar.gz | 0.2 MB | sha256=4a4fc930927cc58b… | 0.3s
+[2026-11-11 21:09:25] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:25] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:25] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:25] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:26] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:09:27] [erro] https://codeload.github.com/baskerville/bash/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:10:43] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.3s
+[2026-11-11 21:10:44] [ok] requests.tar.gz | 3.2 MB | sha256=8aac24b529ea80ab… | 0.4s
+[2026-11-11 21:10:44] [erro] https://codeload.github.com/expressjs/express/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:10:45] [ok] express.tar.gz | 0.1 MB | sha256=566baec148f79296… | 0.4s
+[2026-11-11 21:10:45] [ok] axios.tar.gz | 0.6 MB | sha256=dd024b40b3682d1b… | 0.3s
+[2026-11-11 21:10:50] [ok] TypeScript.tar.gz | 26.8 MB | sha256=33d391b69bd04434… | 4.7s
+[2026-11-11 21:10:52] [ok] redis.tar.gz | 5.2 MB | sha256=b0f5500a692e2753… | 0.9s
+[2026-11-11 21:10:52] [erro] https://codeload.github.com/sqlite/sqlite/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:10:55] [ok] sqlite.tar.gz | 12.9 MB | sha256=e5937a9eecf4ecd7… | 2.7s
+[2026-11-11 21:10:55] [erro] https://codeload.github.com/nlohmann/json/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:10:56] [ok] json.tar.gz | 9.2 MB | sha256=09837a85a8308b5f… | 0.7s
+[2026-11-11 21:10:58] [ok] protobuf.tar.gz | 7.5 MB | sha256=d07b50dbeeed675a… | 1.4s
+[2026-11-11 21:10:59] [ok] spring-boot.tar.gz | 6.2 MB | sha256=6aa16b508c2dd462… | 1.2s
+[2026-11-11 21:11:00] [erro] https://codeload.github.com/serde-rs/serde/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:00] [ok] serde.tar.gz | 0.2 MB | sha256=76d1bb4830fc083b… | 0.3s
+[2026-11-11 21:11:00] [erro] https://codeload.github.com/rust-lang/cargo/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:01] [ok] cargo.tar.gz | 4.3 MB | sha256=79071216de9136e4… | 0.8s
+[2026-11-11 21:11:02] [erro] https://codeload.github.com/gin-gonic/gin/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:02] [ok] gin.tar.gz | 0.2 MB | sha256=109d36477b93bb1d… | 0.3s
+[2026-11-11 21:11:03] [ok] cobra.tar.gz | 0.2 MB | sha256=d6121a77ab94decf… | 0.3s
+[2026-11-11 21:11:03] [ok] okhttp.tar.gz | 2.1 MB | sha256=563e804c05261fde… | 0.4s
+[2026-11-11 21:11:04] [ok] django.tar.gz | 10.1 MB | sha256=08ac76a29d28d9fc… | 0.5s
+[2026-11-11 21:11:05] [erro] https://codeload.github.com/square/retrofit/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:05] [erro] https://codeload.github.com/square/retrofit/tar.gz/refs/heads/master: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:05] [erro] https://codeload.github.com/square/retrofit/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:06] [ok] retrofit.tar.gz | 0.9 MB | sha256=17b7728d8cfa4455… | 0.4s
+[2026-11-11 21:11:06] [erro] https://codeload.github.com/necolas/normalize.css/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:06] [ok] normalize.css.tar.gz | 0.0 MB | sha256=81d5261bb81fc19b… | 0.3s
+[2026-11-11 21:11:08] [ok] bootstrap.tar.gz | 15.1 MB | sha256=c515dd15d869edb3… | 1.1s
+[2026-11-11 21:11:20] [ok] superset.tar.gz | 150.3 MB | sha256=bb8f90927dd090c9… | 11.9s
+[2026-11-11 21:11:21] [ok] sql.js.tar.gz | 0.2 MB | sha256=4a4fc930927cc58b… | 0.2s
+[2026-11-11 21:11:22] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:22] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:22] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:22] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:23] [erro] https://codeload.github.com/git/git/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:11:23] [ok] git.tar.gz | 12.3 MB | sha256=14f8d12305cd2b7e… | 0.7s
+[2026-11-11 21:11:24] [ok] nvm.tar.gz | 0.5 MB | sha256=ca4e30d32d67231b… | 0.3s
+[2026-11-11 21:11:25] [ok] shellcheck.tar.gz | 0.5 MB | sha256=bf9cf00a7771a9cc… | 0.3s
+[2026-11-11 21:11:26] [ok] sqlfluff.tar.gz | 4.2 MB | sha256=8934bc0acaf48d7e… | 0.8s
+[2026-11-11 21:12:02] [ok] sqlfluff.tar.gz | 4.2 MB | sha256=8934bc0acaf48d7e… | 0.9s
+[2026-11-11 21:12:26] [ok] nvm.tar.gz | 0.5 MB | sha256=ca4e30d32d67231b… | 0.4s
+[2026-11-11 21:12:27] [ok] shellcheck.tar.gz | 0.5 MB | sha256=bf9cf00a7771a9cc… | 0.2s
+[2026-11-11 21:13:23] [ok] flask.tar.gz | 0.7 MB | sha256=71ce28b1543be3fb… | 0.3s
+[2026-11-11 21:13:24] [ok] requests.tar.gz | 3.2 MB | sha256=8aac24b529ea80ab… | 0.4s
+[2026-11-11 21:13:26] [ok] cobra.tar.gz | 0.2 MB | sha256=d6121a77ab94decf… | 0.3s
+[2026-11-11 21:13:28] [erro] https://codeload.github.com/necolas/normalize.css/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:13:28] [ok] normalize.css.tar.gz | 0.0 MB | sha256=81d5261bb81fc19b… | 0.2s
+[2026-11-11 21:13:29] [ok] bootstrap.tar.gz | 15.1 MB | sha256=c515dd15d869edb3… | 0.7s
+[2026-11-11 21:13:30] [ok] sql.js.tar.gz | 0.2 MB | sha256=4a4fc930927cc58b… | 0.2s
+[2026-11-11 21:13:31] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/main: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:13:31] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/develop: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:13:31] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/trunk: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:13:31] [erro] https://codeload.github.com/sql-js/sql.js/tar.gz/refs/heads/stable: erro de rede: HTTPError: HTTP Error 404: Not Found
+[2026-11-11 21:13:32] [ok] nvm.tar.gz | 0.5 MB | sha256=ca4e30d32d67231b… | 0.3s
+[2026-11-11 21:14:08] [ok] Akhfennir_beach_VID.webm | 1.0 MB | sha256=1b3d2e3ca6b81b8e… | 0.7s
+[2026-11-11 21:14:09] [ok] Abertas_inscrições_para_prêmio_que_incentiva_projetos_ligados_a_arte_nas_ruas.webm | 1.2 MB | sha256=cfd773d02f758e58… | 0.7s
+[2026-11-11 21:14:10] [ok] Antigua_catedral_de_Cádiz_-_Fase_4.webm | 1.2 MB | sha256=b91b284e65ce5484… | 0.7s
+[2026-11-11 21:14:11] [ok] Bandeira_cabo_verde.webm | 1.2 MB | sha256=dd4a2f087f6cd0db… | 1.1s
+[2026-11-11 21:14:12] [ok] Akhfennir_beach_2.webm | 1.3 MB | sha256=35aff3b03a076598… | 0.4s
+[2026-11-11 21:14:13] [ok] A_visitar_ilha_de_santiago_cabo_verde.webm | 1.3 MB | sha256=d1bf03b678333ee0… | 0.9s
+[2026-11-11 21:14:13] [ok] Animación_plano_de_una_casa.webm | 2.2 MB | sha256=9f050790a799afb7… | 0.4s
+[2026-11-11 21:14:14] [ok] 177_day_spin_up_zonal_velocity.webm | 2.2 MB | sha256=bbfaea79b3f17997… | 0.5s
+[2026-11-11 21:14:15] [ok] An_old_clip_of_the_Bedouins_from_the_Balushi_tribe_in_Makran..webm | 2.4 MB | sha256=f3eb217f46ae42de… | 1.1s
+[2026-11-11 21:14:16] [ok] AI_face_Impersonation.webm | 2.5 MB | sha256=dbc1f5f89efaa0ba… | 0.4s
+[2026-11-11 21:14:17] [ok] Adinkra_Nkyea_A-Y_Twi_Kasa_(Akan_Nkyea).webm | 3.2 MB | sha256=c5d4624225ce5d9f… | 0.9s
+[2026-11-11 21:14:18] [ok] Black_Reveal_2_--FREE_FOOTAGE--.webm | 3.5 MB | sha256=68b0bd41fb30f9ae… | 0.4s
+[2026-11-11 21:14:19] [ok] 2018年12月27日_国防部：15式轻型坦克已列装部队.webm | 4.1 MB | sha256=0791314a1c38f42e… | 1.2s
+[2026-11-11 21:14:20] [ok] Antigua_catedral_de_Cádiz_-_Fase_2.webm | 4.3 MB | sha256=c2386101938b481b… | 1.1s
+[2026-11-11 21:14:22] [ok] Awawawa.webm | 4.7 MB | sha256=23cace2c9dc21c35… | 1.2s
+[2026-11-12 12:36:44] [ok] train_0.parquet | 395.0 MB | sha256=68bc2d97c6021e57… | 36.0s
+[2026-11-12 16:22:04] [ok] dev-clean.tar.gz | 322.3 MB | sha256=76f87d090650617f… | 117.5s

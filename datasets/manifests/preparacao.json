@@ -1,0 +1,267 @@
+{
+  "code": {
+    "arquivos": 794,
+    "removidos_dup": 5,
+    "train": {
+      "tokens": 2331286,
+      "caminho": "datasets/code/processed/train.bin"
+    },
+    "val": {
+      "tokens": 144101,
+      "caminho": "datasets/code/processed/val.bin"
+    },
+    "test": {
+      "tokens": 139043,
+      "caminho": "datasets/code/processed/test.bin"
+    },
+    "linguagens": {
+      "python": 144,
+      "c": 128,
+      "javascript": 85,
+      "java": 80,
+      "rust": 80,
+      "go": 76,
+      "cpp": 67,
+      "typescript": 45,
+      "kotlin": 40,
+      "sql": 30,
+      "haskell": 29,
+      "css": 26,
+      "shell": 6
+    },
+    "tempo_s": 23.9
+  },
+  "images": {
+    "imagens": 1000,
+    "caminho": "datasets/images/processed/legendas.jsonl"
+  },
+  "audio": {
+    "falas": 2703,
+    "caminho": "datasets/audio/processed/transcricoes.jsonl"
+  },
+  "video": {
+    "videos": 31,
+    "frames_total": 248,
+    "detalhe": [
+      {
+        "video": "\"Rodrigo_Pederneiras_e_o_Grupo_Corpo\"_na_Coleção_Aplauso.webm",
+        "frames": 8,
+        "fps": 30.0,
+        "duracao_s": 414.17,
+        "pasta": "datasets/video/frames/\"Rodrigo_Pederneiras_e_o_Grupo_Corpo\"_na_Coleção_Aplauso"
+      },
+      {
+        "video": "-Avançamos!_Depoimento_do_ministro_da_Fazenda.webm",
+        "frames": 8,
+        "fps": 29.97,
+        "duracao_s": 43.86,
+        "pasta": "datasets/video/frames/-Avançamos!_Depoimento_do_ministro_da_Fazenda"
+      },
+      {
+        "video": "-Avançamos!_Depoimento_do_ministro_da_Saúde.webm",
+        "frames": 8,
+        "fps": 29.97,
+        "duracao_s": 53.98,
+        "pasta": "datasets/video/frames/-Avançamos!_Depoimento_do_ministro_da_Saúde"
+      },
+      {
+        "video": "-CPBR11_-_Palco_Makers_-_01-02-2018_01-00_-_01-45_-_O_movimento_maker_no_interior_de_SP_–.webm",
+        "frames": 8,
+        "fps": 25.0,
+        "duracao_s": 2529.1,
+        "pasta": "datasets/video/frames/-CPBR11_-_Palco_Makers_-_01-02-2018_01-00_-_01-45_-_O_movimento_maker_no_interior_de_SP_–"
+      },
+      {
+        "video": "-MaisMédicos_-_Depoimento_de_enfermeira_sobre_o_Programa_Mais_Médicos.webm",
+        "frames": 8,
+        "fps": 29.97,
+        "duracao_s": 68.62,
+        "pasta": "datasets/video/frames/-MaisMédicos_-_Depoimento_de_enfermeira_sobre_o_Programa_Mais_Médicos"
+      },
+      {
+        "video": "-MaisMédicos_-_Municípios_do_Amapá_recebem_profissionais_do_programa.webm",
+        "frames": 8,
+        "fps": 29.97,
+        "duracao_s": 140.4,
+        "pasta": "datasets/video/frames/-MaisMédicos_-_Municípios_do_Amapá_recebem_profissionais_do_programa"
+      },
+      {
+        "video": "177_day_spin_up_zonal_velocity.webm",
+        "frames": 8,
+        "fps": 17.0,
+        "duracao_s": 10.41,
+        "pasta": "datasets/video/frames/177_day_spin_up_zonal_velocity"
+      },
+      {
+        "video": "1E1R_(2).webm",
+        "frames": 8,
+        "fps": 30.0,
+        "duracao_s": 3.44,
+        "pasta": "datasets/video/frames/1E1R_(2)"
+      },
+      {
+        "video": "1Editor1Reference_-_Tutorial.webm",
+        "frames": 8,
+        "fps": 30.0,
+        "duracao_s": 0.0,
+        "pasta": "datasets/video/frames/1Editor1Reference_-_Tutorial"
+      },
+      {
+        "video": "2018年12月27日_国防部：15式轻型坦克已列装部队.webm",
+        "frames": 8,
+        "fps": 25.0,
+        "duracao_s": 35.19,
+        "pasta": "datasets/video/frames/2018年12月27日_国防部：15式轻型坦克已列装部队"
+      },
+      {
+        "video": "AI_face_Impersonation.webm",
+        "frames": 8,
+        "fps": 30.0,
+        "duracao_s": 67.76,
+        "pasta": "datasets/video/frames/AI_face_Impersonation"
+      },
+      {
+        "video": "A_visitar_ilha_de_santiago_cabo_verde.webm",
+        "frames": 8,
+        "fps": 29.97,
+        "duracao_s": 6.42,
+        "pasta": "datasets/video/frames/A_visitar_ilha_de_santiago_cabo_verde"
+      },
+      {
+        "video": "Abertas_inscrições_para_prêmio_que_incentiva_projetos_ligados_a_arte_nas_ruas.webm",
+        "frames": 8,
+        "fps": 29.97,
+        "duracao_s": 22.12,
+        "pasta": "datasets/video/frames/Abertas_inscrições_para_prêmio_que_incentiva_projetos_ligados_a_arte_nas_ruas"
+      },
+      {
+        "video": "Abrazo_(Lengua_de_señas_mexicana).webm",
+        "frames": 8,
+        "fps": 29.97,
+        "duracao_s": 3.84,
+        "pasta": "datasets/video/frames/Abrazo_(Lengua_de_señas_mexicana)"
+      },
+      {
+        "video": "Adinkra_Nkyea_A-Y_Twi_Kasa_(Akan_Nkyea).webm",
+        "frames": 8,
+        "fps": 30.0,
+        "duracao_s": 196.22,
+        "pasta": "datasets/video/frames/Adinkra_Nkyea_A-Y_Twi_Kasa_(Akan_Nkyea)"
+      },
+      {
+        "video": "Akhfennir_beach_2.webm",
+        "frames": 8,
+        "fps": 1000.0,
+        "duracao_s": 9203.74,
+        "pasta": "datasets/video/frames/Akhfennir_beach_2"
+      },
+      {
+        "video": "Akhfennir_beach_VID.webm",
+        "frames": 8,
+        "fps": 1000.0,
+        "duracao_s": 9321.19,
+        "pasta": "datasets/video/frames/Akhfennir_beach_VID"
+      },
+      {
+        "video": "An_old_clip_of_the_Bedouins_from_the_Balushi_tribe_in_Makran..webm",
+        "frames": 8,
+        "fps": 30.0,
+        "duracao_s": 40.37,
+        "pasta": "datasets/video/frames/An_old_clip_of_the_Bedouins_from_the_Balushi_tribe_in_Makran."
+      },
+      {
+        "video": "Animación_de_un_Abridor_de_botellas_o_abrebotellas.webm",
+        "frames": 8,
+        "fps": 24.0,
+        "duracao_s": 10.46,
+        "pasta": "datasets/video/frames/Animación_de_un_Abridor_de_botellas_o_abrebotellas"
+      },
+      {
+        "video": "Animación_plano_de_una_casa.webm",
+        "frames": 8,
+        "fps": 24.0,
+        "duracao_s": 12.12,
+        "pasta": "datasets/video/frames/Animación_plano_de_una_casa"
+      },
+      {
+        "video": "Antigua_catedral_de_Cádiz_-_Fase_2.webm",
+        "frames": 8,
+        "fps": 24.0,
+        "duracao_s": 20.85,
+        "pasta": "datasets/video/frames/Antigua_catedral_de_Cádiz_-_Fase_2"
+      },
+      {
+        "video": "Antigua_catedral_de_Cádiz_-_Fase_4.webm",
+        "frames": 8,
+        "fps": 24.0,
+        "duracao_s": 16.61,
+        "pasta": "datasets/video/frames/Antigua_catedral_de_Cádiz_-_Fase_4"
+      },
+      {
+        "video": "Awawawa.webm",
+        "frames": 8,
+        "fps": 59.94,
+        "duracao_s": 36.59,
+        "pasta": "datasets/video/frames/Awawawa"
+      },
+      {
+        "video": "Bajar_fader.webm",
+        "frames": 8,
+        "fps": 24.0,
+        "duracao_s": 1.29,
+        "pasta": "datasets/video/frames/Bajar_fader"
+      },
+      {
+        "video": "Bandeira_cabo_verde.webm",
+        "frames": 8,
+        "fps": 25.0,
+        "duracao_s": 5.8,
+        "pasta": "datasets/video/frames/Bandeira_cabo_verde"
+      },
+      {
+        "video": "Bevolking_1_gemeente.webm",
+        "frames": 8,
+        "fps": 1.0,
+        "duracao_s": 26.0,
+        "pasta": "datasets/video/frames/Bevolking_1_gemeente"
+      },
+      {
+        "video": "Bevolking_1_provincie.webm",
+        "frames": 8,
+        "fps": 1.0,
+        "duracao_s": 26.0,
+        "pasta": "datasets/video/frames/Bevolking_1_provincie"
+      },
+      {
+        "video": "Bevolking_2_gemeente.webm",
+        "frames": 8,
+        "fps": 1.0,
+        "duracao_s": 26.0,
+        "pasta": "datasets/video/frames/Bevolking_2_gemeente"
+      },
+      {
+        "video": "Bevolking_2_provincie.webm",
+        "frames": 8,
+        "fps": 1.0,
+        "duracao_s": 26.0,
+        "pasta": "datasets/video/frames/Bevolking_2_provincie"
+      },
+      {
+        "video": "Billar_Francés.webm",
+        "frames": 8,
+        "fps": 24.0,
+        "duracao_s": 16.25,
+        "pasta": "datasets/video/frames/Billar_Francés"
+      },
+      {
+        "video": "Black_Reveal_2_--FREE_FOOTAGE--.webm",
+        "frames": 8,
+        "fps": 25.0,
+        "duracao_s": 10.0,
+        "pasta": "datasets/video/frames/Black_Reveal_2_--FREE_FOOTAGE--"
+      }
+    ],
+    "frames_por_video": 8,
+    "tempo_s": 44.7
+  }
+}

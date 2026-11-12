@@ -1,0 +1,132 @@
+# Roadmap e status dos módulos multimodais do Apolo Zenith 1.9.
+#
+# IMPORTANTE — este arquivo descreve o PLANO e o STATUS REAL de cada módulo.
+# Nenhuma modalidade é declarada funcional antes de existir implementação e
+# testes correspondentes. O status é atualizado a cada fase concluída.
+
+fases:
+  - id: 1
+    nome: Language Core
+    status: em_andamento
+    modulos: [core, tokenizer]
+    criterio_de_conclusao: >
+      Treinamento real com perda decrescente, checkpoint salvo e inferência
+      produzindo texto coerente no idioma do corpus.
+
+  - id: 2
+    nome: Language Intelligence
+    status: planejado
+    modulos: [core]
+    criterio_de_conclusao: >
+      Escala do modelo, dados de instrução e raciocínio, avaliação em
+      benchmarks de linguagem (MMLU/GSM8K) com resultados reproduzíveis.
+
+  - id: 3
+    nome: Coding Intelligence
+    status: concluido
+    modulos: [coding, training/code_trainer]
+    criterio_de_conclusao: >
+      Corpus de código real (13 linguagens, licenças permissivas verificadas),
+      tokenizer com round-trip fiel e val_loss medida no corpus de código.
+
+  - id: 4
+    nome: Vision Integration
+    status: concluido
+    modulos: [vision, training/image_trainer]
+    criterio_de_conclusao: >
+      ViT + projetor treinados com perda contrastiva InfoNCE sobre pares
+      imagem-legenda reais (Flickr8k) e recuperação medida em split held-out.
+      Sem decoder de linguagem: não descreve imagens.
+
+  - id: 5
+    nome: Audio Integration
+    status: concluido
+    modulos: [audio, training/audio_trainer]
+    criterio_de_conclusao: >
+      Encoder de mel-spectrogram + projetor treinados com InfoNCE sobre
+      LibriSpeech e recuperação áudio-texto medida. Sem decoder de voz.
+
+  - id: 6
+    nome: Video Integration
+    status: concluido
+    modulos: [video, training/video_trainer]
+    criterio_de_conclusao: >
+      Encoder temporal + cabeça de ordem temporal treinados com vídeos reais
+      (Wikimedia Commons) e acurácia de ordenação medida. Sem sumário textual.
+
+  - id: 7
+    nome: Image Generation
+    status: planejado
+    modulos: [generation]
+    criterio_de_conclusao: >
+      Latent Diffusion treinado com FID/CLIP score reportados.
+
+  - id: 8
+    nome: Video Generation
+    status: planejado
+    modulos: [generation]
+    criterio_de_conclusao: >
+      Gerador de vídeo com consistência temporal avaliada.
+
+  - id: 9
+    nome: Multimodal Alignment
+    status: concluido
+    modulos: [core, vision, audio, video, training/multimodal_trainer]
+    criterio_de_conclusao: >
+      Projetores compartilhados alinham visão e áudio ao espaço textual do
+      Language Core, com recuperação medida. Não há decoder de linguagem: o
+      alinhamento é de representações, não de geração.
+
+  - id: 10
+    nome: Optimization
+    status: planejado
+    modulos: [mobile]
+    criterio_de_conclusao: >
+      Quantização, KV Cache e perfil de latência/energia no dispositivo.
+
+# Configuração efetiva do Apolo Vision (Fase 4) — implementada e treinada.
+vision:
+  status: implementado
+  tipo_encoder: vit
+  patch_size: 16
+  dim: 128
+  camadas: 3
+  cabecas: 4
+  tipo_projetor: mlp
+  dim_projetor: 128
+
+# Configuração efetiva do Apolo Audio (Fase 5) — implementada e treinada.
+audio:
+  status: implementado
+  tipo_encoder: cnn_transformer
+  n_mels: 80
+  quadro: 25
+  salto: 10
+  dim: 192
+  camadas: 3
+
+# Configuração efetiva do Apolo Video (Fase 6) — implementada e treinada.
+video:
+  status: implementado
+  amostragem_fps: 2
+  max_frames: 32
+  dim: 512
+  camadas: 8
+  tipo_atencao: temporal
+
+# Configuração de referência do Apolo Image Generator (Fase 7).
+generation_imagem:
+  status: planejado
+  tipo: latent_diffusion
+  dim_latente: 64
+  resolucao: 256
+  passos: 1000
+  modelo_texto: clip-like
+
+# Configuração de referência do Apolo Video Generator (Fase 8).
+generation_video:
+  status: planejado
+  tipo: latent_diffusion_temporal
+  resolucao: 128
+  frames: 16
+  modelo_texto: clip-like

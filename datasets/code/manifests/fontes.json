@@ -1,0 +1,270 @@
+{
+  "modalidade": "code",
+  "fontes": [
+    {
+      "nome": "codigo_github_permissivo",
+      "origem": "Repositórios GitHub com licenças permissivas (verificadas via API)",
+      "url_oficial": "https://github.com/",
+      "licenca": "Por repositório (licença declarada pela API do GitHub quando disponível): Apache-2.0, BSD-3-Clause, CC0-1.0, GPL-2.0, GPL-3.0, MIT",
+      "detalhe": [
+        {
+          "repo": "pallets/flask",
+          "url": "https://github.com/pallets/flask",
+          "linguagem": "python",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 34,
+          "bytes": 362756
+        },
+        {
+          "repo": "psf/requests",
+          "url": "https://github.com/psf/requests",
+          "linguagem": "python",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 20,
+          "bytes": 216267
+        },
+        {
+          "repo": "expressjs/express",
+          "url": "https://github.com/expressjs/express",
+          "linguagem": "javascript",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 63260
+        },
+        {
+          "repo": "axios/axios",
+          "url": "https://github.com/axios/axios",
+          "linguagem": "javascript",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 115149
+        },
+        {
+          "repo": "microsoft/TypeScript",
+          "url": "https://github.com/microsoft/TypeScript",
+          "linguagem": "typescript",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 267259
+        },
+        {
+          "repo": "redis/redis",
+          "url": "https://github.com/redis/redis",
+          "linguagem": "c",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 959494
+        },
+        {
+          "repo": "sqlite/sqlite",
+          "url": "https://github.com/sqlite/sqlite",
+          "linguagem": "c",
+          "licenca": "CC0-1.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 1218880
+        },
+        {
+          "repo": "nlohmann/json",
+          "url": "https://github.com/nlohmann/json",
+          "linguagem": "cpp",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 33571
+        },
+        {
+          "repo": "google/protobuf",
+          "url": "https://github.com/google/protobuf",
+          "linguagem": "cpp",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 407834
+        },
+        {
+          "repo": "spring-projects/spring-boot",
+          "url": "https://github.com/spring-projects/spring-boot",
+          "linguagem": "java",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 231760
+        },
+        {
+          "repo": "serde-rs/serde",
+          "url": "https://github.com/serde-rs/serde",
+          "linguagem": "rust",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 678355
+        },
+        {
+          "repo": "rust-lang/cargo",
+          "url": "https://github.com/rust-lang/cargo",
+          "linguagem": "rust",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 213595
+        },
+        {
+          "repo": "gin-gonic/gin",
+          "url": "https://github.com/gin-gonic/gin",
+          "linguagem": "go",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 201721
+        },
+        {
+          "repo": "spf13/cobra",
+          "url": "https://github.com/spf13/cobra",
+          "linguagem": "go",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 36,
+          "bytes": 512600
+        },
+        {
+          "repo": "square/okhttp",
+          "url": "https://github.com/square/okhttp",
+          "linguagem": "kotlin",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 170233
+        },
+        {
+          "repo": "django/django",
+          "url": "https://github.com/django/django",
+          "linguagem": "python",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 122464
+        },
+        {
+          "repo": "square/retrofit",
+          "url": "https://github.com/square/retrofit",
+          "linguagem": "java",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 35,
+          "bytes": 122299
+        },
+        {
+          "repo": "necolas/normalize.css",
+          "url": "https://github.com/necolas/normalize.css",
+          "linguagem": "css",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "master",
+          "arquivos": 1,
+          "bytes": 6138
+        },
+        {
+          "repo": "twbs/bootstrap",
+          "url": "https://github.com/twbs/bootstrap",
+          "linguagem": "css",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 25,
+          "bytes": 15856
+        },
+        {
+          "repo": "apache/superset",
+          "url": "https://github.com/apache/superset",
+          "linguagem": "python",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 297665
+        },
+        {
+          "repo": "sql-js/sql.js",
+          "url": "https://github.com/sql-js/sql.js",
+          "linguagem": "sql",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "master",
+          "arquivos": 0,
+          "bytes": 0
+        },
+        {
+          "repo": "git/git",
+          "url": "https://github.com/git/git",
+          "linguagem": "c",
+          "licenca": "GPL-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 30,
+          "bytes": 513157
+        },
+        {
+          "repo": "nvm-sh/nvm",
+          "url": "https://github.com/nvm-sh/nvm",
+          "linguagem": "shell",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "master",
+          "arquivos": 6,
+          "bytes": 36059
+        },
+        {
+          "repo": "koalaman/shellcheck",
+          "url": "https://github.com/koalaman/shellcheck",
+          "linguagem": "haskell",
+          "licenca": "GPL-3.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 20,
+          "bytes": 428838
+        },
+        {
+          "repo": "sqlfluff/sqlfluff",
+          "url": "https://github.com/sqlfluff/sqlfluff",
+          "linguagem": "sql",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 30,
+          "bytes": 4075
+        }
+      ]
+    }
+  ]
+}

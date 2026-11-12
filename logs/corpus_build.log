@@ -1,0 +1,6 @@
+  [gutenberg:pt] 120 livros candidatos
+  [gutenberg:en] 0 livros candidatos
+  [wikisource] baixando dump (~24 MB alvo, arquivo completo)…
+  [wikisource] extraindo texto das páginas…
+  [wikisource] 120 páginas, ~0.0 MB de texto
+  [manifesto] 120 documentos, 25.0 MB -> datasets_storage/manifest.json

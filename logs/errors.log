@@ -1,0 +1,1 @@
+{"timestamp": 1794502170.8254266, "iso": "2026-11-12T12:49:30", "mensagem": "teste de integracao", "contexto": {"a": 1}, "excecao": "ValueError", "detalhe": "exemplo", "traceback": "ValueError: exemplo\n"}

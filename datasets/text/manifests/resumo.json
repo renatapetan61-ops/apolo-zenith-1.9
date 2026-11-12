@@ -1,0 +1,19 @@
+{
+  "modalidade": "text",
+  "datasets": [
+    {
+      "nome": "gutenberg_pt_en",
+      "origem": "Project Gutenberg (e-books em domínio público) + Wikisource PT",
+      "url_oficial": "https://www.gutenberg.org/ebooks/search/?sort_order=downloads",
+      "licenca": "Domínio público (Project Gutenberg) / CC BY-SA 3.0 (Wikisource)",
+      "formato": "texto puro (.txt) e XML compactado (.xml.bz2)",
+      "amostras": 206816,
+      "bytes_baixado": 148661850,
+      "bytes_em_disco": 218369358,
+      "status_download": "concluido",
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado"
+    }
+  ],
+  "uso_no_treinamento": "Tokenizado com o BPE do projeto e empacotado em sequências de 64 tokens (train.bin/val.bin/test.bin). Treinou o Language Core (1.901.696 params)."
+}

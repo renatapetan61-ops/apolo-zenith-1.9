@@ -1,0 +1,4 @@
+{"task_id": "cod_01", "prompt": "Escreva uma função em Python chamada `soma_lista` que recebe uma lista de números e retorna a soma deles.", "testes": ["assert soma_lista([1,2,3]) == 6", "assert soma_lista([]) == 0"]}
+{"task_id": "cod_02", "prompt": "Escreva uma função em Python chamada `par` que retorna True se o número recebido é par e False caso contrário.", "testes": ["assert par(4) == True", "assert par(7) == False"]}
+{"task_id": "cod_03", "prompt": "Escreva uma função em Python chamada `maior` que retorna o maior valor de uma lista de números.", "testes": ["assert maior([3,9,2]) == 9", "assert maior([-5,-1]) == -1"]}
+{"task_id": "cod_04", "prompt": "Escreva uma função em Python chamada `inverte` que retorna a string recebida com os caracteres invertidos.", "testes": ["assert inverte('apolo') == 'olopa'", "assert inverte('') == ''"]}

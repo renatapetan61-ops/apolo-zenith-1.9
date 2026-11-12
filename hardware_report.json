@@ -1,0 +1,208 @@
+{
+  "projeto": "Apolo Zenith 1.9",
+  "gerado_em": "2026-11-12T20:19:50.503488+00:00",
+  "python": {
+    "versao": "3.12.3",
+    "implementacao": "CPython",
+    "executavel": "/usr/bin/python3"
+  },
+  "frameworks": {
+    "torch": "2.15.0+cpu",
+    "numpy": "2.5.4"
+  },
+  "android": {
+    "versao": "16",
+    "sdk": "36",
+    "fabricante": "motorola",
+    "modelo": "moto g56 5G",
+    "hardware": "mt6855",
+    "plataforma": "mt6855",
+    "build_id": "W1VOS36.88-71-6-2-1-4",
+    "ambiente": "Proot (Termux/Ubuntu)"
+  },
+  "kernel": {
+    "uname": "Linux localhost 6.17.0-PRoot-Distro #1 SMP PREEMPT_DYNAMIC Fri, 10 Oct 2025 00:00:00 +0000 aarch64",
+    "proc_version": "Linux version 6.17.0-PRoot-Distro (proot@termux) (gcc (GCC) 13.3.0, GNU ld (GNU Binutils) 2.42) #1 SMP PREEMPT_DYNAMIC Fri, 10 Oct 2025 00:00:00 +0000"
+  },
+  "cpu": {
+    "modelo": "desconhecido",
+    "arquitetura": "aarch64",
+    "nucleos_logicos": 8,
+    "nucleos_fisicos": 8,
+    "aceleradores": "nenhum (CPU-only)"
+  },
+  "aceleracao": {
+    "cuda_disponivel": false,
+    "torch_cuda": false,
+    "mps_disponivel": false,
+    "gpu": [],
+    "observacao": "Nenhuma GPU exposta ao Proot do Termux; todo o treino é CPU-only."
+  },
+  "memoria": {
+    "ram_total_mb": 7603.7,
+    "ram_disponivel_mb": 1600.5,
+    "ram_usada_percent": 79.0,
+    "rss_mb": 221.4,
+    "swap_total_mb": 5702.7,
+    "swap_usada_mb": 4391.4,
+    "limite_cgroup_mb": null,
+    "uso_cgroup_mb": null,
+    "fonte": "/proc/meminfo",
+    "timestamp": 1794514790.5000083
+  },
+  "disco": {
+    "caminho": "/root/apolo-zenith-1.9",
+    "total_mb": 234222.0,
+    "livre_mb": 105509.6,
+    "usado_mb": 128188.0,
+    "uso_percent": 54.7,
+    "timestamp": 1794514790.503174
+  },
+  "termico": {
+    "fonte": "indisponivel",
+    "disponivel": false,
+    "temperatura_c": null,
+    "detalhe": "Nenhuma fonte térmica acessível neste ambiente (sem /sys/class/thermal, sem dumpsys, sem Termux API). Modo preventivo ativo; a carga de CPU é usada apenas como proxy.",
+    "modo_preventivo": true,
+    "zonas_thermal_acessiveis": false,
+    "dumpsys_disponivel": false,
+    "termux_api_disponivel": false
+  },
+  "cgroup": {
+    "cgroup": "4:memory:/apps/uid_10468\n3:cpuset:/top-app\n2:cpu:/top-app\n1:blkio:/top-app\n0::/apps/uid_10468/pid_3276",
+    "limites_visiveis": {
+      "memory_max": null,
+      "memory_current": null,
+      "cpu_max": null
+    }
+  },
+  "bibliotecas_multimodais": {
+    "torch": {
+      "disponivel": true,
+      "versao": "2.15.0+cpu"
+    },
+    "numpy": {
+      "disponivel": true,
+      "versao": "2.5.4"
+    },
+    "yaml": {
+      "disponivel": true,
+      "versao": "6.0.3"
+    },
+    "PIL": {
+      "disponivel": true,
+      "versao": "13.0.0"
+    },
+    "cv2": {
+      "disponivel": true,
+      "versao": "5.0.0"
+    },
+    "soundfile": {
+      "disponivel": true,
+      "versao": "0.14.0"
+    },
+    "librosa": {
+      "disponivel": true,
+      "versao": "1.0.0"
+    },
+    "av": {
+      "disponivel": true,
+      "versao": "19.0.2"
+    },
+    "scipy": {
+      "disponivel": true,
+      "versao": "1.18.1"
+    },
+    "huggingface_hub": {
+      "disponivel": true,
+      "versao": "2.4.0"
+    },
+    "datasets": {
+      "disponivel": true,
+      "versao": "5.2.0"
+    },
+    "ffmpeg_binario": {
+      "disponivel": false,
+      "versao": null
+    }
+  },
+  "limites_configurados": {
+    "termicos": {
+      "temperatura_maxima_c": 42.0,
+      "temperatura_resume_c": 37.0,
+      "temperatura_aviso_c": 39.0,
+      "zona_preferida": null,
+      "usar_modo_preventivo": true,
+      "pausa_preventiva_min": 5.0,
+      "ciclo_trabalho_min": 30.0,
+      "intervalo_leitura_s": 30.0,
+      "carga_cpu_proxy_limite": 0.92
+    },
+    "memoria": {
+      "ram_max_utilizacao_percent": 80.0,
+      "ram_minima_disponivel_mb": 512,
+      "rss_max_mb": 2048,
+      "margem_livre_mb": 256,
+      "gc_interval_steps": 50,
+      "liberar_entre_blocos": true
+    },
+    "armazenamento": {
+      "espaco_minimo_livre_mb": 2048,
+      "cache_max_mb": 256,
+      "temporarios_max_mb": 512,
+      "checkpoints_max_mb": 3072,
+      "download_max_por_passo_mb": 64,
+      "reservar_para_sistema_mb": 1024,
+      "diretorio_temporario": "datasets_storage/tmp",
+      "manter_checkpoints": 3
+    },
+    "batch": {
+      "batch_minimo": 1,
+      "batch_maximo": 4,
+      "batch_inicial": 1,
+      "seq_len_minima": 32,
+      "seq_len_maxima": 64,
+      "seq_len_inicial": 64,
+      "grad_accum_steps": 4,
+      "num_workers": 0,
+      "pin_memory": false,
+      "permitir_aumento_automatico": true
+    },
+    "monitoramento": {
+      "intervalo_monitoramento_s": 15.0,
+      "intervalo_checkpoint_steps": 100,
+      "checkpoint_por_bloco": true,
+      "intervalo_pausa_verificacao_s": 60.0,
+      "max_tentativas_oom": 3,
+      "cooldown_apos_oom_steps": 20
+    },
+    "prioridades": {
+      "ordem": {
+        "linguagem": 1,
+        "codigo": 2,
+        "visao": 3,
+        "audio": 4,
+        "video": 5,
+        "multimodal": 6
+      },
+      "permitir_pausa_para_trocar": true
+    },
+    "diretorio_lock": "logs/apolo_training.lock",
+    "arquivo_estado": "training_state.json",
+    "log_hardware": "logs/hardware.log",
+    "log_eventos": "logs/resource_events.jsonl",
+    "ativa": true
+  },
+  "teste_capacidade": {
+    "modelo_parametros": 98624,
+    "batch": 1,
+    "sequencia": 32,
+    "passos_medidos": 10,
+    "segundos_por_passo": 0.0866,
+    "tokens_por_segundo": 369.7,
+    "rss_antes_mb": 251.8,
+    "rss_depois_mb": 266.4,
+    "rss_delta_mb": 14.5,
+    "torch_threads": 4
+  }
+}

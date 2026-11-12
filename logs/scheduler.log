@@ -1,0 +1,132 @@
+
+
+===== treino_texto (2026-11-12 16:13:21) =====
+[dados] treino=199371 sequências (12,759,787 tokens) | validação=1661 sequências (106,316 tokens)
+[modelo] parâmetros=1,901,696
+  passo     1/700 | perda 9.0358 | lr 6.67e-05 | 235 tok/s | elapsed 1s
+  passo    20/700 | perda 8.7769 | lr 1.95e-04 | 371 tok/s | elapsed 14s
+  passo    40/700 | perda 8.3984 | lr 3.30e-04 | 400 tok/s | elapsed 26s
+  [validação] passo 50 | perda 8.0398 | ppl 3101.88
+  passo    60/700 | perda 7.9543 | lr 4.65e-04 | 292 tok/s | elapsed 53s
+  passo    80/700 | perda 7.3288 | lr 6.00e-04 | 278 tok/s | elapsed 74s
+  passo   100/700 | perda 7.4054 | lr 5.99e-04 | 268 tok/s | elapsed 95s
+  [validação] passo 100 | perda 7.2346 | ppl 1386.53
+  passo   120/700 | perda 6.9819 | lr 5.94e-04 | 275 tok/s | elapsed 112s
+  passo   140/700 | perda 7.2836 | lr 5.88e-04 | 295 tok/s | elapsed 121s
+  [validação] passo 150 | perda 7.0894 | ppl 1199.20
+  passo   160/700 | perda 7.4199 | lr 5.78e-04 | 284 tok/s | elapsed 144s
+  passo   180/700 | perda 7.3185 | lr 5.66e-04 | 297 tok/s | elapsed 155s
+  passo   200/700 | perda 7.1512 | lr 5.52e-04 | 302 tok/s | elapsed 170s
+  [validação] passo 200 | perda 7.0043 | ppl 1101.39
+  passo   220/700 | perda 7.3646 | lr 5.35e-04 | 282 tok/s | elapsed 200s
+  passo   240/700 | perda 6.9557 | lr 5.16e-04 | 286 tok/s | elapsed 215s
+  [validação] passo 250 | perda 6.9132 | ppl 1005.50
+  passo   260/700 | perda 7.0113 | lr 4.95e-04 | 281 tok/s | elapsed 236s
+  passo   280/700 | perda 6.7729 | lr 4.73e-04 | 288 tok/s | elapsed 249s
+  passo   300/700 | perda 7.4487 | lr 4.49e-04 | 293 tok/s | elapsed 262s
+  [validação] passo 300 | perda 6.8415 | ppl 935.90
+  passo   320/700 | perda 7.2624 | lr 4.24e-04 | 294 tok/s | elapsed 279s
+
+
+===== relatorio_hardware (2026-11-12 16:19:37) =====
+[hardware] relatório gravado em /root/apolo-zenith-1.9/hardware_report.json
+  android=16 | cpu=8 threads | ram livre=1600 MB | disco livre=103.0 GB | cuda=False | termico=indisponivel
+  teste: 370 tok/s | 87 ms/passo | RSS +14 MB
+
+
+===== download_datasets (2026-11-12 16:19:58) =====
+
+=== flickr8k_test (images) ===
+  -> status=concluido amostras=4000 bytes=550927947
+
+=== librispeech_dev_clean (audio) ===
+[2026-11-12 16:22:04] [ok] dev-clean.tar.gz | 322.3 MB | sha256=76f87d090650617f… | 117.5s
+  -> status=concluido amostras=2703 bytes=337926286
+
+=== codigo_github_permissivo (code) ===
+  sem preparador para a modalidade 'code'
+
+=== wikimedia_videos (video) ===
+  -> status=concluido amostras=31 bytes=42220636
+
+[manifesto] resumo:
+{
+  "total_datasets": 5,
+  "bytes_baixado": 1086936004,
+  "bytes_em_disco": 1948078249,
+  "amostras": {
+    "flickr8k_test": 4000,
+    "librispeech_dev_clean": 2703,
+    "wikimedia_videos": 31,
+    "codigo_github_permissivo": 794,
+    "gutenberg_pt_en": 206816
+  },
+  "por_modalidade": {
+    "images": {
+      "datasets": 1,
+      "bytes_baixado": 550927947,
+      "bytes_em_disco": 550927947,
+      "amostras": 4000
+    },
+    "audio": {
+      "datasets": 1,
+      "bytes_baixado": 337926286,
+      "bytes_em_disco": 698216191,
+      "amostras": 2703
+    },
+    "video": {
+      "datasets": 1,
+      "bytes_baixado": 42220636,
+      "bytes_em_disco": 473365468,
+      "amostras": 31
+    },
+    "code": {
+      "datasets": 1,
+      "bytes_baixado": 7199285,
+      "bytes_em_disco": 7199285,
+      "amostras": 794
+    },
+    "text": {
+      "datasets": 1,
+      "bytes_baixado": 148661850,
+      "bytes_em_disco": 218369358,
+      "amostras": 206816
+    }
+  }
+}
+
+
+===== preparacao_multimodal (2026-11-12 16:22:22) =====
+
+=== preparando code ===
+[code] tokenizando o corpus de código ...
+[code] {"tokens": 2331286, "caminho": "datasets/code/processed/train.bin"}
+[code] linguagens: {'python': 144, 'c': 128, 'javascript': 85, 'java': 80, 'rust': 80, 'go': 76, 'cpp': 67, 'typescript': 45, 'kotlin': 40, 'sql': 30, 'haskell': 29, 'css': 26, 'shell': 6}
+
+=== preparando images ===
+[images] 1000 imagens com legendas -> datasets/images/processed/legendas.jsonl
+
+=== preparando audio ===
+[audio] 2703 falas indexadas -> datasets/audio/processed/transcricoes.jsonl
+
+=== preparando video ===
+[video] extraindo frames ...
+[video] 31 vídeos -> 248 frames (44.7s)
+
+[preparação] resumo gravado em /root/apolo-zenith-1.9/datasets/manifests/preparacao.json
+
+
+===== testes_de_memoria (2026-11-12 16:24:05) =====
+........................................................................ [ 50%]
+........................................................................ [100%]
+=============================== warnings summary ===============================
+tests/test_mobile.py::test_quantizacao_int8_ou_fallback_transparente
+  /usr/local/lib/python3.12/dist-packages/torch/ao/nn/quantized/modules/utils.py:72: UserWarning: torch.quantize_per_tensor, torch.quantize_per_channel and other quantized tensor creation functions that produce tensors with dtype torch.quint8, torch.qint8, and torch.qint32 are deprecated and will be removed in a future PyTorch release. Please see https://github.com/pytorch/pytorch/issues/184982 for more information. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/quantized/Quantizer.cpp:111.)
+    qweight = torch.quantize_per_tensor(
+
+tests/test_modulos_status.py::test_audio_encoder_audio_funciona
+tests/test_multimodal.py::test_encoder_audio_saida_e_parametros
+  /root/apolo-zenith-1.9/audio/encoder.py:105: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.transformer = nn.TransformerEncoder(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

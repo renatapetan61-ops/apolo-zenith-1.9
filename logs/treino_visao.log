@@ -1,0 +1,197 @@
+  [visao] passo    1/1000 | perda 3.6788 | lr 3.00e-05 | 2s
+  [visao] passo   10/1000 | perda 3.6363 | lr 1.65e-04 | 15s
+  [visao] passo   20/1000 | perda 3.5895 | lr 3.00e-04 | 41s
+  [visao] passo   30/1000 | perda 3.8351 | lr 2.99e-04 | 72s
+  [visao] passo   40/1000 | perda 2.9333 | lr 2.99e-04 | 105s
+  [visao] passo   50/1000 | perda 2.7998 | lr 2.98e-04 | 143s
+  [visao] passo   60/1000 | perda 2.8437 | lr 2.97e-04 | 192s
+  [visao] passo   70/1000 | perda 2.9687 | lr 2.96e-04 | 221s
+  [visao] passo   80/1000 | perda 3.4449 | lr 2.95e-04 | 251s
+  [visao] passo   90/1000 | perda 3.2564 | lr 2.94e-04 | 283s
+  [visao] passo  100/1000 | perda 2.8144 | lr 2.93e-04 | 318s
+  [visao][validação] {'recuperacao_para_texto': 0.0167, 'recuperacao_para_imagem': 0.0133, 'r1': 0.015, 'mrr': 0.0629, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  110/1000 | perda 2.9284 | lr 2.91e-04 | 485s
+  [visao] passo  120/1000 | perda 2.9545 | lr 2.89e-04 | 530s
+  [visao] passo  130/1000 | perda 2.8564 | lr 2.88e-04 | 565s
+  [visao] passo  140/1000 | perda 3.4187 | lr 2.86e-04 | 602s
+  [visao] passo  150/1000 | perda 3.0933 | lr 2.84e-04 | 659s
+  [visao] passo  160/1000 | perda 3.2787 | lr 2.81e-04 | 720s
+  [visao] passo  170/1000 | perda 3.0400 | lr 2.79e-04 | 774s
+  [visao] passo  180/1000 | perda 2.8040 | lr 2.77e-04 | 838s
+  [visao] passo  190/1000 | perda 2.7512 | lr 2.74e-04 | 878s
+  [visao] passo  200/1000 | perda 3.1134 | lr 2.71e-04 | 920s
+  [visao][validação] {'recuperacao_para_texto': 0.0333, 'recuperacao_para_imagem': 0.0133, 'r1': 0.0233, 'mrr': 0.0837, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  210/1000 | perda 3.2886 | lr 2.69e-04 | 1089s
+  [visao] passo  220/1000 | perda 2.8444 | lr 2.66e-04 | 1130s
+  [visao] passo  230/1000 | perda 3.1391 | lr 2.63e-04 | 1169s
+  [visao] passo  240/1000 | perda 2.8451 | lr 2.59e-04 | 1205s
+  [visao] passo  250/1000 | perda 2.8168 | lr 2.56e-04 | 1239s
+  [visao] passo  260/1000 | perda 2.9001 | lr 2.53e-04 | 1273s
+  [visao] passo  270/1000 | perda 2.6142 | lr 2.49e-04 | 1300s
+  [visao] passo  280/1000 | perda 2.7836 | lr 2.46e-04 | 1333s
+  [visao] passo  290/1000 | perda 3.3301 | lr 2.42e-04 | 1372s
+  [visao] passo  300/1000 | perda 3.0575 | lr 2.38e-04 | 1415s
+  [visao][validação] {'recuperacao_para_texto': 0.02, 'recuperacao_para_imagem': 0.0133, 'r1': 0.0167, 'mrr': 0.0751, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  310/1000 | perda 2.6988 | lr 2.34e-04 | 1594s
+  [visao] passo  320/1000 | perda 2.6442 | lr 2.30e-04 | 1632s
+  [visao] passo  330/1000 | perda 2.7893 | lr 2.26e-04 | 1660s
+  [visao] passo  340/1000 | perda 2.9368 | lr 2.22e-04 | 1691s
+  [visao] passo  350/1000 | perda 2.8513 | lr 2.18e-04 | 1716s
+  [visao] passo  360/1000 | perda 2.8770 | lr 2.14e-04 | 1745s
+  [visao] passo  370/1000 | perda 2.6752 | lr 2.10e-04 | 1774s
+  [visao] passo  380/1000 | perda 2.7978 | lr 2.05e-04 | 1799s
+  [visao] passo  390/1000 | perda 3.4163 | lr 2.01e-04 | 1823s
+  [visao] passo  400/1000 | perda 2.7371 | lr 1.96e-04 | 1847s
+  [visao][validação] {'recuperacao_para_texto': 0.02, 'recuperacao_para_imagem': 0.0067, 'r1': 0.0133, 'mrr': 0.0751, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  410/1000 | perda 3.1334 | lr 1.92e-04 | 1970s
+  [visao] passo  420/1000 | perda 2.8379 | lr 1.87e-04 | 1992s
+  [visao] passo  430/1000 | perda 2.7695 | lr 1.83e-04 | 2013s
+  [visao] passo  440/1000 | perda 3.0155 | lr 1.78e-04 | 2036s
+  [visao] passo  450/1000 | perda 3.0297 | lr 1.73e-04 | 2062s
+  [visao] passo  460/1000 | perda 3.0372 | lr 1.69e-04 | 2094s
+  [visao] passo  470/1000 | perda 2.8497 | lr 1.64e-04 | 2127s
+  [visao] passo  480/1000 | perda 2.9314 | lr 1.59e-04 | 2153s
+  [visao] passo  490/1000 | perda 3.1409 | lr 1.55e-04 | 2181s
+  [visao] passo  500/1000 | perda 2.8347 | lr 1.50e-04 | 2210s
+  [visao][validação] {'recuperacao_para_texto': 0.0167, 'recuperacao_para_imagem': 0.02, 'r1': 0.0183, 'mrr': 0.0768, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  510/1000 | perda 2.5625 | lr 1.45e-04 | 2334s
+  [visao] passo  520/1000 | perda 2.5117 | lr 1.41e-04 | 2355s
+  [visao] passo  530/1000 | perda 2.7214 | lr 1.36e-04 | 2377s
+  [visao] passo  540/1000 | perda 3.0575 | lr 1.31e-04 | 2399s
+  [visao] passo  550/1000 | perda 2.9049 | lr 1.27e-04 | 2423s
+  [visao] passo  560/1000 | perda 2.7411 | lr 1.22e-04 | 2436s
+  [visao] passo  570/1000 | perda 2.7283 | lr 1.17e-04 | 2445s
+  [visao] passo  580/1000 | perda 2.9130 | lr 1.13e-04 | 2454s
+  [visao] passo  590/1000 | perda 2.6043 | lr 1.08e-04 | 2464s
+  [visao] passo  600/1000 | perda 3.0931 | lr 1.04e-04 | 2474s
+  [visao][validação] {'recuperacao_para_texto': 0.02, 'recuperacao_para_imagem': 0.0133, 'r1': 0.0167, 'mrr': 0.0796, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  610/1000 | perda 3.0360 | lr 9.92e-05 | 2520s
+  [visao] passo  620/1000 | perda 2.6853 | lr 9.48e-05 | 2529s
+  [visao] passo  630/1000 | perda 2.6753 | lr 9.04e-05 | 2538s
+  [visao] passo  640/1000 | perda 3.0072 | lr 8.61e-05 | 2547s
+  [visao] passo  650/1000 | perda 2.5498 | lr 8.19e-05 | 2556s
+  [visao] passo  660/1000 | perda 2.9199 | lr 7.77e-05 | 2565s
+  [visao] passo  670/1000 | perda 2.6327 | lr 7.36e-05 | 2574s
+  [visao] passo  680/1000 | perda 2.8843 | lr 6.96e-05 | 2583s
+  [visao] passo  690/1000 | perda 2.9275 | lr 6.57e-05 | 2593s
+  [visao] passo  700/1000 | perda 2.9938 | lr 6.18e-05 | 2603s
+  [visao][validação] {'recuperacao_para_texto': 0.0267, 'recuperacao_para_imagem': 0.01, 'r1': 0.0183, 'mrr': 0.088, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  710/1000 | perda 2.3718 | lr 5.81e-05 | 2653s
+  [visao] passo  720/1000 | perda 2.7346 | lr 5.44e-05 | 2662s
+  [visao] passo  730/1000 | perda 2.7642 | lr 5.08e-05 | 2672s
+  [visao] passo  740/1000 | perda 2.8356 | lr 4.73e-05 | 2682s
+  [visao] passo  750/1000 | perda 2.8230 | lr 4.39e-05 | 2690s
+  [visao] passo  760/1000 | perda 2.6176 | lr 4.07e-05 | 2698s
+  [visao] passo  770/1000 | perda 2.6133 | lr 3.75e-05 | 2706s
+  [visao] passo  780/1000 | perda 2.9489 | lr 3.44e-05 | 2714s
+  [visao] passo  790/1000 | perda 2.7317 | lr 3.15e-05 | 2722s
+  [visao] passo  800/1000 | perda 2.9051 | lr 2.86e-05 | 2732s
+  [visao][validação] {'recuperacao_para_texto': 0.0233, 'recuperacao_para_imagem': 0.0067, 'r1': 0.015, 'mrr': 0.0851, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  810/1000 | perda 2.6785 | lr 2.59e-05 | 2780s
+  [visao] passo  820/1000 | perda 2.7453 | lr 2.34e-05 | 2791s
+  [visao] passo  830/1000 | perda 2.6575 | lr 2.09e-05 | 2801s
+  [visao] passo  840/1000 | perda 2.7934 | lr 1.86e-05 | 2811s
+  [visao] passo  850/1000 | perda 2.7924 | lr 1.63e-05 | 2821s
+  [visao] passo  860/1000 | perda 2.9324 | lr 1.43e-05 | 2832s
+  [visao] passo  870/1000 | perda 2.8701 | lr 1.23e-05 | 2842s
+  [visao] passo  880/1000 | perda 2.8757 | lr 1.05e-05 | 2852s
+  [visao] passo  890/1000 | perda 3.1046 | lr 8.87e-06 | 2861s
+  [visao] passo  900/1000 | perda 2.7205 | lr 7.34e-06 | 2871s
+  [visao][validação] {'recuperacao_para_texto': 0.0267, 'recuperacao_para_imagem': 0.0133, 'r1': 0.02, 'mrr': 0.0862, 'chance': 0.0033, 'amostras': 300}
+  [visao] passo  910/1000 | perda 2.6910 | lr 5.96e-06 | 2914s
+  [visao] passo  920/1000 | perda 2.9361 | lr 4.71e-06 | 2925s
+  [visao] passo  930/1000 | perda 2.7886 | lr 3.61e-06 | 2935s
+  [visao] passo  940/1000 | perda 2.7163 | lr 2.66e-06 | 2945s
+  [visao] passo  950/1000 | perda 2.7869 | lr 1.85e-06 | 2954s
+  [visao] passo  960/1000 | perda 2.6325 | lr 1.18e-06 | 2965s
+  [visao] passo  970/1000 | perda 2.6691 | lr 6.66e-07 | 2975s
+  [visao] passo  980/1000 | perda 3.2015 | lr 2.96e-07 | 2984s
+  [visao] passo  990/1000 | perda 2.8465 | lr 7.40e-08 | 2994s
+  [visao] passo 1000/1000 | perda 2.5632 | lr 0.00e+00 | 3004s
+  [visao][validação] {'recuperacao_para_texto': 0.0267, 'recuperacao_para_imagem': 0.01, 'r1': 0.0183, 'mrr': 0.0862, 'chance': 0.0033, 'amostras': 300}
+{
+  "modalidade": "images",
+  "passos": 1000,
+  "tempo_s": 3043.8,
+  "parametros_encoder": 529024,
+  "melhor_validacao": {
+    "recuperacao_para_texto": 0.0333,
+    "recuperacao_para_imagem": 0.0133,
+    "r1": 0.0233,
+    "mrr": 0.0837,
+    "chance": 0.0033,
+    "amostras": 300
+  },
+  "historico": [
+    {
+      "passo": 910,
+      "perda": 2.691,
+      "lr": 5.96e-06,
+      "temperatura": 0.07,
+      "elapsed_s": 2914.5
+    },
+    {
+      "passo": 920,
+      "perda": 2.9361,
+      "lr": 4.71e-06,
+      "temperatura": 0.07,
+      "elapsed_s": 2924.7
+    },
+    {
+      "passo": 930,
+      "perda": 2.7886,
+      "lr": 3.61e-06,
+      "temperatura": 0.07,
+      "elapsed_s": 2935.1
+    },
+    {
+      "passo": 940,
+      "perda": 2.7163,
+      "lr": 2.66e-06,
+      "temperatura": 0.07,
+      "elapsed_s": 2944.6
+    },
+    {
+      "passo": 950,
+      "perda": 2.7869,
+      "lr": 1.85e-06,
+      "temperatura": 0.07,
+      "elapsed_s": 2954.2
+    },
+    {
+      "passo": 960,
+      "perda": 2.6325,
+      "lr": 1.18e-06,
+      "temperatura": 0.07,
+      "elapsed_s": 2964.8
+    },
+    {
+      "passo": 970,
+      "perda": 2.6691,
+      "lr": 6.7e-07,
+      "temperatura": 0.07,
+      "elapsed_s": 2975.2
+    },
+    {
+      "passo": 980,
+      "perda": 3.2015,
+      "lr": 3e-07,
+      "temperatura": 0.07,
+      "elapsed_s": 2984.4
+    },
+    {
+      "passo": 990,
+      "perda": 2.8465,
+      "lr": 7e-08,
+      "temperatura": 0.07,
+      "elapsed_s": 2994.4
+    },
+    {
+      "passo": 1000,
+      "perda": 2.5632,
+      "lr": 0.0,
+      "temperatura": 0.07,
+      "elapsed_s": 3004.2
+    }
+  ]
+}

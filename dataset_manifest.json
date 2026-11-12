@@ -1,0 +1,878 @@
+{
+  "projeto": "Apolo Zenith 1.9",
+  "atualizado_em": 1794515531.2076283,
+  "total_datasets": 5,
+  "total_bytes_baixado": 1086936004,
+  "total_bytes_em_disco": 1948078249,
+  "por_modalidade": {
+    "images": {
+      "datasets": 1,
+      "bytes_baixado": 550927947,
+      "bytes_em_disco": 550927947,
+      "amostras": 4000
+    },
+    "audio": {
+      "datasets": 1,
+      "bytes_baixado": 337926286,
+      "bytes_em_disco": 698216191,
+      "amostras": 2703
+    },
+    "video": {
+      "datasets": 1,
+      "bytes_baixado": 42220636,
+      "bytes_em_disco": 473365468,
+      "amostras": 31
+    },
+    "code": {
+      "datasets": 1,
+      "bytes_baixado": 7199285,
+      "bytes_em_disco": 7199285,
+      "amostras": 794
+    },
+    "text": {
+      "datasets": 1,
+      "bytes_baixado": 148661850,
+      "bytes_em_disco": 218369358,
+      "amostras": 206816
+    }
+  },
+  "datasets": [
+    {
+      "nome": "flickr8k_test",
+      "modalidade": "images",
+      "origem": "Hugging Face Hub (jxie/flickr8k) — split de teste",
+      "url_oficial": "https://huggingface.co/datasets/jxie/flickr8k",
+      "licenca": "CC BY 2.0 (imagens do Flickr8k) / licença do dataset no Hub",
+      "formato": "Parquet (colunas: image, caption_0..caption_4)",
+      "tamanho_bytes": 550927947,
+      "tamanho_em_disco_bytes": 550927947,
+      "amostras": 4000,
+      "status_download": "concluido",
+      "sha256": null,
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado",
+      "arquivos": [
+        {
+          "url": "https://huggingface.co/datasets/jxie/flickr8k/resolve/main/data/test-00000-of-00001-42a2661d12c73e48.parquet",
+          "destino": "/root/apolo-zenith-1.9/datasets/images/raw/flickr8k/test.parquet",
+          "bytes": 136773352,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://huggingface.co/datasets/jxie/flickr8k/resolve/main/data/train-00000-of-00002-2f8f6bfa852eac4b.parquet",
+          "destino": "/root/apolo-zenith-1.9/datasets/images/raw/flickr8k/train_0.parquet",
+          "bytes": 414154595,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        }
+      ],
+      "subfontes": [],
+      "observacoes": "1.000 imagens de teste com 5 legendas cada.",
+      "atualizado_em": 1794515531.2072597
+    },
+    {
+      "nome": "librispeech_dev_clean",
+      "modalidade": "audio",
+      "origem": "OpenSLR 12 (LibriSpeech ASR corpus) — split dev-clean",
+      "url_oficial": "https://www.openslr.org/12/",
+      "licenca": "CC BY 4.0 (LibriSpeech, funded por Mozilla/NSF)",
+      "formato": "Tar.gz com FLAC 16 kHz + transcrições .txt",
+      "tamanho_bytes": 337926286,
+      "tamanho_em_disco_bytes": 698216191,
+      "amostras": 2703,
+      "status_download": "concluido",
+      "sha256": "76f87d090650617fca0cac8f88b9416e0ebf80350acb97b343a85fa903728ab3",
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado",
+      "arquivos": [
+        {
+          "url": "https://www.openslr.org/resources/12/dev-clean.tar.gz",
+          "destino": "/root/apolo-zenith-1.9/datasets/audio/raw/librispeech/dev-clean.tar.gz",
+          "bytes": 337926286,
+          "sha256": "76f87d090650617fca0cac8f88b9416e0ebf80350acb97b343a85fa903728ab3",
+          "ok": true,
+          "motivo": "",
+          "reaproveitado": false,
+          "duracao_s": 117.46
+        }
+      ],
+      "subfontes": [],
+      "observacoes": "2703 arquivos FLAC e 97 transcrições em disco.",
+      "atualizado_em": 1794514995.316377
+    },
+    {
+      "nome": "wikimedia_videos",
+      "modalidade": "video",
+      "origem": "Wikimedia Commons — arquivos de vídeo com licença livre",
+      "url_oficial": "https://commons.wikimedia.org/wiki/Category:Videos",
+      "licenca": "CC BY-SA / CC BY / CC0 / domínio público (por arquivo, via API)",
+      "formato": "WebM/Ogg (decodificado com PyAV)",
+      "tamanho_bytes": 42220636,
+      "tamanho_em_disco_bytes": 473365468,
+      "amostras": 31,
+      "status_download": "concluido",
+      "sha256": null,
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado",
+      "arquivos": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Billar_Franc%C3%A9s.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Billar_Francés.webm",
+          "bytes": 157269,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/1E1R_%282%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/1E1R_(2).webm",
+          "bytes": 169570,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Bevolking_2_provincie.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Bevolking_2_provincie.webm",
+          "bytes": 244479,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Bevolking_1_provincie.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Bevolking_1_provincie.webm",
+          "bytes": 244571,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Animaci%C3%B3n_de_un_Abridor_de_botellas_o_abrebotellas.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Animación_de_un_Abridor_de_botellas_o_abrebotellas.webm",
+          "bytes": 346447,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Bevolking_1_gemeente.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Bevolking_1_gemeente.webm",
+          "bytes": 352587,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Bevolking_2_gemeente.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Bevolking_2_gemeente.webm",
+          "bytes": 387356,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Bajar_fader.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Bajar_fader.webm",
+          "bytes": 520542,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/1Editor1Reference_-_Tutorial.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/1Editor1Reference_-_Tutorial.webm",
+          "bytes": 688826,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Abrazo_%28Lengua_de_se%C3%B1as_mexicana%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Abrazo_(Lengua_de_señas_mexicana).webm",
+          "bytes": 834467,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Akhfennir_beach_VID.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Akhfennir_beach_VID.webm",
+          "bytes": 1022762,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Abertas_inscri%C3%A7%C3%B5es_para_pr%C3%AAmio_que_incentiva_projetos_ligados_a_arte_nas_ruas.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Abertas_inscrições_para_prêmio_que_incentiva_projetos_ligados_a_arte_nas_ruas.webm",
+          "bytes": 1228846,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/83/Antigua_catedral_de_C%C3%A1diz_-_Fase_4.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Antigua_catedral_de_Cádiz_-_Fase_4.webm",
+          "bytes": 1281311,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/95/Bandeira_cabo_verde.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Bandeira_cabo_verde.webm",
+          "bytes": 1301854,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Akhfennir_beach_2.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Akhfennir_beach_2.webm",
+          "bytes": 1397133,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/A_visitar_ilha_de_santiago_cabo_verde.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/A_visitar_ilha_de_santiago_cabo_verde.webm",
+          "bytes": 1405294,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Animaci%C3%B3n_plano_de_una_casa.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Animación_plano_de_una_casa.webm",
+          "bytes": 2258777,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/177_day_spin_up_zonal_velocity.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/177_day_spin_up_zonal_velocity.webm",
+          "bytes": 2349022,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/An_old_clip_of_the_Bedouins_from_the_Balushi_tribe_in_Makran..webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/An_old_clip_of_the_Bedouins_from_the_Balushi_tribe_in_Makran..webm",
+          "bytes": 2552918,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/AI_face_Impersonation.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/AI_face_Impersonation.webm",
+          "bytes": 2670178,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Adinkra_Nkyea_A-Y_Twi_Kasa_%28Akan_Nkyea%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Adinkra_Nkyea_A-Y_Twi_Kasa_(Akan_Nkyea).webm",
+          "bytes": 3387024,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Black_Reveal_2_--FREE_FOOTAGE--.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Black_Reveal_2_--FREE_FOOTAGE--.webm",
+          "bytes": 3636812,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/2018%E5%B9%B412%E6%9C%8827%E6%97%A5_%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A15%E5%BC%8F%E8%BD%BB%E5%9E%8B%E5%9D%A6%E5%85%8B%E5%B7%B2%E5%88%97%E8%A3%85%E9%83%A8%E9%98%9F.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/2018年12月27日_国防部：15式轻型坦克已列装部队.webm",
+          "bytes": 4282583,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Antigua_catedral_de_C%C3%A1diz_-_Fase_2.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Antigua_catedral_de_Cádiz_-_Fase_2.webm",
+          "bytes": 4531151,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        },
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Awawawa.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "destino": "/root/apolo-zenith-1.9/datasets/video/raw/Awawawa.webm",
+          "bytes": 4968857,
+          "sha256": null,
+          "ok": true,
+          "motivo": "reaproveitado (existe)",
+          "reaproveitado": true,
+          "duracao_s": 0.0
+        }
+      ],
+      "subfontes": [
+        {
+          "titulo": "File:Billar Francés.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Billar_Franc%C3%A9s.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY 4.0",
+          "autor": "<p><a href=\"//commons.wikimedia.org/w/index.php?title=User:Natalia_Cabez%C3%B3n_Gonz%C3%A1lez&amp;action=edit&amp;redlin",
+          "mime": "video/webm",
+          "bytes": 157269
+        },
+        {
+          "titulo": "File:1E1R (2).webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/1E1R_%282%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/wiki/User:Serine_Ben_Brahim\" title=\"User:Serine Ben Brahim\">Serine Ben Brahim</a>",
+          "mime": "video/webm",
+          "bytes": 169570
+        },
+        {
+          "titulo": "File:Bevolking 2 provincie.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Bevolking_2_provincie.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/wiki/User_talk:PL.in.NL\" title=\"User talk:PL.in.NL\">PL.in.NL</a>",
+          "mime": "video/webm",
+          "bytes": 244479
+        },
+        {
+          "titulo": "File:Bevolking 1 provincie.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Bevolking_1_provincie.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/wiki/User_talk:PL.in.NL\" title=\"User talk:PL.in.NL\">PL.in.NL</a>",
+          "mime": "video/webm",
+          "bytes": 244571
+        },
+        {
+          "titulo": "File:Animación de un Abridor de botellas o abrebotellas.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Animaci%C3%B3n_de_un_Abridor_de_botellas_o_abrebotellas.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 3.0",
+          "autor": "<p><a href=\"//commons.wikimedia.org/w/index.php?title=User:Jxxro&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:",
+          "mime": "video/webm",
+          "bytes": 346447
+        },
+        {
+          "titulo": "File:Bevolking 1 gemeente.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Bevolking_1_gemeente.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/wiki/User_talk:PL.in.NL\" title=\"User talk:PL.in.NL\">PL.in.NL</a>",
+          "mime": "video/webm",
+          "bytes": 352587
+        },
+        {
+          "titulo": "File:Bevolking 2 gemeente.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Bevolking_2_gemeente.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/wiki/User_talk:PL.in.NL\" title=\"User talk:PL.in.NL\">PL.in.NL</a>",
+          "mime": "video/webm",
+          "bytes": 387356
+        },
+        {
+          "titulo": "File:Bajar fader.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Bajar_fader.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:ElaGomez&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:",
+          "mime": "video/webm",
+          "bytes": 520542
+        },
+        {
+          "titulo": "File:1Editor1Reference - Tutorial.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/1Editor1Reference_-_Tutorial.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/wiki/User:Serine_(WMUAE)\" title=\"User:Serine (WMUAE)\">Serine (WMUAE)</a>",
+          "mime": "video/webm",
+          "bytes": 688826
+        },
+        {
+          "titulo": "File:Abrazo (Lengua de señas mexicana).webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Abrazo_%28Lengua_de_se%C3%B1as_mexicana%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "Wikisigns.org",
+          "mime": "video/webm",
+          "bytes": 834467
+        },
+        {
+          "titulo": "File:Akhfennir beach VID.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Akhfennir_beach_VID.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Carnegie6&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User",
+          "mime": "video/webm",
+          "bytes": 1022762
+        },
+        {
+          "titulo": "File:Abertas inscrições para prêmio que incentiva projetos ligados a arte nas ruas.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Abertas_inscri%C3%A7%C3%B5es_para_pr%C3%AAmio_que_incentiva_projetos_ligados_a_arte_nas_ruas.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY 3.0",
+          "autor": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCjaWLFTNqLkq3ZY2BJ4NYRg\">TV BrasilGov</a>",
+          "mime": "video/webm",
+          "bytes": 1228846
+        },
+        {
+          "titulo": "File:Antigua catedral de Cádiz - Fase 4.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/83/Antigua_catedral_de_C%C3%A1diz_-_Fase_4.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "José Luis Llovet Ramírez",
+          "mime": "video/webm",
+          "bytes": 1281311
+        },
+        {
+          "titulo": "File:Bandeira cabo verde.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/95/Bandeira_cabo_verde.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY 3.0",
+          "autor": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCs2uvz6J5tzyiJN0IA3CCXQ\">Vasco Marques</a",
+          "mime": "video/webm",
+          "bytes": 1301854
+        },
+        {
+          "titulo": "File:Akhfennir beach 2.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Akhfennir_beach_2.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Carnegie6&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User",
+          "mime": "video/webm",
+          "bytes": 1397133
+        },
+        {
+          "titulo": "File:A visitar ilha de santiago cabo verde.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/A_visitar_ilha_de_santiago_cabo_verde.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY 3.0",
+          "autor": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCs2uvz6J5tzyiJN0IA3CCXQ\">Vasco Marques</a",
+          "mime": "video/webm",
+          "bytes": 1405294
+        },
+        {
+          "titulo": "File:Animación plano de una casa.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Animaci%C3%B3n_plano_de_una_casa.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:JoseLuisLlovet&amp;action=edit&amp;redlink=1\" class=\"new\" title=",
+          "mime": "video/webm",
+          "bytes": 2258777
+        },
+        {
+          "titulo": "File:177 day spin up zonal velocity.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/177_day_spin_up_zonal_velocity.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:MarteVveld&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Use",
+          "mime": "video/webm",
+          "bytes": 2349022
+        },
+        {
+          "titulo": "File:An old clip of the Bedouins from the Balushi tribe in Makran..webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/An_old_clip_of_the_Bedouins_from_the_Balushi_tribe_in_Makran..webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Morkcke&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:M",
+          "mime": "video/webm",
+          "bytes": 2552918
+        },
+        {
+          "titulo": "File:AI face Impersonation.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/AI_face_Impersonation.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Msahique&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:",
+          "mime": "video/webm",
+          "bytes": 2670178
+        },
+        {
+          "titulo": "File:Adinkra Nkyea A-Y Twi Kasa (Akan Nkyea).webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Adinkra_Nkyea_A-Y_Twi_Kasa_%28Akan_Nkyea%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:AdinkraNkyea&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"U",
+          "mime": "video/webm",
+          "bytes": 3387024
+        },
+        {
+          "titulo": "File:Black Reveal 2 --FREE FOOTAGE--.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Black_Reveal_2_--FREE_FOOTAGE--.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY 3.0",
+          "autor": "<a rel=\"nofollow\" class=\"external text\" href=\"https://vimeo.com/vfxfootage\">VFX FOOTAGE</a>",
+          "mime": "video/webm",
+          "bytes": 3636812
+        },
+        {
+          "titulo": "File:2018年12月27日 国防部：15式轻型坦克已列装部队.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/2018%E5%B9%B412%E6%9C%8827%E6%97%A5_%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A15%E5%BC%8F%E8%BD%BB%E5%9E%8B%E5%9D%A6%E5%85%8B%E5%B7%B2%E5%88%97%E8%A3%85%E9%83%A8%E9%98%9F.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY 3.0",
+          "autor": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCpbfXQsYBJTwq5lCkwGIeuQ\">中国新闻网</a>",
+          "mime": "video/webm",
+          "bytes": 4282583
+        },
+        {
+          "titulo": "File:Antigua catedral de Cádiz - Fase 2.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Antigua_catedral_de_C%C3%A1diz_-_Fase_2.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "Eduardo Solorzano Villalobos",
+          "mime": "video/webm",
+          "bytes": 4531151
+        },
+        {
+          "titulo": "File:Awawawa.webm",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Awawawa.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "licenca": "CC BY-SA 4.0",
+          "autor": "mpfmax0",
+          "mime": "video/webm",
+          "bytes": 4968857
+        }
+      ],
+      "observacoes": "31 vídeos em disco nesta rodada; 25 baixados agora.",
+      "atualizado_em": 1794515040.0694664
+    },
+    {
+      "nome": "codigo_github_permissivo",
+      "modalidade": "code",
+      "origem": "Repositórios GitHub com licenças permissivas (verificadas via API)",
+      "url_oficial": "https://github.com/",
+      "licenca": "Por repositório (licença declarada pela API do GitHub quando disponível): Apache-2.0, BSD-3-Clause, CC0-1.0, GPL-2.0, GPL-3.0, MIT",
+      "formato": "arquivos de código-fonte (.py, .ts, .c, .cpp, .java, .rs, .go, ...)",
+      "tamanho_bytes": 7199285,
+      "tamanho_em_disco_bytes": 7199285,
+      "amostras": 794,
+      "status_download": "concluido",
+      "sha256": null,
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado",
+      "arquivos": [],
+      "subfontes": [
+        {
+          "repo": "pallets/flask",
+          "url": "https://github.com/pallets/flask",
+          "linguagem": "python",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 34,
+          "bytes": 362756
+        },
+        {
+          "repo": "psf/requests",
+          "url": "https://github.com/psf/requests",
+          "linguagem": "python",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 20,
+          "bytes": 216267
+        },
+        {
+          "repo": "expressjs/express",
+          "url": "https://github.com/expressjs/express",
+          "linguagem": "javascript",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 63260
+        },
+        {
+          "repo": "axios/axios",
+          "url": "https://github.com/axios/axios",
+          "linguagem": "javascript",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 115149
+        },
+        {
+          "repo": "microsoft/TypeScript",
+          "url": "https://github.com/microsoft/TypeScript",
+          "linguagem": "typescript",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 267259
+        },
+        {
+          "repo": "redis/redis",
+          "url": "https://github.com/redis/redis",
+          "linguagem": "c",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 959494
+        },
+        {
+          "repo": "sqlite/sqlite",
+          "url": "https://github.com/sqlite/sqlite",
+          "linguagem": "c",
+          "licenca": "CC0-1.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 1218880
+        },
+        {
+          "repo": "nlohmann/json",
+          "url": "https://github.com/nlohmann/json",
+          "linguagem": "cpp",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 33571
+        },
+        {
+          "repo": "google/protobuf",
+          "url": "https://github.com/google/protobuf",
+          "linguagem": "cpp",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 407834
+        },
+        {
+          "repo": "spring-projects/spring-boot",
+          "url": "https://github.com/spring-projects/spring-boot",
+          "linguagem": "java",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 231760
+        },
+        {
+          "repo": "serde-rs/serde",
+          "url": "https://github.com/serde-rs/serde",
+          "linguagem": "rust",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 678355
+        },
+        {
+          "repo": "rust-lang/cargo",
+          "url": "https://github.com/rust-lang/cargo",
+          "linguagem": "rust",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 213595
+        },
+        {
+          "repo": "gin-gonic/gin",
+          "url": "https://github.com/gin-gonic/gin",
+          "linguagem": "go",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 201721
+        },
+        {
+          "repo": "spf13/cobra",
+          "url": "https://github.com/spf13/cobra",
+          "linguagem": "go",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 36,
+          "bytes": 512600
+        },
+        {
+          "repo": "square/okhttp",
+          "url": "https://github.com/square/okhttp",
+          "linguagem": "kotlin",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 40,
+          "bytes": 170233
+        },
+        {
+          "repo": "django/django",
+          "url": "https://github.com/django/django",
+          "linguagem": "python",
+          "licenca": "BSD-3-Clause",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 122464
+        },
+        {
+          "repo": "square/retrofit",
+          "url": "https://github.com/square/retrofit",
+          "linguagem": "java",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 35,
+          "bytes": 122299
+        },
+        {
+          "repo": "necolas/normalize.css",
+          "url": "https://github.com/necolas/normalize.css",
+          "linguagem": "css",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "master",
+          "arquivos": 1,
+          "bytes": 6138
+        },
+        {
+          "repo": "twbs/bootstrap",
+          "url": "https://github.com/twbs/bootstrap",
+          "linguagem": "css",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "main",
+          "arquivos": 25,
+          "bytes": 15856
+        },
+        {
+          "repo": "apache/superset",
+          "url": "https://github.com/apache/superset",
+          "linguagem": "python",
+          "licenca": "Apache-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 45,
+          "bytes": 297665
+        },
+        {
+          "repo": "sql-js/sql.js",
+          "url": "https://github.com/sql-js/sql.js",
+          "linguagem": "sql",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "master",
+          "arquivos": 0,
+          "bytes": 0
+        },
+        {
+          "repo": "git/git",
+          "url": "https://github.com/git/git",
+          "linguagem": "c",
+          "licenca": "GPL-2.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 30,
+          "bytes": 513157
+        },
+        {
+          "repo": "nvm-sh/nvm",
+          "url": "https://github.com/nvm-sh/nvm",
+          "linguagem": "shell",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "tarball",
+          "branch": "master",
+          "arquivos": 6,
+          "bytes": 36059
+        },
+        {
+          "repo": "koalaman/shellcheck",
+          "url": "https://github.com/koalaman/shellcheck",
+          "linguagem": "haskell",
+          "licenca": "GPL-3.0",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 20,
+          "bytes": 428838
+        },
+        {
+          "repo": "sqlfluff/sqlfluff",
+          "url": "https://github.com/sqlfluff/sqlfluff",
+          "linguagem": "sql",
+          "licenca": "MIT",
+          "licenca_confirmada_api": false,
+          "modo": "reaproveitado",
+          "arquivos": 30,
+          "bytes": 4075
+        }
+      ],
+      "observacoes": "A licença real de cada repositório é lida da API do GitHub no momento do download e gravada no manifesto; extensões e limites por repositório evitam baixar árvores enormes.",
+      "atualizado_em": 1794514984.218981
+    },
+    {
+      "nome": "gutenberg_pt_en",
+      "modalidade": "text",
+      "origem": "Project Gutenberg (e-books em domínio público) + Wikisource PT",
+      "url_oficial": "https://www.gutenberg.org/ebooks/search/?sort_order=downloads",
+      "licenca": "Domínio público (Project Gutenberg) / CC BY-SA 3.0 (Wikisource)",
+      "formato": "texto puro (.txt) e XML compactado (.xml.bz2)",
+      "tamanho_bytes": 148661850,
+      "tamanho_em_disco_bytes": 218369358,
+      "amostras": 206816,
+      "status_download": "concluido",
+      "sha256": null,
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado",
+      "arquivos": [],
+      "subfontes": [],
+      "observacoes": "Já presente em datasets_storage/raw (157 MB) — será registrado no manifesto. SHA-256 por arquivo disponível em datasets_storage/manifest.json.",
+      "atualizado_em": 1794507990.1962361
+    }
+  ]
+}

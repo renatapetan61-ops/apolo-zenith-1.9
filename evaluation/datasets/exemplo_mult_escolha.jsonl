@@ -1,0 +1,8 @@
+{"task_id": "mc_01", "pergunta": "Qual é a capital do Brasil?", "opcoes": ["Rio de Janeiro", "Brasília", "São Paulo", "Salvador"], "resposta": "B"}
+{"task_id": "mc_02", "pergunta": "Quantos lados tem um hexágono?", "opcoes": ["5", "6", "7", "8"], "resposta": "B"}
+{"task_id": "mc_03", "pergunta": "Qual planeta é conhecido como Planeta Vermelho?", "opcoes": ["Vênus", "Marte", "Júpiter", "Mercúrio"], "resposta": "B"}
+{"task_id": "mc_04", "pergunta": "Qual é o maior oceano da Terra?", "opcoes": ["Atlântico", "Índico", "Ártico", "Pacífico"], "resposta": "D"}
+{"task_id": "mc_05", "pergunta": "Quem escreveu 'Dom Casmurro'?", "opcoes": ["Machado de Assis", "Clarice Lispector", "Jorge Amado", "Carlos Drummond de Andrade"], "resposta": "A"}
+{"task_id": "mc_06", "pergunta": "Quanto é 2 elevado à potência 10?", "opcoes": ["20", "100", "1024", "512"], "resposta": "C"}
+{"task_id": "mc_07", "pergunta": "Qual gás as plantas absorvem para fazer fotossíntese?", "opcoes": ["Oxigênio", "Gás carbônico", "Nitrogênio", "Hidrogênio"], "resposta": "B"}
+{"task_id": "mc_08", "pergunta": "Em que ano terminou a Segunda Guerra Mundial?", "opcoes": ["1918", "1939", "1945", "1950"], "resposta": "C"}

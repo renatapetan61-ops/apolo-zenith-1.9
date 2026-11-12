@@ -1,0 +1,12 @@
+{
+  "modalidade": "images",
+  "fontes": [
+    {
+      "nome": "flickr8k_test",
+      "origem": "Hugging Face Hub (jxie/flickr8k) — split de teste",
+      "url_oficial": "https://huggingface.co/datasets/jxie/flickr8k",
+      "licenca": "CC BY 2.0 (imagens do Flickr8k) / licença do dataset no Hub",
+      "detalhe": []
+    }
+  ]
+}

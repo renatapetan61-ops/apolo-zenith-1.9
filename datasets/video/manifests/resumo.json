@@ -1,0 +1,19 @@
+{
+  "modalidade": "video",
+  "datasets": [
+    {
+      "nome": "wikimedia_videos",
+      "origem": "Wikimedia Commons — arquivos de vídeo com licença livre",
+      "url_oficial": "https://commons.wikimedia.org/wiki/Category:Videos",
+      "licenca": "CC BY-SA / CC BY / CC0 / domínio público (por arquivo, via API)",
+      "formato": "WebM/Ogg (decodificado com PyAV)",
+      "amostras": 31,
+      "bytes_baixado": 42220636,
+      "bytes_em_disco": 473365468,
+      "status_download": "concluido",
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado"
+    }
+  ],
+  "uso_no_treinamento": "Frames extraídos com PyAV por amostragem de índice (vídeos longos não são processados frame a frame); 8 frames por vídeo, 64x64. Treino do encoder temporal + cabeça de ordem temporal."
+}

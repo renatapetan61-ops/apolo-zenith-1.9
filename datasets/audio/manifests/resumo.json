@@ -1,0 +1,19 @@
+{
+  "modalidade": "audio",
+  "datasets": [
+    {
+      "nome": "librispeech_dev_clean",
+      "origem": "OpenSLR 12 (LibriSpeech ASR corpus) — split dev-clean",
+      "url_oficial": "https://www.openslr.org/12/",
+      "licenca": "CC BY 4.0 (LibriSpeech, funded por Mozilla/NSF)",
+      "formato": "Tar.gz com FLAC 16 kHz + transcrições .txt",
+      "amostras": 2703,
+      "bytes_baixado": 337926286,
+      "bytes_em_disco": 698216191,
+      "status_download": "concluido",
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado"
+    }
+  ],
+  "uso_no_treinamento": "FLAC lidos um a um; mel-spectrogram (80 bandas, 16 kHz) calculado sob demanda e normalizado por arquivo. Treino contrastivo do encoder de áudio + projetor contra as transcrições."
+}

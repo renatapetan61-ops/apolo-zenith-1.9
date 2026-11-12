@@ -1,0 +1,20 @@
+# Dependências do Apolo Zenith 1.9 (Fase 1: Language Core)
+#
+# Instalação CPU (servidor mínimo / celular via Termux):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+#
+# Instalação com CUDA (servidor de treinamento):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+#   pip install -r requirements.txt
+
+torch>=2.1
+numpy>=1.24
+pyyaml>=6.0
+pytest>=7.4
+
+# Opcional (Fases 4+ — visão/áudio/vídeo, não instaladas por padrão):
+#   pillow>=10.0
+#   librosa>=0.10
+#   opencv-python-headless>=4.9
+#   torchvision>=0.16

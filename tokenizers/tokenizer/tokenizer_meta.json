@@ -1,0 +1,24 @@
+{
+  "vocab_size": 8192,
+  "special_tokens": {
+    "<|pad|>": 0,
+    "<|unk|>": 1,
+    "<|bos|>": 2,
+    "<|eos|>": 3,
+    "<|sep|>": 4,
+    "<|im_start|>": 5,
+    "<|im_end|>": 6,
+    "<|vision|>": 7,
+    "<|vision_pad|>": 8,
+    "<|audio|>": 9,
+    "<|audio_pad|>": 10,
+    "<|video|>": 11,
+    "<|video_pad|>": 12,
+    "<|tool_call|>": 13,
+    "<|tool_result|>": 14,
+    "<|tool|>": 15
+  },
+  "pad_id": 0,
+  "bos_id": 2,
+  "eos_id": 3
+}

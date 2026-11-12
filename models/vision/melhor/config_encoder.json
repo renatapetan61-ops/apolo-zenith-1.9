@@ -1,0 +1,11 @@
+{
+  "dim": 128,
+  "n_layer": 3,
+  "n_head": 4,
+  "patch_size": 16,
+  "image_size": 64,
+  "mlp_ratio": 2.0,
+  "dropout": 0.1,
+  "dim_projetor": 128,
+  "rms_norm_eps": 1e-05
+}

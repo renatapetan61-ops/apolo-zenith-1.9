@@ -1,0 +1,120 @@
+  [video] passo    1/150 | perda 0.4797 (contraste 0.1523 | ordem 0.6548) | 8s
+  [video] passo   10/150 | perda 2.7336 (contraste 2.3634 | ordem 0.7404) | 57s
+  [video] passo   20/150 | perda 0.5592 (contraste 0.0409 | ordem 1.0367) | 104s
+  [video][validação] {'acuracia_ordem': 0.5, 'amostras_ordem': 16, 'recuperacao_para_texto': 0.25, 'recuperacao_para_imagem': 0.375, 'r1': 0.3125, 'mrr': 0.4116, 'chance': 0.125, 'amostras': 8}
+  [video] passo   30/150 | perda 0.4394 (contraste 0.0419 | ordem 0.7950) | 163s
+  [video] passo   40/150 | perda 0.3177 (contraste 0.0000 | ordem 0.6354) | 204s
+  [video] passo   50/150 | perda 0.4383 (contraste 0.0110 | ordem 0.8547) | 250s
+  [video][validação] {'acuracia_ordem': 0.5, 'amostras_ordem': 16, 'recuperacao_para_texto': 0.125, 'recuperacao_para_imagem': 0.125, 'r1': 0.125, 'mrr': 0.2918, 'chance': 0.125, 'amostras': 8}
+  [video] passo   60/150 | perda 0.3287 (contraste 0.0000 | ordem 0.6575) | 313s
+  [video] passo   70/150 | perda 0.1849 (contraste 0.0010 | ordem 0.3677) | 360s
+  [video][validação] {'acuracia_ordem': 0.5, 'amostras_ordem': 16, 'recuperacao_para_texto': 0.125, 'recuperacao_para_imagem': 0.125, 'r1': 0.125, 'mrr': 0.4104, 'chance': 0.125, 'amostras': 8}
+  [video] passo   80/150 | perda 0.7966 (contraste 0.0027 | ordem 1.5878) | 426s
+  [video] passo   90/150 | perda 0.4371 (contraste 0.0001 | ordem 0.8739) | 476s
+  [video] passo  100/150 | perda 0.6255 (contraste 0.0248 | ordem 1.2014) | 526s
+  [video][validação] {'acuracia_ordem': 0.5, 'amostras_ordem': 16, 'recuperacao_para_texto': 0.25, 'recuperacao_para_imagem': 0.375, 'r1': 0.3125, 'mrr': 0.5104, 'chance': 0.125, 'amostras': 8}
+  [video] passo  110/150 | perda 0.3765 (contraste 0.0005 | ordem 0.7519) | 590s
+  [video] passo  120/150 | perda 0.4168 (contraste 0.0000 | ordem 0.8336) | 637s
+  [video][validação] {'acuracia_ordem': 0.5, 'amostras_ordem': 16, 'recuperacao_para_texto': 0.375, 'recuperacao_para_imagem': 0.375, 'r1': 0.375, 'mrr': 0.5938, 'chance': 0.125, 'amostras': 8}
+  [video] passo  130/150 | perda 0.2817 (contraste 0.0003 | ordem 0.5628) | 700s
+  [video] passo  140/150 | perda 0.4238 (contraste 0.0000 | ordem 0.8476) | 753s
+  [video] passo  150/150 | perda 0.2868 (contraste 0.0005 | ordem 0.5726) | 803s
+  [video][validação] {'acuracia_ordem': 0.5, 'amostras_ordem': 16, 'recuperacao_para_texto': 0.375, 'recuperacao_para_imagem': 0.25, 'r1': 0.3125, 'mrr': 0.5938, 'chance': 0.125, 'amostras': 8}
+{
+  "modalidade": "video",
+  "passos": 150,
+  "tempo_s": 818.6,
+  "parametros_encoder": 2189312,
+  "melhor_validacao": {
+    "acuracia_ordem": 0.5,
+    "amostras_ordem": 16,
+    "recuperacao_para_texto": 0.25,
+    "recuperacao_para_imagem": 0.375,
+    "r1": 0.3125,
+    "mrr": 0.4116,
+    "chance": 0.125,
+    "amostras": 8
+  },
+  "historico": [
+    {
+      "passo": 60,
+      "perda": 0.3287,
+      "perda_contraste": 0.0,
+      "perda_ordem": 0.6575,
+      "lr": 0.00019635,
+      "elapsed_s": 313.2
+    },
+    {
+      "passo": 70,
+      "perda": 0.1849,
+      "perda_contraste": 0.001,
+      "perda_ordem": 0.3677,
+      "lr": 0.00016568,
+      "elapsed_s": 360.5
+    },
+    {
+      "passo": 80,
+      "perda": 0.7966,
+      "perda_contraste": 0.0027,
+      "perda_ordem": 1.5878,
+      "lr": 0.00013432,
+      "elapsed_s": 426.1
+    },
+    {
+      "passo": 90,
+      "perda": 0.4371,
+      "perda_contraste": 0.0001,
+      "perda_ordem": 0.8739,
+      "lr": 0.00010365,
+      "elapsed_s": 475.7
+    },
+    {
+      "passo": 100,
+      "perda": 0.6255,
+      "perda_contraste": 0.0248,
+      "perda_ordem": 1.2014,
+      "lr": 7.5e-05,
+      "elapsed_s": 526.2
+    },
+    {
+      "passo": 110,
+      "perda": 0.3765,
+      "perda_contraste": 0.0005,
+      "perda_ordem": 0.7519,
+      "lr": 4.963e-05,
+      "elapsed_s": 590.0
+    },
+    {
+      "passo": 120,
+      "perda": 0.4168,
+      "perda_contraste": 0.0,
+      "perda_ordem": 0.8336,
+      "lr": 2.865e-05,
+      "elapsed_s": 636.9
+    },
+    {
+      "passo": 130,
+      "perda": 0.2817,
+      "perda_contraste": 0.0003,
+      "perda_ordem": 0.5628,
+      "lr": 1.297e-05,
+      "elapsed_s": 700.5
+    },
+    {
+      "passo": 140,
+      "perda": 0.4238,
+      "perda_contraste": 0.0,
+      "perda_ordem": 0.8476,
+      "lr": 3.28e-06,
+      "elapsed_s": 753.2
+    },
+    {
+      "passo": 150,
+      "perda": 0.2868,
+      "perda_contraste": 0.0005,
+      "perda_ordem": 0.5726,
+      "lr": 0.0,
+      "elapsed_s": 803.3
+    }
+  ]
+}

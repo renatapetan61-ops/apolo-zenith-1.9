@@ -1,0 +1,97 @@
+[dados] treino=49842 sequências (12759787 tokens) | validação=415 sequências (106316 tokens)
+[modelo] 4 camadas, 128 dims, 4 cabeças, 256 contexto, vocab=8192 | parâmetros=1,901,696
+  [retomada] checkpoint carregado: passo 600
+  passo   620/1800 | perda 5.8876 | lr 4.79e-04 | 1696 tok/s | elapsed 48s
+  passo   640/1800 | perda 5.6926 | lr 4.71e-04 | 1494 tok/s | elapsed 110s
+  [validação] passo 650 | perda 5.8858 | ppl 359.91
+  passo   660/1800 | perda 5.7320 | lr 4.62e-04 | 1237 tok/s | elapsed 199s
+  passo   680/1800 | perda 5.8175 | lr 4.53e-04 | 1251 tok/s | elapsed 262s
+  passo   700/1800 | perda 5.7166 | lr 4.45e-04 | 1273 tok/s | elapsed 322s
+  [validação] passo 700 | perda 5.8284 | ppl 339.81
+  passo   720/1800 | perda 5.8642 | lr 4.36e-04 | 1218 tok/s | elapsed 404s
+  passo   740/1800 | perda 5.6270 | lr 4.26e-04 | 1250 tok/s | elapsed 459s
+  [validação] passo 750 | perda 5.7624 | ppl 318.10
+  passo   760/1800 | perda 5.6692 | lr 4.17e-04 | 1232 tok/s | elapsed 532s
+  passo   780/1800 | perda 5.6240 | lr 4.08e-04 | 1237 tok/s | elapsed 596s
+  passo   800/1800 | perda 5.5814 | lr 3.98e-04 | 1237 tok/s | elapsed 662s
+  [validação] passo 800 | perda 5.7079 | ppl 301.23
+  passo   820/1800 | perda 5.5734 | lr 3.89e-04 | 1206 tok/s | elapsed 747s
+  passo   840/1800 | perda 5.5665 | lr 3.79e-04 | 1208 tok/s | elapsed 814s
+  [validação] passo 850 | perda 5.6521 | ppl 284.88
+  passo   860/1800 | perda 5.6471 | lr 3.69e-04 | 1184 tok/s | elapsed 900s
+  passo   880/1800 | perda 5.7627 | lr 3.60e-04 | 1194 tok/s | elapsed 961s
+  passo   900/1800 | perda 5.6173 | lr 3.50e-04 | 1198 tok/s | elapsed 1025s
+  [validação] passo 900 | perda 5.6156 | ppl 274.68
+  passo   920/1800 | perda 5.5254 | lr 3.40e-04 | 1189 tok/s | elapsed 1103s
+  passo   940/1800 | perda 5.5460 | lr 3.30e-04 | 1200 tok/s | elapsed 1160s
+  [validação] passo 950 | perda 5.5649 | ppl 261.09
+  passo   960/1800 | perda 5.6862 | lr 3.20e-04 | 1188 tok/s | elapsed 1241s
+  passo   980/1800 | perda 5.5785 | lr 3.10e-04 | 1190 tok/s | elapsed 1308s
+  passo  1000/1800 | perda 5.4739 | lr 3.00e-04 | 1197 tok/s | elapsed 1369s
+  [validação] passo 1000 | perda 5.5279 | ppl 251.62
+  passo  1020/1800 | perda 5.4999 | lr 2.91e-04 | 1177 tok/s | elapsed 1462s
+  passo  1040/1800 | perda 5.5535 | lr 2.81e-04 | 1182 tok/s | elapsed 1525s
+  [validação] passo 1050 | perda 5.4920 | ppl 242.75
+  passo  1060/1800 | perda 5.5127 | lr 2.71e-04 | 1176 tok/s | elapsed 1602s
+  passo  1080/1800 | perda 5.3671 | lr 2.62e-04 | 1190 tok/s | elapsed 1652s
+  passo  1100/1800 | perda 5.3774 | lr 2.52e-04 | 1200 tok/s | elapsed 1706s
+  [validação] passo 1100 | perda 5.4525 | ppl 233.35
+  passo  1120/1800 | perda 5.4101 | lr 2.43e-04 | 1201 tok/s | elapsed 1773s
+  passo  1140/1800 | perda 5.5609 | lr 2.34e-04 | 1212 tok/s | elapsed 1825s
+  [validação] passo 1150 | perda 5.4266 | ppl 227.37
+  passo  1160/1800 | perda 5.4931 | lr 2.24e-04 | 1208 tok/s | elapsed 1899s
+  passo  1180/1800 | perda 5.3775 | lr 2.15e-04 | 1219 tok/s | elapsed 1949s
+  passo  1200/1800 | perda 5.1872 | lr 2.07e-04 | 1226 tok/s | elapsed 2005s
+  [validação] passo 1200 | perda 5.3936 | ppl 220.00
+  passo  1220/1800 | perda 5.4031 | lr 1.98e-04 | 1223 tok/s | elapsed 2077s
+  passo  1240/1800 | perda 5.3216 | lr 1.89e-04 | 1232 tok/s | elapsed 2128s
+  [validação] passo 1250 | perda 5.3724 | ppl 215.39
+  passo  1260/1800 | perda 5.5117 | lr 1.81e-04 | 1229 tok/s | elapsed 2199s
+  passo  1280/1800 | perda 5.5062 | lr 1.73e-04 | 1235 tok/s | elapsed 2254s
+  passo  1300/1800 | perda 5.1148 | lr 1.65e-04 | 1242 tok/s | elapsed 2308s
+  [validação] passo 1300 | perda 5.3474 | ppl 210.07
+  passo  1320/1800 | perda 5.2965 | lr 1.57e-04 | 1236 tok/s | elapsed 2386s
+  passo  1340/1800 | perda 5.2585 | lr 1.50e-04 | 1242 tok/s | elapsed 2440s
+  [validação] passo 1350 | perda 5.3273 | ppl 205.88
+  passo  1360/1800 | perda 5.4443 | lr 1.43e-04 | 1233 tok/s | elapsed 2524s
+  passo  1380/1800 | perda 5.2018 | lr 1.36e-04 | 1234 tok/s | elapsed 2590s
+  passo  1400/1800 | perda 5.2220 | lr 1.29e-04 | 1236 tok/s | elapsed 2652s
+  [validação] passo 1400 | perda 5.3092 | ppl 202.19
+  passo  1420/1800 | perda 5.2613 | lr 1.22e-04 | 1231 tok/s | elapsed 2728s
+  passo  1440/1800 | perda 5.2837 | lr 1.16e-04 | 1236 tok/s | elapsed 2784s
+  [validação] passo 1450 | perda 5.2955 | ppl 199.44
+  passo  1460/1800 | perda 5.5297 | lr 1.10e-04 | 1231 tok/s | elapsed 2862s
+  passo  1480/1800 | perda 5.2265 | lr 1.05e-04 | 1239 tok/s | elapsed 2910s
+  passo  1500/1800 | perda 5.2513 | lr 9.95e-05 | 1237 tok/s | elapsed 2979s
+  [validação] passo 1500 | perda 5.2844 | ppl 197.24
+  passo  1520/1800 | perda 5.2916 | lr 9.45e-05 | 1233 tok/s | elapsed 3055s
+  passo  1540/1800 | perda 5.1206 | lr 8.99e-05 | 1237 tok/s | elapsed 3114s
+  [validação] passo 1550 | perda 5.2740 | ppl 195.19
+  passo  1560/1800 | perda 5.3576 | lr 8.55e-05 | 1232 tok/s | elapsed 3192s
+  passo  1580/1800 | perda 5.2772 | lr 8.15e-05 | 1236 tok/s | elapsed 3247s
+  passo  1600/1800 | perda 5.2474 | lr 7.78e-05 | 1240 tok/s | elapsed 3302s
+  [validação] passo 1600 | perda 5.2603 | ppl 192.54
+  passo  1620/1800 | perda 5.2932 | lr 7.45e-05 | 1237 tok/s | elapsed 3376s
+  passo  1640/1800 | perda 5.2537 | lr 7.14e-05 | 1240 tok/s | elapsed 3435s
+  [validação] passo 1650 | perda 5.2534 | ppl 191.21
+  passo  1660/1800 | perda 5.2431 | lr 6.88e-05 | 1234 tok/s | elapsed 3517s
+  passo  1680/1800 | perda 5.3777 | lr 6.65e-05 | 1236 tok/s | elapsed 3578s
+  passo  1700/1800 | perda 5.2098 | lr 6.45e-05 | 1238 tok/s | elapsed 3638s
+  [validação] passo 1700 | perda 5.2417 | ppl 189.00
+  passo  1720/1800 | perda 5.4581 | lr 6.29e-05 | 1228 tok/s | elapsed 3736s
+  passo  1740/1800 | perda 5.3484 | lr 6.16e-05 | 1229 tok/s | elapsed 3800s
+  [validação] passo 1750 | perda 5.2354 | ppl 187.80
+  passo  1760/1800 | perda 5.2564 | lr 6.07e-05 | 1216 tok/s | elapsed 3908s
+  passo  1780/1800 | perda 5.1950 | lr 6.02e-05 | 1206 tok/s | elapsed 4008s
+  passo  1800/1800 | perda 5.0781 | lr 6.00e-05 | 1199 tok/s | elapsed 4100s
+  [validação] passo 1800 | perda 5.2277 | ppl 186.36
+{
+  "passos": 1800,
+  "melhor_perda_validacao": 5.227683658599854,
+  "tempo_s": 4130.86,
+  "tokens_processados": 4915200,
+  "tokens_por_segundo": 1189.9,
+  "device": "cpu",
+  "amp": "None",
+  "parametros": 1901696
+}

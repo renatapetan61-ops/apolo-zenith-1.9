@@ -1,0 +1,55 @@
+{
+  "inicio": 1794514401.1430092,
+  "fim_previsto": 1795378401.1430092,
+  "fim": 1794515106.4778867,
+  "duracao_alvo_s": 864000.0,
+  "tempo_executado_s": 328.87424540519714,
+  "tempo_pausado_s": 0.0,
+  "fase_atual": 0,
+  "tarefas_concluidas": [
+    "relatorio_hardware",
+    "download_datasets",
+    "preparacao_multimodal",
+    "testes_de_memoria"
+  ],
+  "tarefas_com_erro": [],
+  "epochs": 0,
+  "passos": 0,
+  "loss_atual": null,
+  "lr_atual": null,
+  "memoria_mb": 8.82421875,
+  "temperatura_c": null,
+  "checkpoints": [],
+  "metricas": {},
+  "historico": [
+    {
+      "tarefa": "relatorio_hardware",
+      "dia": 1,
+      "nome": "relatorio_hardware",
+      "codigo": 0,
+      "duracao_s": 20.8
+    },
+    {
+      "tarefa": "download_datasets",
+      "dia": 1,
+      "nome": "download_datasets",
+      "codigo": 0,
+      "duracao_s": 143.8
+    },
+    {
+      "tarefa": "preparacao_multimodal",
+      "dia": 1,
+      "nome": "preparacao_multimodal",
+      "codigo": 0,
+      "duracao_s": 103.0
+    },
+    {
+      "tarefa": "testes_de_memoria",
+      "dia": 1,
+      "nome": "testes_de_memoria",
+      "codigo": 0,
+      "duracao_s": 61.4
+    }
+  ],
+  "estado": "concluido"
+}

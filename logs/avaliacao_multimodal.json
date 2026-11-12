@@ -1,0 +1,113 @@
+{
+  "codigo": {
+    "amostras": 5,
+    "sintaxe_valida": 0,
+    "taxa_sintaxe_valida": 0.0,
+    "geracoes_com_conteudo": 0,
+    "nota": "Geração livre a partir de prompts de código; a validação é estática (ast.parse) e o código NUNCA é executado. Só conta como válido o que tem conteúdo não vazio e sintaxe correta — um modelo que devolve apenas espaços é tratado como falha, não como sucesso.",
+    "detalhe": [
+      {
+        "prompt": "def soma(a, b):",
+        "tokens_gerados": 48,
+        "sintaxe_ok": true,
+        "tem_conteudo": false,
+        "valido": false,
+        "detalhe": "geração vazia (só espaços)",
+        "amostra": "'                '"
+      },
+      {
+        "prompt": "import os",
+        "tokens_gerados": 48,
+        "sintaxe_ok": true,
+        "tem_conteudo": false,
+        "valido": false,
+        "detalhe": "geração vazia (só espaços)",
+        "amostra": "'                '"
+      },
+      {
+        "prompt": "class Usuario:",
+        "tokens_gerados": 48,
+        "sintaxe_ok": true,
+        "tem_conteudo": false,
+        "valido": false,
+        "detalhe": "geração vazia (só espaços)",
+        "amostra": "'                '"
+      },
+      {
+        "prompt": "for i in range(10):",
+        "tokens_gerados": 48,
+        "sintaxe_ok": true,
+        "tem_conteudo": false,
+        "valido": false,
+        "detalhe": "geração vazia (só espaços)",
+        "amostra": "'                '"
+      },
+      {
+        "prompt": "def main():",
+        "tokens_gerados": 48,
+        "sintaxe_ok": true,
+        "tem_conteudo": false,
+        "valido": false,
+        "detalhe": "geração vazia (só espaços)",
+        "amostra": "'                '"
+      }
+    ],
+    "tempo_s": 49.5
+  },
+  "multimodal": {
+    "imagem_texto": {
+      "recuperacao_para_texto": 0.025,
+      "recuperacao_para_imagem": 0.0063,
+      "r1": 0.0156,
+      "mrr": 0.0655,
+      "chance": 0.0063,
+      "amostras": 160
+    },
+    "audio_texto": {
+      "recuperacao_para_texto": 0.0063,
+      "recuperacao_para_imagem": 0.0125,
+      "r1": 0.0094,
+      "mrr": 0.0586,
+      "chance": 0.0063,
+      "amostras": 160
+    },
+    "observacao": "O modelo alinha representações; não há decoder de linguagem treinado, logo não gera descrições de imagens nem transcrições.",
+    "tempo_s": 97.5
+  },
+  "video": {
+    "acuracia_ordem": 0.5,
+    "amostras_ordem": 62,
+    "chance_ordem": 0.5,
+    "videos": 31,
+    "recuperacao": {
+      "recuperacao_para_texto": 0.0968,
+      "recuperacao_para_imagem": 0.1613,
+      "r1": 0.129,
+      "mrr": 0.2598,
+      "chance": 0.0323,
+      "amostras": 31
+    },
+    "tempo_s": 183.2
+  },
+  "images": {
+    "recuperacao_para_texto": 0.0312,
+    "recuperacao_para_imagem": 0.025,
+    "r1": 0.0281,
+    "mrr": 0.0909,
+    "chance": 0.0063,
+    "amostras": 160,
+    "amostras_validacao": 160,
+    "nota": "R@1 medido no split de validação; 'chance' é a recuperação esperada por sorteio aleatório com o mesmo número de candidatos.",
+    "tempo_s": 21.4
+  },
+  "audio": {
+    "recuperacao_para_texto": 0.0375,
+    "recuperacao_para_imagem": 0.0375,
+    "r1": 0.0375,
+    "mrr": 0.0862,
+    "chance": 0.0063,
+    "amostras": 160,
+    "amostras_validacao": 160,
+    "tempo_s": 54.0
+  }
+}

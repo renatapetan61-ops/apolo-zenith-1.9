@@ -1,0 +1,115 @@
+/root/apolo-zenith-1.9/audio/encoder.py:105: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.transformer = nn.TransformerEncoder(
+  [multimodal] passo    1/200 | perda 2.6984 | 9s
+  [multimodal] passo   10/200 | perda 1.9926 | 15s
+  [multimodal] passo   20/200 | perda 1.6071 | 20s
+  [multimodal] passo   30/200 | perda 2.8817 | 26s
+  [multimodal] passo   40/200 | perda 7.4385 | 32s
+  [multimodal] passo   50/200 | perda 1.3624 | 39s
+  [multimodal][validação] {'imagem_texto': {'recuperacao_para_texto': 0.0156, 'recuperacao_para_imagem': 0.0, 'r1': 0.0078, 'mrr': 0.0903, 'chance': 0.0156, 'amostras': 64}, 'audio_texto': {'recuperacao_para_texto': 0.0, 'recuperacao_para_imagem': 0.0, 'r1': 0.0, 'mrr': 0.0707, 'chance': 0.0156, 'amostras': 64}, 'observacao': 'alinhamento de representações; o modelo não gera texto a partir de imagem/áudio (não há decoder de linguagem).'}
+  [multimodal] passo   60/200 | perda 6.7698 | 68s
+  [multimodal] passo   70/200 | perda 0.2931 | 73s
+  [multimodal] passo   80/200 | perda 1.9351 | 78s
+  [multimodal] passo   90/200 | perda 2.9562 | 83s
+  [multimodal] passo  100/200 | perda 3.6443 | 88s
+  [multimodal][validação] {'imagem_texto': {'recuperacao_para_texto': 0.0312, 'recuperacao_para_imagem': 0.0312, 'r1': 0.0312, 'mrr': 0.0956, 'chance': 0.0156, 'amostras': 64}, 'audio_texto': {'recuperacao_para_texto': 0.0, 'recuperacao_para_imagem': 0.0, 'r1': 0.0, 'mrr': 0.0671, 'chance': 0.0156, 'amostras': 64}, 'observacao': 'alinhamento de representações; o modelo não gera texto a partir de imagem/áudio (não há decoder de linguagem).'}
+  [multimodal] passo  110/200 | perda 3.3383 | 140s
+  [multimodal] passo  120/200 | perda 3.9745 | 146s
+  [multimodal] passo  130/200 | perda 1.5271 | 151s
+  [multimodal] passo  140/200 | perda 3.1062 | 157s
+  [multimodal] passo  150/200 | perda 1.5549 | 162s
+  [multimodal][validação] {'imagem_texto': {'recuperacao_para_texto': 0.0156, 'recuperacao_para_imagem': 0.0, 'r1': 0.0078, 'mrr': 0.1008, 'chance': 0.0156, 'amostras': 64}, 'audio_texto': {'recuperacao_para_texto': 0.0, 'recuperacao_para_imagem': 0.0156, 'r1': 0.0078, 'mrr': 0.0617, 'chance': 0.0156, 'amostras': 64}, 'observacao': 'alinhamento de representações; o modelo não gera texto a partir de imagem/áudio (não há decoder de linguagem).'}
+  [multimodal] passo  160/200 | perda 0.5002 | 188s
+  [multimodal] passo  170/200 | perda 0.4406 | 193s
+  [multimodal] passo  180/200 | perda 0.3055 | 198s
+  [multimodal] passo  190/200 | perda 2.3348 | 204s
+  [multimodal] passo  200/200 | perda 3.8717 | 211s
+  [multimodal][validação] {'imagem_texto': {'recuperacao_para_texto': 0.0312, 'recuperacao_para_imagem': 0.0, 'r1': 0.0156, 'mrr': 0.1087, 'chance': 0.0156, 'amostras': 64}, 'audio_texto': {'recuperacao_para_texto': 0.0, 'recuperacao_para_imagem': 0.0156, 'r1': 0.0078, 'mrr': 0.0623, 'chance': 0.0156, 'amostras': 64}, 'observacao': 'alinhamento de representações; o modelo não gera texto a partir de imagem/áudio (não há decoder de linguagem).'}
+{
+  "modalidade": "multimodal",
+  "passos": 200,
+  "tempo_s": 236.1,
+  "parametros_projetores": 66048,
+  "historico": [
+    {
+      "passo": 110,
+      "perda": 3.3383,
+      "perda_imagem": 1.0429,
+      "perda_audio": 2.2953,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 140.5
+    },
+    {
+      "passo": 120,
+      "perda": 3.9745,
+      "perda_imagem": 3.2907,
+      "perda_audio": 0.6839,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 146.3
+    },
+    {
+      "passo": 130,
+      "perda": 1.5271,
+      "perda_imagem": 1.2003,
+      "perda_audio": 0.3268,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 151.3
+    },
+    {
+      "passo": 140,
+      "perda": 3.1062,
+      "perda_imagem": 2.6756,
+      "perda_audio": 0.4306,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 156.6
+    },
+    {
+      "passo": 150,
+      "perda": 1.5549,
+      "perda_imagem": 1.0886,
+      "perda_audio": 0.4663,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 161.9
+    },
+    {
+      "passo": 160,
+      "perda": 0.5002,
+      "perda_imagem": 0.0537,
+      "perda_audio": 0.4465,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 187.6
+    },
+    {
+      "passo": 170,
+      "perda": 0.4406,
+      "perda_imagem": 0.0385,
+      "perda_audio": 0.4021,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 192.6
+    },
+    {
+      "passo": 180,
+      "perda": 0.3055,
+      "perda_imagem": 0.0524,
+      "perda_audio": 0.2531,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 197.7
+    },
+    {
+      "passo": 190,
+      "perda": 2.3348,
+      "perda_imagem": 1.018,
+      "perda_audio": 1.3168,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 204.1
+    },
+    {
+      "passo": 200,
+      "perda": 3.8717,
+      "perda_imagem": 3.706,
+      "perda_audio": 0.1657,
+      "perda_consistencia": 0.0,
+      "elapsed_s": 211.2
+    }
+  ]
+}

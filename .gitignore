@@ -1,0 +1,51 @@
+# Artefatos de treino
+# Os pesos de inferência ficam em models/ (versionados); aqui ficam apenas
+# os estados do otimizador e os snapshots intermediários (grandes e
+# regeneráveis).  Os checkpoints preservados continuam no disco do aparelho.
+checkpoints/*
+!checkpoints/.gitkeep
+
+# Logs de evidência (logs/training.log, evaluation.log, dataset_downloads.log,
+# hardware.log, errors.log) SÃO versionados — são a auditoria do pipeline.
+logs/jobs/
+logs/*.tmp
+logs/apolo_training.lock*
+logs/resource_events.jsonl
+!logs/.gitkeep
+
+# Dados brutos e processados (licenças variam por fonte — ver
+# dataset_manifest.json).  Os MANIFESTOS por modalidade são versionados.
+datasets_storage/
+datasets/*/raw/
+datasets/*/processed/
+datasets/*/frames/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Ambientes
+.venv/
+venv/
+env/
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
+
+# Segredos (nunca versionar credenciais)
+*.pem
+*.key
+.env
+.env.*
+secrets*.json

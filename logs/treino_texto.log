@@ -1,0 +1,185 @@
+[dados] treino=199371 sequências (12,759,787 tokens) | validação=1661 sequências (106,316 tokens)
+[modelo] parâmetros=1,901,696
+[retomada] continuando do passo 1800 até 2100
+  [retomada] checkpoint carregado: passo 1800 | batch 4 | rng restaurado: False
+  passo  1820/2100 | perda 5.1811 | lr 8.52e-05 | 408 tok/s | elapsed 13s
+  passo  1840/2100 | perda 5.1091 | lr 8.18e-05 | 414 tok/s | elapsed 25s
+  [validação] passo 1850 | perda 5.3420 | ppl 208.94
+  passo  1860/2100 | perda 5.4056 | lr 7.86e-05 | 313 tok/s | elapsed 49s
+  passo  1880/2100 | perda 5.3658 | lr 7.57e-05 | 303 tok/s | elapsed 68s
+  passo  1900/2100 | perda 5.2550 | lr 7.30e-05 | 304 tok/s | elapsed 84s
+  [validação] passo 1900 | perda 5.3376 | ppl 208.01
+  passo  1920/2100 | perda 5.4060 | lr 7.05e-05 | 250 tok/s | elapsed 123s
+  passo  1940/2100 | perda 4.9907 | lr 6.83e-05 | 239 tok/s | elapsed 150s
+  [validação] passo 1950 | perda 5.3592 | ppl 212.55
+  passo  1960/2100 | perda 5.5130 | lr 6.64e-05 | 218 tok/s | elapsed 188s
+  passo  1980/2100 | perda 5.4055 | lr 6.47e-05 | 207 tok/s | elapsed 222s
+  passo  2000/2100 | perda 5.5027 | lr 6.33e-05 | 210 tok/s | elapsed 244s
+  [validação] passo 2000 | perda 5.3469 | ppl 209.95
+  passo  2020/2100 | perda 5.2770 | lr 6.21e-05 | 202 tok/s | elapsed 279s
+  passo  2040/2100 | perda 5.0748 | lr 6.12e-05 | 204 tok/s | elapsed 301s
+  [validação] passo 2050 | perda 5.3523 | ppl 211.10
+  [early stopping] sem melhora por 5 avaliações; encerrando.
+{
+  "passos": 2050,
+  "melhor_perda_validacao": 5.227683658599854,
+  "tempo_s": 320.79,
+  "tokens_processados": 64000,
+  "tokens_por_segundo": 199.5,
+  "device": "cpu",
+  "amp": "None",
+  "parametros": 1901696,
+  "batch_final": 4,
+  "pausas": [],
+  "tempo_pausado_s": 0.0,
+  "encerrado_por_recursos": false
+}
+{
+  "passos": 2050,
+  "melhor_perda_validacao": 5.227683658599854,
+  "tempo_s": 320.79,
+  "tokens_processados": 64000,
+  "tokens_por_segundo": 199.5,
+  "device": "cpu",
+  "amp": "None",
+  "parametros": 1901696,
+  "batch_final": 4,
+  "pausas": [],
+  "tempo_pausado_s": 0.0,
+  "encerrado_por_recursos": false,
+  "historico": [
+    {
+      "timestamp": 1794508444.455648,
+      "elapsed_s": 12.708,
+      "fase": "treino",
+      "step": 1820,
+      "perda": 5.181085109710693,
+      "lr": 8.519839768219042e-05,
+      "grad_norm": 4.093027591705322,
+      "tokens_s": 407.9,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508456.6354928,
+      "elapsed_s": 24.888,
+      "fase": "treino",
+      "step": 1840,
+      "perda": 5.1090779304504395,
+      "lr": 8.177467947479616e-05,
+      "grad_norm": 4.2019362449646,
+      "tokens_s": 414.1,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508481.000734,
+      "elapsed_s": 49.253,
+      "fase": "treino",
+      "step": 1860,
+      "perda": 5.405594825744629,
+      "lr": 7.859110323363195e-05,
+      "grad_norm": 4.055210113525391,
+      "tokens_s": 312.9,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508499.5865853,
+      "elapsed_s": 67.839,
+      "fase": "treino",
+      "step": 1880,
+      "perda": 5.365803241729736,
+      "lr": 7.565074886310295e-05,
+      "grad_norm": 4.178125858306885,
+      "tokens_s": 302.6,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508516.1056135,
+      "elapsed_s": 84.358,
+      "fase": "treino",
+      "step": 1900,
+      "perda": 5.2549824714660645,
+      "lr": 7.295646096616292e-05,
+      "grad_norm": 4.277828693389893,
+      "tokens_s": 304.0,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508554.5482993,
+      "elapsed_s": 122.801,
+      "fase": "treino",
+      "step": 1920,
+      "perda": 5.406017303466797,
+      "lr": 7.051084609234438e-05,
+      "grad_norm": 4.347819805145264,
+      "tokens_s": 250.5,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508581.985718,
+      "elapsed_s": 150.238,
+      "fase": "treino",
+      "step": 1940,
+      "perda": 4.9907331466674805,
+      "lr": 6.831627021609015e-05,
+      "grad_norm": 3.891695976257324,
+      "tokens_s": 238.8,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508620.0021214,
+      "elapsed_s": 188.255,
+      "fase": "treino",
+      "step": 1960,
+      "perda": 5.513044357299805,
+      "lr": 6.637485644782611e-05,
+      "grad_norm": 3.761660099029541,
+      "tokens_s": 217.8,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508654.061128,
+      "elapsed_s": 222.314,
+      "fase": "treino",
+      "step": 1980,
+      "perda": 5.4054741859436035,
+      "lr": 6.468848297998881e-05,
+      "grad_norm": 4.317868232727051,
+      "tokens_s": 207.4,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508676.0700252,
+      "elapsed_s": 244.323,
+      "fase": "treino",
+      "step": 2000,
+      "perda": 5.502718925476074,
+      "lr": 6.32587812699957e-05,
+      "grad_norm": 4.274339199066162,
+      "tokens_s": 209.7,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508710.8120894,
+      "elapsed_s": 279.065,
+      "fase": "treino",
+      "step": 2020,
+      "perda": 5.2770490646362305,
+      "lr": 6.208713446191536e-05,
+      "grad_norm": 4.009263038635254,
+      "tokens_s": 201.9,
+      "memoria_mb": 0.0
+    },
+    {
+      "timestamp": 1794508732.6113372,
+      "elapsed_s": 300.864,
+      "fase": "treino",
+      "step": 2040,
+      "perda": 5.074766159057617,
+      "lr": 6.117467604836497e-05,
+      "grad_norm": 3.9774022102355957,
+      "tokens_s": 204.3,
+      "memoria_mb": 0.0
+    }
+  ],
+  "modalidade": "texto"
+}

@@ -1,0 +1,19 @@
+{
+  "modalidade": "code",
+  "datasets": [
+    {
+      "nome": "codigo_github_permissivo",
+      "origem": "Repositórios GitHub com licenças permissivas (verificadas via API)",
+      "url_oficial": "https://github.com/",
+      "licenca": "Por repositório (licença declarada pela API do GitHub quando disponível): Apache-2.0, BSD-3-Clause, CC0-1.0, GPL-2.0, GPL-3.0, MIT",
+      "formato": "arquivos de código-fonte (.py, .ts, .c, .cpp, .java, .rs, .go, ...)",
+      "amostras": 794,
+      "bytes_baixado": 7199285,
+      "bytes_em_disco": 7199285,
+      "status_download": "concluido",
+      "status_preparacao": "concluido",
+      "status_treino": "nao_utilizado"
+    }
+  ],
+  "uso_no_treinamento": "Tokenizado com o mesmo BPE e empacotado; 13 linguagens marcadas no texto. Treinou a especialização de código do Language Core."
+}

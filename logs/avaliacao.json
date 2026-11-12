@@ -1,0 +1,92 @@
+{
+  "checkpoint": "checkpoints/apolo-lm-tiny/checkpoints/best",
+  "parametros": 1901696,
+  "vocab_size": 8192,
+  "benchmarks": {
+    "evaluation/datasets/exemplo_matematica.jsonl:matematica": {
+      "media": 0.0,
+      "desvio": 0.0,
+      "minimo": 0.0,
+      "maximo": 0.0,
+      "n": 10,
+      "tarefa": "matematica",
+      "amostras": [
+        {
+          "task_id": "mat_01",
+          "resposta_modelo": "\n\n[2]\n\n[2]\n\n[2]\n\n_Ac._]\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_",
+          "referencia": "300"
+        },
+        {
+          "task_id": "mat_02",
+          "resposta_modelo": "\n\n- O que o seu nome é o que o seu nome, e o que o seu nome, e o que o seu nome, e o que se não se não se não se não se não se não se não se não se não se não se não se não se não se não se não se não",
+          "referencia": "20"
+        },
+        {
+          "task_id": "mat_03",
+          "resposta_modelo": "\n\n[2]\n\n[2]\n\n_A._]\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_",
+          "referencia": "85"
+        },
+        {
+          "task_id": "mat_04",
+          "resposta_modelo": "\n\n[2]\n\n[2]\n\n[2]\n\n[2]\n\n_A._]\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A.",
+          "referencia": "210"
+        },
+        {
+          "task_id": "mat_05",
+          "resposta_modelo": "\n\n[2]\n\n[2]\n\n[2]\n\n_Acccria_]\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A.",
+          "referencia": "30"
+        },
+        {
+          "task_id": "mat_06",
+          "resposta_modelo": "\n\n[2]\n\nO COOO.\n\nO COOO.\n\nO COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA COOO.\n\nA CO",
+          "referencia": "120"
+        },
+        {
+          "task_id": "mat_07",
+          "resposta_modelo": "\n\n[2]\n\n[2]\n\n[2]\n\n[2]\n\n_A._]\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A.",
+          "referencia": "96"
+        },
+        {
+          "task_id": "mat_08",
+          "resposta_modelo": "\n\n- O que é o que o seu coração é o que o seu coração.\n\nO que o seu coração não é o que o seu coração,\nE o que o seu coração, e o que o seu coração,\nE o que o que o meu amigo,\nE o que o meu amigo, e o",
+          "referencia": "20"
+        },
+        {
+          "task_id": "mat_09",
+          "resposta_modelo": "\n\n- O que o seu nome de S. João de S. João de S. João de S. João de S. Quixote, que o seu nome de S. Quixote, e o que o seu nome de D. Quixote, e o que o que se não se não se não se não se não se não ",
+          "referencia": "200"
+        },
+        {
+          "task_id": "mat_10",
+          "resposta_modelo": "\n\n[2]\n\n[2]\n\n_A._]\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_A._\n\n_",
+          "referencia": "102"
+        }
+      ]
+    },
+    "evaluation/datasets/exemplo_mult_escolha.jsonl:mult_escolha": {
+      "media": 0.375,
+      "desvio": 0.484123,
+      "minimo": 0.0,
+      "maximo": 1.0,
+      "n": 8,
+      "tarefa": "mult_escolha"
+    },
+    "evaluation/datasets/exemplo_codigo.jsonl:codigo": {
+      "media": 0.0,
+      "desvio": 0.0,
+      "minimo": 0.0,
+      "maximo": 0.0,
+      "n": 4,
+      "tarefa": "codigo",
+      "pass@1": 0.0
+    }
+  },
+  "teste_proprio": {
+    "perda": 5.397165,
+    "perplexidade": 220.7797,
+    "tokens": 10240,
+    "lotes": 40
+  },
+  "tempo_s": 255.18,
+  "nota": "Resultados gerados por inferência real do modelo neste checkpoint. Comparações com modelos de referência exigem condições equivalentes (mesmos prompts, decoding e conjunto de testes)."
+}

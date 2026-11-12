@@ -1,0 +1,38 @@
+{
+  "codigo": {
+    "codigo_saida": 0,
+    "duracao_s": 2178.0,
+    "log": "/root/apolo-zenith-1.9/logs/treino_codigo.log",
+    "quando": "2026-11-12 15:16:51"
+  },
+  "visao": {
+    "codigo_saida": 0,
+    "duracao_s": 3073.7,
+    "log": "/root/apolo-zenith-1.9/logs/treino_visao.log",
+    "quando": "2026-11-12 13:46:43"
+  },
+  "audio": {
+    "codigo_saida": 0,
+    "duracao_s": 1173.6,
+    "log": "/root/apolo-zenith-1.9/logs/treino_audio.log",
+    "quando": "2026-11-12 14:06:17"
+  },
+  "video": {
+    "codigo_saida": 0,
+    "duracao_s": 878.3,
+    "log": "/root/apolo-zenith-1.9/logs/treino_video.log",
+    "quando": "2026-11-12 14:20:55"
+  },
+  "multimodal": {
+    "codigo_saida": 0,
+    "duracao_s": 267.8,
+    "log": "/root/apolo-zenith-1.9/logs/treino_multimodal.log",
+    "quando": "2026-11-12 15:21:19"
+  },
+  "texto": {
+    "codigo_saida": 0,
+    "duracao_s": 346.8,
+    "log": "/root/apolo-zenith-1.9/logs/treino_texto.log",
+    "quando": "2026-11-12 14:39:14"
+  }
+}

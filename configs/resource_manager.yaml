@@ -1,0 +1,84 @@
+# Configuração do gerenciador de recursos do Apolo Zenith 1.9
+#
+# Todos os valores foram escolhidos de forma CONSERVADORA para um celular
+# Android (moto g56 5G, 8 GB RAM, CPU-only).  Ajuste apenas após medir o
+# dispositivo real com:  python main.py recursos
+#
+# Regra de ouro: mais lento e seguro > rápido e instável.
+
+recursos:
+  ativa: true
+
+  # ---------------------------------------------------------------- termos
+  termicos:
+    # Sem sensor térmico acessível no Proot do Termux, o monitor entra em
+    # MODO PREVENTIVO: nunca inventa temperatura; usa carga de CPU como proxy.
+    temperatura_maxima_c: 42.0
+    temperatura_resume_c: 37.0
+    temperatura_aviso_c: 39.0
+    zona_preferida: null
+    usar_modo_preventivo: true
+    pausa_preventiva_min: 5.0
+    ciclo_trabalho_min: 30.0
+    intervalo_leitura_s: 30.0
+    carga_cpu_proxy_limite: 0.92
+
+  # --------------------------------------------------------------- memória
+  memoria:
+    ram_max_utilizacao_percent: 80.0
+    ram_minima_disponivel_mb: 512
+    rss_max_mb: 2048
+    margem_livre_mb: 256
+    gc_interval_steps: 50
+    liberar_entre_blocos: true
+
+  # ---------------------------------------------------------- armazenamento
+  armazenamento:
+    espaco_minimo_livre_mb: 2048
+    cache_max_mb: 256
+    temporarios_max_mb: 512
+    checkpoints_max_mb: 3072
+    download_max_por_passo_mb: 64
+    reservar_para_sistema_mb: 1024
+    diretorio_temporario: datasets_storage/tmp
+    manter_checkpoints: 3
+
+  # ----------------------------------------------------------------- batch
+  batch:
+    batch_minimo: 1
+    batch_maximo: 4
+    batch_inicial: 1
+    seq_len_minima: 32
+    seq_len_maxima: 64
+    seq_len_inicial: 64
+    grad_accum_steps: 4
+    num_workers: 0
+    pin_memory: false
+    permitir_aumento_automatico: true
+
+  # ----------------------------------------------------------- monitoramento
+  monitoramento:
+    intervalo_monitoramento_s: 15.0
+    intervalo_checkpoint_steps: 100
+    checkpoint_por_bloco: true
+    intervalo_pausa_verificacao_s: 60.0
+    max_tentativas_oom: 3
+    cooldown_apos_oom_steps: 20
+
+  # ----------------------------------------------------------- prioridades
+  # Ordem da fila de treinamentos (nunca simultâneos).
+  prioridades:
+    ordem:
+      linguagem: 1
+      codigo: 2
+      visao: 3
+      audio: 4
+      video: 5
+      multimodal: 6
+    permitir_pausa_para_trocar: true
+
+  # ------------------------------------------------------------- caminhos
+  diretorio_lock: logs/apolo_training.lock
+  arquivo_estado: training_state.json
+  log_hardware: logs/hardware.log
+  log_eventos: logs/resource_events.jsonl

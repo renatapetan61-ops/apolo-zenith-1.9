@@ -1,0 +1,22 @@
+{
+  "parquet_imagens": "datasets/images/raw/flickr8k/test.parquet",
+  "pasta_audio": "datasets/audio/raw/librispeech/LibriSpeech",
+  "modelo_visao": "models/vision/final/modelo.pt",
+  "modelo_audio": "models/audio/final/modelo.pt",
+  "checkpoint_lm": "checkpoints/apolo-lm-tiny/checkpoints/best",
+  "tokenizer": "datasets_storage/processed/tokenizer",
+  "saida": "models/multimodal",
+  "batch_size": 2,
+  "passos": 200,
+  "lr": 0.0002,
+  "weight_decay": 0.01,
+  "warmup": 20,
+  "temperatura": 0.07,
+  "peso_consistencia": 0.0,
+  "max_itens": 300,
+  "seed": 1337,
+  "dim_projetor": 128,
+  "max_tokens": 32,
+  "intervalo_avaliacao": 50,
+  "log": "logs/train_multimodal.jsonl"
+}
