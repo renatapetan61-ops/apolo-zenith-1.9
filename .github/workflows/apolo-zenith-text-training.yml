@@ -50,6 +50,12 @@ jobs:
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
           python -m pip install -r requirements.txt
 
+      - name: Validar suíte e interfaces da etapa textual
+        run: |
+          pytest -q
+          python -m scripts.prepare_data --help
+          python -m training.text_trainer --help
+
       - name: Recuperar o checkpoint produzido pelo treinamento de código
         uses: actions/download-artifact@v4
         with:
