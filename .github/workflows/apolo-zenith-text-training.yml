@@ -1,0 +1,123 @@
+name: Apolo Zenith 1.9 — próxima etapa de treinamento textual
+
+run-name: "Apolo Zenith text training after code run ${{ github.event.workflow_run.run_number }}"
+
+on:
+  workflow_run:
+    workflows:
+      - "Apolo Zenith 1.9 — treinamento incremental de código"
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+
+# Compartilha o mesmo lock lógico do treino de código: nunca há dois treinos ativos.
+concurrency:
+  group: apolo-zenith-training
+  cancel-in-progress: false
+
+jobs:
+  train-text:
+    if: github.event.workflow_run.conclusion == 'success'
+    name: "Continuar o Language Core com texto"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      PYTHONUNBUFFERED: "1"
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+      TOKENIZERS_PARALLELISM: "false"
+      CODE_RUN_ID: ${{ github.event.workflow_run.id }}
+      CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ github.event.workflow_run.id }}/checkpoints/final
+
+    steps:
+      - name: Checkout do código atualizado
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar PyTorch CPU e dependências multimodais
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+
+      - name: Recuperar o checkpoint produzido pelo treinamento de código
+        uses: actions/download-artifact@v4
+        with:
+          name: apolo-zenith-code-training-${{ github.event.workflow_run.id }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/code
+
+      - name: Validar checkpoint e compatibilidade do tokenizer
+        run: |
+          set -euo pipefail
+          test -s "$CODE_CHECKPOINT/model.pt"
+          test -s "$CODE_CHECKPOINT/config.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          checkpoint = Path(os.environ["CODE_CHECKPOINT"])
+          model = json.loads((checkpoint / "config.json").read_text())
+          tokenizer = json.loads(Path("tokenizers/tokenizer/tokenizer_meta.json").read_text())
+          if int(model["vocab_size"]) != int(tokenizer["vocab_size"]):
+              raise SystemExit(
+                  f"Vocabulários incompatíveis: modelo={model['vocab_size']} "
+                  f"tokenizer={tokenizer['vocab_size']}"
+              )
+          print("Checkpoint do treino de código válido; tokenizer compatível.")
+          PY
+
+      - name: Coletar corpus textual com licença declarada
+        run: |
+          python -m datasets.corpus_builder \
+            --saida datasets_storage \
+            --max-livros-pt 40 \
+            --max-livros-en 20 \
+            --sem-wikisource
+
+      - name: Preparar texto sem alterar o tokenizer do modelo
+        run: |
+          python -m scripts.prepare_data \
+            --manifesto datasets_storage/manifest.json \
+            --raiz datasets_storage \
+            --saida datasets_storage/processed \
+            --vocab 8192 \
+            --tokenizer-existente tokenizers/tokenizer
+
+      - name: Continuar o Language Core no corpus textual
+        run: |
+          python -m training.text_trainer \
+            --dados datasets_storage/processed \
+            --tokenizer datasets_storage/processed/tokenizer \
+            --saida "checkpoints/actions-text-${CODE_RUN_ID}" \
+            --checkpoint-inicial "$CODE_CHECKPOINT" \
+            --steps 80 \
+            --batch-size 1 \
+            --block-size 64 \
+            --lr 0.0001 \
+            --eval-interval 20 \
+            --save-interval 20 \
+            --seed 1337
+
+      - name: Publicar checkpoint textual, métricas e proveniência
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apolo-zenith-text-training-after-${{ github.event.workflow_run.id }}
+          path: |
+            checkpoints/actions-text-${{ github.event.workflow_run.id }}/
+            datasets_storage/manifest.json
+            datasets_storage/processed/resumo.json
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
