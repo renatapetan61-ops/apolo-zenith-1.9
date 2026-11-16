@@ -1,0 +1,123 @@
+name: Apolo Zenith 1.9 — treinamento incremental de código
+
+run-name: "Apolo Zenith code training #${{ github.run_number }}"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/apolo-zenith-training.yml"
+      - "datasets/downloader.py"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Etapa de treinamento disponível nesta versão"
+        type: choice
+        required: true
+        default: code
+        options:
+          - code
+      steps:
+        description: "Número máximo de passos (1–1000)"
+        type: number
+        required: true
+        default: 80
+
+permissions:
+  contents: read
+
+# Impede duas execuções de treinamento deste projeto ao mesmo tempo.
+concurrency:
+  group: apolo-zenith-training
+  cancel-in-progress: false
+
+jobs:
+  train-code:
+    name: "Preparar corpus e continuar o Language Core em código"
+    if: github.event_name == 'push' || inputs.mode == 'code'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      PYTHONUNBUFFERED: "1"
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+      TOKENIZERS_PARALLELISM: "false"
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar PyTorch CPU e dependências
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+
+      - name: Validar código e proteções antes do treinamento
+        run: |
+          python --version
+          python main.py hardware --json
+          pytest -q
+
+      - name: Validar limite de passos
+        env:
+          REQUESTED_STEPS: ${{ inputs.steps || 80 }}
+        run: |
+          python - <<'PY'
+          import os
+          steps = int(os.environ["REQUESTED_STEPS"])
+          if not 1 <= steps <= 1000:
+              raise SystemExit("steps precisa estar entre 1 e 1000")
+          print(f"Treinamento limitado a {steps} passos.")
+          PY
+
+      - name: Baixar repositórios de código com licença verificada
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m scripts.download_datasets --datasets codigo_github_permissivo
+
+      - name: Preparar corpus de código incremental
+        run: |
+          python -m scripts.prepare_multimodal \
+            --modalidade code \
+            --tokenizer tokenizers/tokenizer
+
+      - name: Continuar treinamento a partir do Language Core versionado
+        env:
+          TRAIN_STEPS: ${{ inputs.steps || 80 }}
+        run: |
+          python -m training.code_trainer \
+            --dados datasets/code/processed \
+            --tokenizer tokenizers/tokenizer \
+            --checkpoint-inicial models/language/apolo-lm-tiny \
+            --steps "$TRAIN_STEPS" \
+            --batch-size 1 \
+            --block-size 64 \
+            --lr 0.0001 \
+            --eval-interval 20 \
+            --save-interval 20 \
+            --seed 1337 \
+            --saida "checkpoints/actions-code-${GITHUB_RUN_ID}"
+
+      - name: Publicar checkpoint, métricas e manifesto do dataset
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apolo-zenith-code-training-${{ github.run_id }}
+          path: |
+            checkpoints/actions-code-${{ github.run_id }}/
+            dataset_manifest.json
+            datasets/manifests/preparacao.json
+            logs/dataset_downloads.log
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
