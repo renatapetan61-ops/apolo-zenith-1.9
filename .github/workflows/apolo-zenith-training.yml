@@ -8,6 +8,7 @@ on:
     paths:
       - ".github/workflows/apolo-zenith-training.yml"
       - "datasets/downloader.py"
+      - "requirements.txt"
   workflow_dispatch:
     inputs:
       mode:
@@ -60,6 +61,18 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
           python -m pip install -r requirements.txt
+
+      - name: Verificar dependências multimodais instaladas
+        run: |
+          python - <<'PY'
+          import importlib
+          importlib.import_module("librosa")
+          importlib.import_module("pyarrow")
+          importlib.import_module("soundfile")
+          importlib.import_module("av")
+          importlib.import_module("PIL")
+          print("Dependências multimodais disponíveis.")
+          PY
 
       - name: Validar código e proteções antes do treinamento
         run: |
