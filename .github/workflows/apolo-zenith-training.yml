@@ -9,6 +9,8 @@ on:
       - ".github/workflows/apolo-zenith-training.yml"
       - "datasets/downloader.py"
       - "requirements.txt"
+      - "scripts/download_datasets.py"
+      - "tests/test_multimodal.py"
   workflow_dispatch:
     inputs:
       mode:
