@@ -1,6 +1,6 @@
 name: Apolo Zenith 1.9 — próxima etapa de treinamento textual
 
-run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id }}"
+run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}"
 
 on:
   push:
@@ -127,10 +127,10 @@ jobs:
             --seed 1337
 
       - name: Publicar checkpoint textual, métricas e proveniência
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id }}
+          name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}
           path: |
             checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id }}/
             datasets_storage/manifest.json
