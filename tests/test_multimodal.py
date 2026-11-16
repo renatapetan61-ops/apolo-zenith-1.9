@@ -367,4 +367,4 @@ def test_gutenberg_retry_em_http_503(monkeypatch) -> None:
     monkeypatch.setattr(corpus_builder.time, "sleep", lambda segundos: esperas.append(segundos))
     assert corpus_builder.listar_livros_gutenberg("pt", 1) == [(123, "Livro de teste")]
     assert chamadas["n"] == 2
-    assert esperas == [1]
+    assert esperas == [2.0]  # backoff exponencial: espera inicial de 2s
