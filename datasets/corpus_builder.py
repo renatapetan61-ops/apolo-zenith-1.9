@@ -90,6 +90,27 @@ def baixar(url: str, destino: Path, tentativas: int = 3, espera: float = 1.5) ->
     return False
 
 
+def ler_texto_http(url: str, tentativas: int = 5) -> str:
+    """Lê página HTTP com retry para falhas transitórias (429/5xx/rede)."""
+    ultimo_erro: Optional[BaseException] = None
+    for tentativa in range(tentativas):
+        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as resposta:
+                return resposta.read().decode("utf-8", errors="replace")
+        except urllib.error.HTTPError as exc:
+            ultimo_erro = exc
+            if not (exc.code == 429 or 500 <= exc.code <= 599):
+                raise
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            ultimo_erro = exc
+        if tentativa < tentativas - 1:
+            time.sleep(min(2 ** tentativa, 20))
+    if ultimo_erro is not None:
+        raise ultimo_erro
+    raise RuntimeError("Falha HTTP sem resposta para " + url)
+
+
 def sha256_arquivo(caminho: Path) -> str:
     digest = hashlib.sha256()
     with caminho.open("rb") as fh:
