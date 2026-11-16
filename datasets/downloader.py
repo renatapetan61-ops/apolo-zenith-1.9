@@ -251,9 +251,21 @@ CACHE_GITHUB = CacheGitHub()
 
 
 def _github_api(url: str) -> Dict[str, Any]:
-    requisicao = urllib.request.Request(
-        url, headers={"User-Agent": USER_AGENT, "Accept": "application/vnd.github+json"}
-    )
+    """Consulta a API pública do GitHub, usando token quando disponível.
+
+    Em GitHub Actions, ``GITHUB_TOKEN`` evita depender do limite anônimo
+    compartilhado do runner. Fora do Actions, a coleta continua funcionando
+    sem credenciais, respeitando os limites públicos da API.
+    """
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    requisicao = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(requisicao, timeout=60) as resposta:
         return json.loads(resposta.read().decode("utf-8"))
 
