@@ -84,6 +84,11 @@ def main() -> None:
     parser.add_argument("--saida", default="datasets_storage/processed")
     parser.add_argument("--vocab", type=int, default=8192)
     parser.add_argument("--min-frequencia", type=int, default=3)
+    parser.add_argument(
+        "--tokenizer-existente",
+        default=None,
+        help="reutiliza um BPE existente para preservar compatibilidade com os pesos do modelo",
+    )
     parser.add_argument("--proporcoes", default="0.97,0.015,0.015")
     args = parser.parse_args()
 
@@ -112,14 +117,18 @@ def main() -> None:
         caminho.write_text("\n\n".join(docs), encoding="utf-8")
         print(f"      {nome}: {len(docs)} documentos, {caminho.stat().st_size/1024/1024:.2f} MB")
 
-    print(f"[5/5] treinando tokenizer BPE (vocab={args.vocab})…")
-    tokenizer = BPETokenizer.train(
-        splits["train"],
-        vocab_size=args.vocab,
-        min_frequencia=args.min_frequencia,
-        verbose=True,
-    )
     pasta_tokenizer = saida / "tokenizer"
+    if args.tokenizer_existente:
+        print(f"[5/5] reutilizando tokenizer BPE existente: {args.tokenizer_existente}")
+        tokenizer = BPETokenizer.load(args.tokenizer_existente)
+    else:
+        print(f"[5/5] treinando tokenizer BPE (vocab={args.vocab})…")
+        tokenizer = BPETokenizer.train(
+            splits["train"],
+            vocab_size=args.vocab,
+            min_frequencia=args.min_frequencia,
+            verbose=True,
+        )
     tokenizer.save(pasta_tokenizer)
     print(f"      tokenizer salvo em {pasta_tokenizer} (vocab={tokenizer.vocab_size})")
 
