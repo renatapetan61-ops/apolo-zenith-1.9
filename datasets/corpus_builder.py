@@ -35,6 +35,38 @@ TIMEOUT = 60
 # --------------------------------------------------------------------------- #
 # Infraestrutura HTTP
 # --------------------------------------------------------------------------- #
+def _ler_url_texto(url: str, tentativas: int = 5, espera: float = 2.0) -> Optional[str]:
+    """Lê uma página HTTP com retry para 429/5xx e falhas transitórias."""
+    for tentativa in range(tentativas):
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as resposta:
+                return resposta.read().decode("utf-8", errors="replace")
+        except urllib.error.HTTPError as exc:
+            transitório = exc.code == 429 or 500 <= exc.code <= 599
+            if not transitório or tentativa == tentativas - 1:
+                print(f"  [falha HTTP {exc.code}] {url}: {exc.reason}")
+                return None
+            retry_after = exc.headers.get("Retry-After")
+            try:
+                atraso = min(float(retry_after), 60.0) if retry_after else espera * (2 ** tentativa)
+            except ValueError:
+                atraso = espera * (2 ** tentativa)
+            print(f"  [retry {tentativa + 1}/{tentativas - 1}] HTTP {exc.code}; aguardando {atraso:.1f}s")
+            time.sleep(atraso)
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            if tentativa == tentativas - 1:
+                print(f"  [falha de rede] {url}: {exc}")
+                return None
+            atraso = espera * (2 ** tentativa)
+            print(f"  [retry {tentativa + 1}/{tentativas - 1}] falha de rede; aguardando {atraso:.1f}s")
+            time.sleep(atraso)
+    return None
+
+
 def baixar(url: str, destino: Path, tentativas: int = 3, espera: float = 1.5) -> bool:
     """Baixa uma URL para um arquivo local com retentativas."""
     destino.parent.mkdir(parents=True, exist_ok=True)
@@ -123,10 +155,8 @@ def listar_livros_gutenberg(idioma: str = "pt", max_livros: int = 120) -> List[T
     no servidor.
     """
     url = f"https://www.gutenberg.org/browse/languages/{idioma}"
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as resposta:
-        html = resposta.read().decode("utf-8", errors="replace")
-    livros = _extrair_livros(html, max_livros)
+    html = _ler_url_texto(url)
+    livros = _extrair_livros(html, max_livros) if html else []
     if livros:
         return livros
 
@@ -139,11 +169,8 @@ def listar_livros_gutenberg(idioma: str = "pt", max_livros: int = 120) -> List[T
             + urllib.parse.quote(consulta)
             + "&submit_search=Go%21"
         )
-        req = urllib.request.Request(url_busca, headers={"User-Agent": USER_AGENT})
-        try:
-            with urllib.request.urlopen(req, timeout=TIMEOUT) as resposta:
-                html = resposta.read().decode("utf-8", errors="replace")
-        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError):
+        html = _ler_url_texto(url_busca)
+        if not html:
             continue
         for ebook_id, titulo in _extrair_livros(html, max_livros):
             if ebook_id in vistos:
@@ -304,6 +331,11 @@ def construir_corpus(
     documentos: List[DocumentoFonte] = []
     documentos = coletar_gutenberg(raw, "pt", max_livros_pt, documentos)
     documentos = coletar_gutenberg(raw, "en", max_livros_en, documentos)
+    if not documentos:
+        raise RuntimeError(
+            "Nenhum livro foi coletado. O catálogo do Project Gutenberg pode estar "
+            "temporariamente indisponível; execute novamente após alguns minutos."
+        )
     if usar_wikisource:
         documentos = coletar_wikisource(raw, max_wiki_mb, documentos)
 
