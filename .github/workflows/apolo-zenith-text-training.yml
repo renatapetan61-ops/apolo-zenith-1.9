@@ -101,8 +101,8 @@ jobs:
         run: |
           python -m datasets.corpus_builder \
             --saida datasets_storage \
-            --max-livros-pt 40 \
-            --max-livros-en 20 \
+            --max-livros-pt 15 \
+            --max-livros-en 10 \
             --sem-wikisource
 
       - name: Preparar texto sem alterar o tokenizer do modelo
