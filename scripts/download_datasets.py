@@ -357,6 +357,18 @@ def preparar_video(spec: DatasetSpec, base: Path, manifesto: DatasetManifest, do
     return entrada
 
 
+# Modalidades declaradas pelo catálogo. "code" é o identificador canônico
+# usado pelos loaders e pelo pipeline; "codigo" permanece como alias legado.
+PREPARADORES = {
+    "texto": preparar_texto,
+    "codigo": preparar_codigo,
+    "code": preparar_codigo,
+    "images": preparar_imagens,
+    "audio": preparar_audio,
+    "video": preparar_video,
+}
+
+
 # --------------------------------------------------------------------------- #
 # Orquestração
 # --------------------------------------------------------------------------- #
@@ -389,19 +401,11 @@ def main() -> None:
         print("nenhum dataset selecionado; use --datasets ou --modalidades")
         return
 
-    preparadores = {
-        "texto": preparar_texto,
-        "codigo": preparar_codigo,
-        "images": preparar_imagens,
-        "audio": preparar_audio,
-        "video": preparar_video,
-    }
-
     for spec in selecionados:
         base = RAIZ / args.raiz / spec.modalidade
         base.mkdir(parents=True, exist_ok=True)
         print(f"\n=== {spec.nome} ({spec.modalidade}) ===")
-        preparador = preparadores.get(spec.modalidade)
+        preparador = PREPARADORES.get(spec.modalidade)
         if preparador is None:
             print(f"  sem preparador para a modalidade '{spec.modalidade}'")
             continue
