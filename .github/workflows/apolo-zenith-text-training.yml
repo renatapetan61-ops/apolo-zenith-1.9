@@ -1,12 +1,8 @@
 name: Apolo Zenith 1.9 — próxima etapa de treinamento textual
 
-run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}"
+run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id || 'ID-NAO-INFORMADO' }}"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/apolo-zenith-text-training.yml"
   workflow_dispatch:
     inputs:
       code_run_id:
@@ -31,7 +27,7 @@ concurrency:
 
 jobs:
   train-text:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     name: "Continuar o Language Core com texto"
     runs-on: ubuntu-latest
     timeout-minutes: 360
@@ -45,6 +41,13 @@ jobs:
       CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}/checkpoints/final
 
     steps:
+      - name: Validar identificador da execução de código
+        run: |
+          set -euo pipefail
+          test -n "$CODE_RUN_ID"
+          case "$CODE_RUN_ID" in (*[!0-9]*) echo "CODE_RUN_ID deve ser numérico"; exit 1;; esac
+          echo "Checkpoint de origem: $CODE_CHECKPOINT"
+
       - name: Checkout do código atualizado
         uses: actions/checkout@v4
 
