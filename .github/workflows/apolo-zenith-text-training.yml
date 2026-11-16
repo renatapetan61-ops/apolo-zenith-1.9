@@ -128,7 +128,7 @@ jobs:
         with:
           name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id }}
           path: |
-            checkpoints/actions-text-${{ github.event.workflow_run.id }}/
+            checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id }}/
             datasets_storage/manifest.json
             datasets_storage/processed/resumo.json
           if-no-files-found: warn
