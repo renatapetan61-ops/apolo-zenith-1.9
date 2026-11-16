@@ -337,3 +337,34 @@ def test_scheduler_nao_executa_loop_infinito(tmp_path: Path) -> None:
     total = sum(len(f.tarefas) for f in scheduler.plano)
     assert total == len({t.nome for f in scheduler.plano for t in f.tarefas})
     assert scheduler.estado.duracao_alvo_s == 240 * 3600.0
+
+
+
+def test_gutenberg_retry_em_http_503(monkeypatch) -> None:
+    """A listagem deve se recuperar de um 503 transitório."""
+    import io
+    import urllib.error
+    from datasets import corpus_builder
+
+    chamadas = {"n": 0}
+    esperas = []
+
+    class Resposta:
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+        def read(self):
+            return b'<a href="/ebooks/123">Livro de teste</a>'
+
+    def fake_urlopen(req, timeout):
+        chamadas["n"] += 1
+        if chamadas["n"] == 1:
+            raise urllib.error.HTTPError(req.full_url, 503, "Unavailable", {}, io.BytesIO())
+        return Resposta()
+
+    monkeypatch.setattr(corpus_builder.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(corpus_builder.time, "sleep", lambda segundos: esperas.append(segundos))
+    assert corpus_builder.listar_livros_gutenberg("pt", 1) == [(123, "Livro de teste")]
+    assert chamadas["n"] == 2
+    assert esperas == [1]
