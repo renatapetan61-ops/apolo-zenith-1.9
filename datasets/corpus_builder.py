@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
 USER_AGENT = "ApoloZenith/1.9 (dataset-builder; +https://example.invalid/apolo)"
-TIMEOUT = 60
+TIMEOUT = 20
 
 
 # --------------------------------------------------------------------------- #
@@ -176,12 +176,12 @@ def listar_livros_gutenberg(idioma: str = "pt", max_livros: int = 120) -> List[T
     no servidor.
     """
     url = f"https://www.gutenberg.org/browse/languages/{idioma}"
-    html = _ler_url_texto(url)
+    html = _ler_url_texto(url, tentativas=3, espera=1.0)
     livros = _extrair_livros(html, max_livros) if html else []
-    if livros:
+    if livros or idioma != "en":
         return livros
 
-    # Fallback: busca por autores clássicos.
+    # Fallback: busca por autores clássicos somente para o catálogo inglês.
     encontrados: List[Tuple[int, str]] = []
     vistos: set[int] = set()
     for consulta in CONSULTA_BUSCA_EN:
@@ -190,7 +190,7 @@ def listar_livros_gutenberg(idioma: str = "pt", max_livros: int = 120) -> List[T
             + urllib.parse.quote(consulta)
             + "&submit_search=Go%21"
         )
-        html = _ler_url_texto(url_busca)
+        html = _ler_url_texto(url_busca, tentativas=3, espera=1.0)
         if not html:
             continue
         for ebook_id, titulo in _extrair_livros(html, max_livros):
