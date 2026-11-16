@@ -229,6 +229,14 @@ def test_loader_codigo_por_linguagem(tmp_path: Path) -> None:
 # =========================================================================== #
 # Catálogo e manifesto
 # =========================================================================== #
+def test_downloader_mapeia_modalidade_code() -> None:
+    """A modalidade canônica 'code' do catálogo deve usar o preparador de código."""
+    from scripts.download_datasets import PREPARADORES, preparar_codigo
+
+    assert PREPARADORES["code"] is preparar_codigo
+    assert PREPARADORES["codigo"] is preparar_codigo
+
+
 def test_catalogo_tem_licenca_e_url() -> None:
     """Todo dataset do catálogo declara licença, origem e URL."""
     assert CATALOGO
