@@ -39,6 +39,11 @@ def main() -> None:
     parser.add_argument("--tokenizer", default="datasets_storage/processed/tokenizer")
     parser.add_argument("--config", default="configs/training.yaml")
     parser.add_argument("--retomar", default=None)
+    parser.add_argument(
+        "--checkpoint-inicial",
+        default=None,
+        help="carrega pesos de um checkpoint de inferência/treino anterior antes de continuar",
+    )
     parser.add_argument("--steps", type=int, default=700)
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--block-size", type=int, default=64)
@@ -90,6 +95,12 @@ def main() -> None:
         raise SystemExit("corpus textual vazio — rode a preparação antes")
 
     modelo = ApoloLanguageModel(modelo_config)
+    if args.checkpoint_inicial:
+        inicial = Path(args.checkpoint_inicial)
+        if not inicial.exists():
+            raise SystemExit(f"checkpoint inicial não encontrado: {inicial}")
+        modelo = ApoloLanguageModel.load(inicial, map_location="cpu")
+        print(f"[modelo] continuando a partir de {inicial}")
     print(f"[modelo] parâmetros={modelo.num_parameters():,}")
 
     # Ao retomar, ``max_steps`` é **relativo** ao passo já atingido
