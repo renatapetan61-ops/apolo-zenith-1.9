@@ -8,7 +8,10 @@ on:
     paths:
       - ".github/workflows/apolo-zenith-text-training.yml"
       - "datasets/corpus_builder.py"
+      - "datasets/text_loader.py"
+      - "training/text_trainer.py"
       - "tests/test_corpus_builder.py"
+      - "tests/test_text_data_split.py"
   workflow_dispatch:
     inputs:
       code_run_id:
