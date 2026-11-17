@@ -1,19 +1,21 @@
 name: Apolo Zenith 1.9 — próxima etapa de treinamento textual
 
-run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}"
+run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}"
 
 on:
   push:
     branches: [main]
     paths:
       - ".github/workflows/apolo-zenith-text-training.yml"
+      - "datasets/corpus_builder.py"
+      - "tests/test_corpus_builder.py"
   workflow_dispatch:
     inputs:
       code_run_id:
         description: "ID do workflow de código concluído com sucesso"
         required: true
         type: string
-        default: "43977674281"
+        default: "43986715117"
   workflow_run:
     workflows:
       - "Apolo Zenith 1.9 — treinamento incremental de código"
@@ -43,8 +45,8 @@ jobs:
       MKL_NUM_THREADS: "2"
       OPENBLAS_NUM_THREADS: "2"
       TOKENIZERS_PARALLELISM: "false"
-      CODE_RUN_ID: ${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
-      CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}/checkpoints/final
+      CODE_RUN_ID: ${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
+      CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}/checkpoints/final
 
     steps:
       - name: Validar identificador da execução de código
@@ -79,8 +81,8 @@ jobs:
       - name: Recuperar o checkpoint produzido pelo treinamento de código
         uses: actions/download-artifact@v4
         with:
-          name: apolo-zenith-code-training-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
-          run-id: ${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
+          name: apolo-zenith-code-training-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
+          run-id: ${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: artifacts/code
 
@@ -139,9 +141,9 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
+          name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
           path: |
-            checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}/
+            checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}/
             datasets_storage/manifest.json
             datasets_storage/processed/resumo.json
           if-no-files-found: warn
