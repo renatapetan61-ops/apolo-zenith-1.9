@@ -137,7 +137,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}
+          name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
           path: |
             checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}/
             datasets_storage/manifest.json
