@@ -1,0 +1,114 @@
+name: Apolo Zenith 1.9 — validação do checkpoint textual
+
+run-name: "Apolo Zenith text checkpoint validation"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/apolo-zenith-text-validation.yml"
+      - "scripts/validate_text_checkpoint.py"
+  workflow_dispatch:
+    inputs:
+      text_run_id:
+        description: "Run ID do treinamento textual concluído"
+        required: true
+        type: string
+        default: "44200330638"
+      code_run_id:
+        description: "Run ID do treinamento de código de origem"
+        required: true
+        type: string
+        default: "43986715117"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: apolo-zenith-checkpoint-validation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: "Validar pesos, tokenizer, métricas e geração"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONUNBUFFERED: "1"
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+      TOKENIZERS_PARALLELISM: "false"
+      TEXT_RUN_ID: ${{ inputs.text_run_id || '44200330638' }}
+      CODE_RUN_ID: ${{ inputs.code_run_id || '43986715117' }}
+
+    steps:
+      - name: Validar identificadores
+        run: |
+          set -euo pipefail
+          [[ "$TEXT_RUN_ID" =~ ^[0-9]+$ ]]
+          [[ "$CODE_RUN_ID" =~ ^[0-9]+$ ]]
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar PyTorch CPU e dependências
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+
+      - name: Baixar checkpoint textual publicado
+        uses: actions/download-artifact@v4
+        with:
+          name: apolo-zenith-text-training-after-${{ env.CODE_RUN_ID }}
+          run-id: ${{ env.TEXT_RUN_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/text
+
+      - name: Baixar checkpoint original de código
+        uses: actions/download-artifact@v4
+        with:
+          name: apolo-zenith-code-training-${{ env.CODE_RUN_ID }}
+          run-id: ${{ env.CODE_RUN_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/code
+
+      - name: Validar estrutura dos artefatos
+        run: |
+          set -euo pipefail
+          TEXT_CKPT="artifacts/text/checkpoints/actions-text-${CODE_RUN_ID}/checkpoints/final"
+          CODE_CKPT="artifacts/code/checkpoints/actions-code-${CODE_RUN_ID}/checkpoints/final"
+          test -s "$TEXT_CKPT/model.pt"
+          test -s "$TEXT_CKPT/config.json"
+          test -s "$TEXT_CKPT/tokenizer/tokenizer.json"
+          test -s "$CODE_CKPT/model.pt"
+          test -s "$CODE_CKPT/config.json"
+          echo "TEXT_CKPT=$TEXT_CKPT" >> "$GITHUB_ENV"
+          echo "CODE_CKPT=$CODE_CKPT" >> "$GITHUB_ENV"
+
+      - name: Executar validação completa
+        run: |
+          python -m scripts.validate_text_checkpoint \
+            --checkpoint-text "$TEXT_CKPT" \
+            --checkpoint-code "$CODE_CKPT" \
+            --tokenizer-original tokenizers/tokenizer \
+            --output reports/text-checkpoint-validation.json \
+            --max-new-tokens 8
+
+      - name: Publicar relatório de validação
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apolo-zenith-text-checkpoint-validation-${{ env.TEXT_RUN_ID }}
+          path: reports/text-checkpoint-validation.json
+          if-no-files-found: warn
+          retention-days: 30
