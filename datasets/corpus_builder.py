@@ -52,9 +52,11 @@ def _ler_url_texto(url: str, tentativas: int = 5, espera: float = 2.0) -> Option
                 return None
             retry_after = exc.headers.get("Retry-After")
             try:
-                atraso = min(float(retry_after), 60.0) if retry_after else espera * (2 ** tentativa)
-            except ValueError:
-                atraso = espera * (2 ** tentativa)
+                # Um servidor indisponível não deve bloquear o CI por minutos.
+                # Respeitamos Retry-After, mas com teto curto e backoff limitado.
+                atraso = min(float(retry_after), 5.0) if retry_after else min(espera * (2 ** tentativa), 5.0)
+            except (TypeError, ValueError):
+                atraso = min(espera * (2 ** tentativa), 5.0)
             print(f"  [retry {tentativa + 1}/{tentativas - 1}] HTTP {exc.code}; aguardando {atraso:.1f}s")
             time.sleep(atraso)
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
@@ -178,7 +180,9 @@ def listar_livros_gutenberg(idioma: str = "pt", max_livros: int = 120) -> List[T
     url = f"https://www.gutenberg.org/browse/languages/{idioma}"
     html = _ler_url_texto(url, tentativas=3, espera=1.0)
     livros = _extrair_livros(html, max_livros) if html else []
-    if livros or idioma != "en":
+    # Se o host estiver retornando HTTP 5xx, não multiplique a indisponibilidade
+    # por cinco buscas redundantes. O fallback Wikipedia será usado pelo pipeline.
+    if livros or idioma != "en" or html is None:
         return livros
 
     # Fallback: busca por autores clássicos somente para o catálogo inglês.
@@ -261,6 +265,88 @@ def coletar_gutenberg(
                 idioma=idioma,
             )
         )
+    return documentos
+
+
+# --------------------------------------------------------------------------- #
+# Wikipedia — fallback independente do Project Gutenberg
+# --------------------------------------------------------------------------- #
+WIKIPEDIA_BUSCAS = {
+    "pt": ["literatura brasileira", "história do Brasil", "ciência no Brasil", "geografia do Brasil"],
+    "en": ["world history", "science", "literature", "geography"],
+}
+
+
+def coletar_wikipedia(
+    saida_raw: Path,
+    idioma: str,
+    max_documentos: int,
+    documentos: Optional[List[DocumentoFonte]] = None,
+) -> List[DocumentoFonte]:
+    """Obtém artigos via MediaWiki API, com licença CC BY-SA 4.0 declarada.
+
+    É usado quando o catálogo do Gutenberg está indisponível. Cada artigo
+    mantém título, URL canônica, idioma, licença e hash no manifesto.
+    """
+    documentos = documentos if documentos is not None else []
+    pasta = saida_raw / f"wikipedia_{idioma}"
+    pasta.mkdir(parents=True, exist_ok=True)
+    host = "pt.wikipedia.org" if idioma == "pt" else "en.wikipedia.org"
+    vistos: set[int] = set()
+    adicionados = 0
+
+    for consulta in WIKIPEDIA_BUSCAS.get(idioma, WIKIPEDIA_BUSCAS["en"]):
+        params = urllib.parse.urlencode({
+            "action": "query",
+            "format": "json",
+            "generator": "search",
+            "gsrsearch": consulta,
+            "gsrnamespace": 0,
+            "gsrlimit": min(max_documentos, 10),
+            "prop": "extracts",
+            "explaintext": 1,
+            "exchars": 50000,
+        })
+        url_api = f"https://{host}/w/api.php?{params}"
+        bruto = _ler_url_texto(url_api, tentativas=2, espera=1.0)
+        if not bruto:
+            continue
+        try:
+            payload = json.loads(bruto)
+        except json.JSONDecodeError:
+            print(f"  [wikipedia:{idioma}] resposta JSON inválida para {consulta!r}")
+            continue
+
+        paginas = payload.get("query", {}).get("pages", {})
+        for pagina in sorted(paginas.values(), key=lambda item: int(item.get("pageid", 0))):
+            page_id = int(pagina.get("pageid", 0))
+            titulo = str(pagina.get("title", "")).strip()
+            texto = str(pagina.get("extract", "")).strip()
+            if not page_id or page_id in vistos or len(texto) < 1200:
+                continue
+            vistos.add(page_id)
+            arquivo = pasta / f"{page_id}.txt"
+            arquivo.write_text(texto, encoding="utf-8")
+            url_artigo = f"https://{host}/wiki/{urllib.parse.quote(titulo.replace(' ', '_'))}"
+            documentos.append(
+                DocumentoFonte(
+                    fonte=f"wikipedia_{idioma}",
+                    titulo=titulo,
+                    arquivo=str(arquivo.relative_to(saida_raw.parent)),
+                    url=url_artigo,
+                    licenca="CC BY-SA 4.0 (Wikipedia; atribuição ao artigo e histórico)",
+                    caracteres=len(texto),
+                    sha256=sha256_arquivo(arquivo),
+                    idioma=idioma,
+                )
+            )
+            adicionados += 1
+            if adicionados >= max_documentos:
+                print(f"  [wikipedia:{idioma}] {adicionados} artigos coletados")
+                return documentos
+        time.sleep(0.2)
+
+    print(f"  [wikipedia:{idioma}] {adicionados} artigos coletados")
     return documentos
 
 
@@ -350,8 +436,18 @@ def construir_corpus(
     raw.mkdir(parents=True, exist_ok=True)
 
     documentos: List[DocumentoFonte] = []
+    antes = len(documentos)
     documentos = coletar_gutenberg(raw, "pt", max_livros_pt, documentos)
+    if len(documentos) == antes:
+        print("  [fallback] Gutenberg PT indisponível; usando Wikipedia PT (CC BY-SA 4.0).")
+        documentos = coletar_wikipedia(raw, "pt", max_livros_pt, documentos)
+
+    antes = len(documentos)
     documentos = coletar_gutenberg(raw, "en", max_livros_en, documentos)
+    if len(documentos) == antes:
+        print("  [fallback] Gutenberg EN indisponível; usando Wikipedia EN (CC BY-SA 4.0).")
+        documentos = coletar_wikipedia(raw, "en", max_livros_en, documentos)
+
     if not documentos:
         raise RuntimeError(
             "Nenhum livro foi coletado. O catálogo do Project Gutenberg pode estar "
