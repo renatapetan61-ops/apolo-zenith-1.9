@@ -1,15 +1,19 @@
 name: Apolo Zenith 1.9 — próxima etapa de treinamento textual
 
-run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id || 'ID-NAO-INFORMADO' }}"
+run-name: "Apolo Zenith text training after code run ${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}"
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/apolo-zenith-text-training.yml"
   workflow_dispatch:
     inputs:
       code_run_id:
         description: "ID do workflow de código concluído com sucesso"
         required: true
         type: string
-        default: "43975219562"
+        default: "43977674281"
   workflow_run:
     workflows:
       - "Apolo Zenith 1.9 — treinamento incremental de código"
@@ -23,11 +27,11 @@ permissions:
 # Compartilha o mesmo lock lógico do treino de código: nunca há dois treinos ativos.
 concurrency:
   group: apolo-zenith-training
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   train-text:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     name: "Continuar o Language Core com texto"
     runs-on: ubuntu-latest
     timeout-minutes: 360
@@ -37,7 +41,7 @@ jobs:
       MKL_NUM_THREADS: "2"
       OPENBLAS_NUM_THREADS: "2"
       TOKENIZERS_PARALLELISM: "false"
-      CODE_RUN_ID: ${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}
+      CODE_RUN_ID: ${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
       CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}/checkpoints/final
 
     steps:
