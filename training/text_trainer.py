@@ -92,7 +92,16 @@ def main() -> None:
         f"validação={len(validacao)} sequências ({validacao.num_tokens:,} tokens)"
     )
     if len(treino) == 0:
-        raise SystemExit("corpus textual vazio — rode a preparação antes")
+        raise SystemExit(
+            "corpus textual insuficiente: o split de treino precisa conter "
+            f"ao menos {treino_config.block_size + 1} tokens para formar uma sequência. "
+            "Aumente o corpus ou reduza --block-size."
+        )
+    if len(validacao) == 0:
+        print(
+            "[aviso] split de validação sem sequências completas; "
+            "o treinamento continuará sem métricas de validação."
+        )
 
     modelo = ApoloLanguageModel(modelo_config)
     if args.checkpoint_inicial:
