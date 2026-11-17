@@ -77,8 +77,8 @@ jobs:
       - name: Recuperar o checkpoint produzido pelo treinamento de código
         uses: actions/download-artifact@v4
         with:
-          name: apolo-zenith-code-training-${{ inputs.code_run_id || github.event.workflow_run.id }}
-          run-id: ${{ inputs.code_run_id || github.event.workflow_run.id }}
+          name: apolo-zenith-code-training-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
+          run-id: ${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: artifacts/code
 
@@ -139,7 +139,7 @@ jobs:
         with:
           name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}
           path: |
-            checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id }}/
+            checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}/
             datasets_storage/manifest.json
             datasets_storage/processed/resumo.json
           if-no-files-found: warn
