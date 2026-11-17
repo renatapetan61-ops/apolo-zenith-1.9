@@ -214,8 +214,27 @@ def dividir_documentos(
     indices = list(range(len(documentos)))
     random.Random(semente).shuffle(indices)
     n = len(indices)
-    n_treino = int(n * proporcoes[0])
-    n_validacao = int(n * proporcoes[1])
+    # Em corpora pequenos, o arredondamento das proporções (por exemplo,
+    # 97%/1,5%/1,5% com apenas 8 documentos) zera a validação. Reserve
+    # pelo menos um documento para validação e teste sempre que houver
+    # amostras suficientes, mantendo ao menos um documento de treino.
+    if n >= 3:
+        n_validacao = max(1, int(n * proporcoes[1]))
+        n_teste = max(1, int(n * proporcoes[2]))
+        while n_validacao + n_teste >= n:
+            if n_teste >= n_validacao and n_teste > 1:
+                n_teste -= 1
+            elif n_validacao > 1:
+                n_validacao -= 1
+            else:
+                n_teste = max(0, n_teste - 1)
+                break
+        n_treino = n - n_validacao - n_teste
+    elif n == 2:
+        n_treino, n_validacao, n_teste = 1, 1, 0
+    else:
+        n_treino, n_validacao, n_teste = n, 0, 0
+
     treino = [documentos[i] for i in indices[:n_treino]]
     validacao = [documentos[i] for i in indices[n_treino : n_treino + n_validacao]]
     teste = [documentos[i] for i in indices[n_treino + n_validacao :]]
@@ -249,8 +268,16 @@ class PackedTokenDataset(Dataset):
 
     def __init__(self, caminho: str | Path, block_size: int) -> None:
         self.caminho = Path(caminho)
-        self.dados = np.memmap(self.caminho, dtype=np.uint16, mode="r")
         self.block_size = block_size
+        # numpy.memmap não aceita arquivos vazios. Corpora pequenos podem
+        # legitimamente produzir splits vazios; representá-los como array
+        # vazio permite ao Trainer ignorar a avaliação sem quebrar o job.
+        if not self.caminho.exists():
+            raise FileNotFoundError(f"arquivo de tokens não encontrado: {self.caminho}")
+        if self.caminho.stat().st_size == 0:
+            self.dados = np.empty(0, dtype=np.uint16)
+        else:
+            self.dados = np.memmap(self.caminho, dtype=np.uint16, mode="r")
         self.n = max(0, (len(self.dados) - 1) // block_size)
 
     def __len__(self) -> int:
