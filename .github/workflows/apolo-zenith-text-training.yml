@@ -42,7 +42,7 @@ jobs:
       OPENBLAS_NUM_THREADS: "2"
       TOKENIZERS_PARALLELISM: "false"
       CODE_RUN_ID: ${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}
-      CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ inputs.code_run_id || github.event.workflow_run.id || '43975219562' }}/checkpoints/final
+      CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ inputs.code_run_id || github.event.workflow_run.id || '43977674281' }}/checkpoints/final
 
     steps:
       - name: Validar identificador da execução de código
