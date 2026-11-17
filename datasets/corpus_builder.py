@@ -214,7 +214,7 @@ def texto_plain_gutenberg(ebook_id: int) -> Optional[Tuple[str, str]]:
     for url in candidatos:
         try:
             req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(req, timeout=TIMEOUT) as resposta:
+            with urllib.request.urlopen(req, timeout=8) as resposta:
                 tipo = resposta.headers.get("Content-Type", "")
                 if "text/html" in tipo:
                     continue
