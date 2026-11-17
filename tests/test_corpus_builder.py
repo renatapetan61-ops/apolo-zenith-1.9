@@ -20,7 +20,7 @@ def test_coletar_wikipedia_registra_licenca_url_e_hash(tmp_path, monkeypatch):
     assert documento.licenca.startswith("CC BY-SA 4.0")
     assert documento.url == "https://pt.wikipedia.org/wiki/Literatura_brasileira"
     assert documento.sha256
-    assert (tmp_path / "datasets_storage" / documento.arquivo).read_text() == texto
+    assert (tmp_path / "datasets_storage" / documento.arquivo).read_text() == texto.strip()
 
 
 def test_construir_corpus_usa_wikipedia_quando_gutenberg_nao_tem_dados(tmp_path, monkeypatch):
