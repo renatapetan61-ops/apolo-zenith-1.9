@@ -8,6 +8,8 @@ on:
     paths:
       - ".github/workflows/apolo-zenith-text-training.yml"
       - "datasets/corpus_builder.py"
+      - "scripts/audit_text_corpus.py"
+      - "tests/test_text_corpus_audit.py"
       - "datasets/text_loader.py"
       - "training/text_trainer.py"
       - "tests/test_corpus_builder.py"
@@ -112,8 +114,9 @@ jobs:
         run: |
           python -m datasets.corpus_builder \
             --saida datasets_storage \
-            --max-livros-pt 15 \
-            --max-livros-en 10 \
+            --max-livros-pt 80 \
+            --max-livros-en 80 \
+            --min-documentos-idioma 40 \
             --sem-wikisource
 
       - name: Preparar texto sem alterar o tokenizer do modelo
@@ -123,7 +126,18 @@ jobs:
             --raiz datasets_storage \
             --saida datasets_storage/processed \
             --vocab 8192 \
+            --proporcoes 0.90,0.05,0.05 \
             --tokenizer-existente tokenizers/tokenizer
+
+      - name: Auditar cobertura, equilíbrio e integridade do corpus
+        run: |
+          python -m scripts.audit_text_corpus \
+            --manifesto datasets_storage/manifest.json \
+            --processado datasets_storage/processed \
+            --min-documentos-idioma 40 \
+            --min-tokens-treino 20000 \
+            --min-tokens-avaliacao 1000 \
+            --saida reports/corpus-audit.json
 
       - name: Continuar o Language Core no corpus textual
         run: |
@@ -149,6 +163,7 @@ jobs:
             checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}/
             datasets_storage/manifest.json
             datasets_storage/processed/resumo.json
+            reports/corpus-audit.json
           if-no-files-found: warn
           retention-days: 30
           compression-level: 6
