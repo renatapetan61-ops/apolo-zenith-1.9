@@ -155,7 +155,7 @@ jobs:
             --seed 1337
 
       - name: Publicar checkpoint textual, métricas e proveniência
-        if: success()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
