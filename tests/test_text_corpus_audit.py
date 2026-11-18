@@ -50,3 +50,21 @@ def test_auditoria_bloqueia_hash_de_documento_alterado(tmp_path):
     report=auditar(manifesto,processed,min_docs=1,min_train_tokens=10,min_eval_tokens=5)
     assert report["passed"] is False
     assert report["gates"]["manifest_files_and_hashes"] is False
+
+def test_auditoria_exige_total_exato_quando_configurado(tmp_path):
+    import hashlib, json
+    from scripts.audit_text_corpus import auditar
+    root=tmp_path/"data"; (root/"raw").mkdir(parents=True)
+    docs=[]
+    for lang in ("pt","en"):
+        rel=f"raw/{lang}.txt"; path=root/rel; path.write_text("conteúdo único "+lang,encoding="utf-8")
+        docs.append({"idioma":lang,"fonte":"wikipedia_"+lang,"arquivo":rel,
+          "licenca":"CC BY-SA 4.0","sha256":hashlib.sha256(path.read_bytes()).hexdigest()})
+    manifesto=root/"manifest.json"; manifesto.write_text(json.dumps(docs),encoding="utf-8")
+    processed=root/"processed"; processed.mkdir()
+    for split,count in (("train",20),("val",10),("test",10)):
+        (processed/f"{split}.bin").write_bytes(b"\\x00\\x00"*count)
+    report=auditar(manifesto,processed,min_docs=1,min_train_tokens=10,min_eval_tokens=5,
+                   expected_total_documents=30000)
+    assert report["passed"] is False
+    assert report["gates"]["expected_total_documents"] is False
