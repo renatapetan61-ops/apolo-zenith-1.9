@@ -128,6 +128,7 @@ jobs:
           SOURCE="artifacts/baseline-text/checkpoints/actions-text-43986715117/checkpoints"
           test -s "$SOURCE/final/model.pt"
           test -s "$SOURCE/final/optimizer.pt"
+          rm -rf checkpoints/30d
           mkdir -p checkpoints/30d/checkpoints
           cp -a "$SOURCE/final" checkpoints/30d/checkpoints/final
           if [ -d "$SOURCE/best" ]; then cp -a "$SOURCE/best" checkpoints/30d/checkpoints/best; fi
