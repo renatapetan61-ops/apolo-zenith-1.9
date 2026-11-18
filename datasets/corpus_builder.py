@@ -328,7 +328,7 @@ def coletar_wikipedia(
             "action": "query", "format": "json", "generator": "search",
             "gsrsearch": consulta, "gsrnamespace": 0,
             "gsrlimit": min(max_documentos - adicionados, 10),
-            "prop": "extracts", "explaintext": 1, "exchars": 50000,
+            "prop": "extracts", "explaintext": 1,
         })
         bruto = _ler_url_texto(f"https://{host}/w/api.php?{params}", tentativas=2, espera=1.0)
         if bruto:
@@ -349,7 +349,7 @@ def coletar_wikipedia(
         params = urllib.parse.urlencode({
             "action": "query", "format": "json", "generator": "random",
             "grnnamespace": 0, "grnlimit": min(max_documentos - adicionados, 10),
-            "prop": "extracts", "explaintext": 1, "exchars": 50000,
+            "prop": "extracts", "explaintext": 1,
         })
         bruto = _ler_url_texto(f"https://{host}/w/api.php?{params}", tentativas=2, espera=1.0)
         if bruto:
