@@ -2,7 +2,11 @@ from scripts import prepare_data
 
 def test_processar_preserva_fonte_wikipedia_sem_limpeza_gutenberg(tmp_path, monkeypatch):
     arquivo=tmp_path/"artigo.txt"
-    texto=("Conteúdo enciclopédico em português com informações verificáveis. " * 12)
+    texto=("A biblioteca preserva documentos históricos e amplia pesquisas científicas. "
+        "Pesquisadores comparam fontes, registram autores e verificam datas relevantes. "
+        "Estudantes consultam mapas, relatórios, livros e registros culturais diversos. "
+        "A tecnologia organiza arquivos, protege dados e facilita novas descobertas. "
+        "Cada comunidade compartilha conhecimentos sobre natureza, saúde e educação.")
     arquivo.write_text(texto,encoding="utf-8")
     fontes=[]
     original=prepare_data.normalizar_texto
