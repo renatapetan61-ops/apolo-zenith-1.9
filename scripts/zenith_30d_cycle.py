@@ -133,6 +133,8 @@ def iniciar(state_path: Path, preflight_path: Path, audit_path: Path,
         "last_step": int(meta["step"]),
         "checkpoint_path": str(checkpoint_path),
         "checkpoint_sha256": sha256_diretorio(checkpoint_path),
+        "final_evaluation_done": False,
+        "final_evaluation": None,
         "corpus": requisitos,
         "events": [{
             "type": "cycle_started",

@@ -162,23 +162,36 @@ jobs:
           python -m scripts.zenith_30d_cycle tick --state state/state.json > reports-cycle-tick.json
           STATUS=$(python -c 'import json; print(json.load(open("state/state.json"))["status"])')
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          DONE=$(python -c 'import json; print(str(json.load(open("state/state.json")).get("final_evaluation_done", False)).lower())')
           if [ "$CYCLE_COMMAND" = "status" ]; then
             cat state/state.json
             echo "train=false" >> "$GITHUB_OUTPUT"
+            echo "final_eval=false" >> "$GITHUB_OUTPUT"
           elif [ "$STATUS" = "running" ]; then
             echo "train=true" >> "$GITHUB_OUTPUT"
+            echo "final_eval=false" >> "$GITHUB_OUTPUT"
           else
             echo "train=false" >> "$GITHUB_OUTPUT"
+            if [ "$STATUS" = "completed" ] && [ "$DONE" = "false" ]; then
+              echo "final_eval=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "final_eval=false" >> "$GITHUB_OUTPUT"
+            fi
           fi
+      - name: Derivar chave imutável do cache do corpus
+        if: steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true'
+        run: |
+          DATASET_HASH=$(python -c 'import json; print(json.load(open("state/state.json"))["corpus"]["manifest_sha256"])')
+          echo "DATASET_CACHE_KEY=apolo-zenith-corpus-30000-$DATASET_HASH" >> "$GITHUB_ENV"
       - name: Recuperar corpus armazenado para a sessão
-        if: steps.tick.outputs.train == 'true'
+        if: steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true'
         uses: actions/cache@v4
         id: corpus-cache
         with:
           path: datasets_storage
-          key: apolo-zenith-corpus-30000-v1
+          key: ${{ env.DATASET_CACHE_KEY }}
       - name: Baixar corpus se o cache não estiver disponível
-        if: steps.tick.outputs.train == 'true' && steps.corpus-cache.outputs.cache-hit != 'true'
+        if: (steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true') && steps.corpus-cache.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
           CORPUS_RUN=$(gh api "/repos/$GITHUB_REPOSITORY/actions/workflows/apolo-zenith-30d-corpus.yml/runs?branch=main&status=success&per_page=20" --jq '.workflow_runs[0].id')
@@ -188,6 +201,12 @@ jobs:
           mkdir -p artifacts/corpus
           unzip -q corpus.zip -d artifacts/corpus
           tar -xzf artifacts/corpus/corpus.tar.gz
+      - name: Confirmar que o cache contém exatamente o corpus vinculado ao ciclo
+        if: steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true'
+        run: |
+          ACTUAL=$(sha256sum datasets_storage/manifest.json | cut -d" " -f1)
+          EXPECTED=$(python -c 'import json; print(json.load(open("state/state.json"))["corpus"]["manifest_sha256"])')
+          test "$ACTUAL" = "$EXPECTED"
       - name: Executar sessão incremental com retomada integral
         if: steps.tick.outputs.train == 'true'
         run: |
@@ -215,8 +234,11 @@ jobs:
             --steps 1000 \
             --evaluation checkpoints/30d/resumo_treino.json
       - name: Avaliação independente ao completar os 30 dias
-        if: steps.tick.outputs.train == 'false' && steps.tick.outputs.status == 'completed'
+        id: final-eval
+        if: steps.tick.outputs.final_eval == 'true'
+        continue-on-error: true
         run: |
+          mkdir -p reports
           set -euo pipefail
           ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$CODE_BASELINE_RUN_ID/artifacts?per_page=100" --jq ".artifacts[] | select(.name==\"$CODE_BASELINE_ARTIFACT\" and .expired==false) | .id" | head -n1)
           test -n "$ART_ID"
@@ -226,7 +248,7 @@ jobs:
           CODE_CKPT="artifacts/code/checkpoints/actions-code-43986715117/checkpoints/final"
           test -s "$CODE_CKPT/model.pt"
           python -m scripts.evaluate_language_quality \
-            --checkpoint-text checkpoints/30d/checkpoints/best \
+            --checkpoint-text checkpoints/30d/checkpoints/final \
             --checkpoint-code "$CODE_CKPT" \
             --checkpoint-reference checkpoints/30d/reference-text-baseline \
             --tokenizer tokenizers/tokenizer \
@@ -234,6 +256,12 @@ jobs:
             --data-summary datasets_storage/processed/resumo.json \
             --human-review-passed false \
             --output reports/language-quality-diagnostic.json
+      - name: Registrar conclusão da avaliação independente
+        if: steps.final-eval.outcome == 'success' && hashFiles('reports/language-quality-diagnostic.json') != ''
+        run: |
+          python -m scripts.zenith_30d_cycle mark-evaluated \
+            --state state/state.json \
+            --report reports/language-quality-diagnostic.json
       - name: Empacotar estado e checkpoints persistentes
         if: steps.mode.outputs.skip != 'true'
         run: |

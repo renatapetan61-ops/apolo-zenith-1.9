@@ -83,3 +83,28 @@ def test_pausar_e_retomar_preserva_deadline(tmp_path):
     resumed = mudar_status(state, "resume", start + timedelta(hours=2))
     assert resumed["status"] == "running"
     assert resumed["ends_at"] == (start + timedelta(days=30)).isoformat()
+
+
+def test_sessao_parcial_nao_avanca_estado(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    state = tmp_path / "state.json"
+    start = datetime(2026, 11, 18, tzinfo=timezone.utc)
+    iniciar(state, preflight, audit, manifest, checkpoint, start)
+    meta = json.loads((checkpoint / "meta.json").read_text())
+    meta["step"] = 12500
+    (checkpoint / "meta.json").write_text(json.dumps(meta))
+    with pytest.raises(ValueError, match="sessão incompleta"):
+        registrar_sessao(state, checkpoint, "124", 1000, now=start + timedelta(hours=6))
+    saved = json.loads(state.read_text())
+    assert saved["last_step"] == 12000
+    assert saved["completed_sessions"] == 0
+
+
+def test_ciclo_pausado_tambem_expira_ao_completar_30_dias(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    state = tmp_path / "state.json"
+    start = datetime(2026, 11, 18, tzinfo=timezone.utc)
+    iniciar(state, preflight, audit, manifest, checkpoint, start)
+    mudar_status(state, "pause", start + timedelta(hours=1))
+    result = atualizar_relogio(json.loads(state.read_text()), start + timedelta(days=30))
+    assert result["status"] == "completed"
