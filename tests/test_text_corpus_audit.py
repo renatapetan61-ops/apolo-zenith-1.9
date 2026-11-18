@@ -37,3 +37,16 @@ def test_auditoria_reprova_corpus_sem_cobertura_bilingue(tmp_path):
     report=auditar(manifesto,processed,min_docs=2,min_train_tokens=10,min_eval_tokens=5)
     assert report["passed"] is False
     assert report["gates"]["minimum_en_documents"] is False
+
+def test_auditoria_bloqueia_hash_de_documento_alterado(tmp_path):
+    root=tmp_path/"datasets_storage"; (root/"raw").mkdir(parents=True)
+    rel="raw/artigo.txt"; path=root/rel; path.write_text("conteúdo original",encoding="utf-8")
+    docs=[{"idioma":"pt","fonte":"wikipedia_pt","arquivo":rel,"licenca":"CC BY-SA 4.0","sha256":"0"*64},
+          {"idioma":"en","fonte":"wikipedia_en","arquivo":rel,"licenca":"CC BY-SA 4.0","sha256":"0"*64}]
+    manifesto=root/"manifest.json"; manifesto.write_text(json.dumps(docs),encoding="utf-8")
+    processed=root/"processed"; processed.mkdir()
+    for split,count in (("train",20),("val",10),("test",10)):
+        (processed/f"{split}.bin").write_bytes(b"\\x00\\x00"*count)
+    report=auditar(manifesto,processed,min_docs=1,min_train_tokens=10,min_eval_tokens=5)
+    assert report["passed"] is False
+    assert report["gates"]["manifest_files_and_hashes"] is False
