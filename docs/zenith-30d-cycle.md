@@ -21,7 +21,7 @@
 
 O ciclo não mantém um processo único vivo por 30 dias. Ele usa execuções agendadas, checkpoint completo e estado JSON com hash, timestamp, passo e histórico. O corpus é publicado como release asset versionado e imutável (tag vinculada ao run e ao hash do manifesto), depois cacheado para as sessões seguintes; assim ele não depende da retenção de artefatos do Actions. O artefato de estado é substituído de forma segura. O checkpoint de código de referência é copiado para um release do repositório no início, evitando depender da expiração do artefato original durante o ciclo. Se o runner, agendamento, armazenamento ou download falhar, a sessão falha e o relógio não é reiniciado; a próxima execução tenta retomar do último artefato íntegro.
 
-GitHub-hosted runners têm limite de seis horas por job. O cron é executado no branch padrão e pode atrasar em períodos de alta carga; por isso, o monitoramento é periódico e auditável, não uma garantia de processo 24/7 sem lacunas. O tamanho do pacote de corpus é limitado a 350 MB e o pacote de estado a 150 MB para respeitar o orçamento de armazenamento de artefatos configurado neste pipeline.
+GitHub-hosted runners têm limite de seis horas por job. O cron é executado no branch padrão e pode atrasar em períodos de alta carga; por isso, o monitoramento é periódico e auditável, não uma garantia de processo 24/7 sem lacunas. O pacote do corpus, publicado como release asset, é limitado a 1 GB; o pacote do estado/checkpoint, armazenado como artefato do Actions, é limitado a 150 MB. O artefato de estado anterior só é excluído depois que o novo foi publicado.
 
 ## Não incluído nesta fase
 
