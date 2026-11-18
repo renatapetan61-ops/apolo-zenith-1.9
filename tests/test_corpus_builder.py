@@ -78,23 +78,32 @@ def test_construir_corpus_complementa_gutenberg_abaixo_do_minimo(tmp_path, monke
     assert sum(x["idioma"] == "en" for x in dados) == 3
 
 def test_coletar_wikipedia_completa_com_paginas_aleatorias(tmp_path, monkeypatch):
-    chamadas=[0]
+    from urllib.parse import urlparse, parse_qs
+
     def resposta(url, *args, **kwargs):
-        from urllib.parse import urlparse, parse_qs
-        params=parse_qs(urlparse(url).query)
-        if params.get("generator")==["search"]:
-            return json.dumps({"query":{"pages":{}}})
-        start=int(params.get("grnlimit",["10"])[0])
-        base=1000+chamadas[0]*10
-        chamadas[0]+=1
-        paginas={}
-        for n in range(start):
-            page_id=base+n
-            paginas[str(page_id)]={"pageid":page_id,"title":f"Random {page_id}",
-                "extract":("Texto enciclopédico suficientemente longo. " * 50)}
-        return json.dumps({"query":{"pages":paginas}})
-    monkeypatch.setattr(cb,"_ler_url_texto",resposta)
-    monkeypatch.setattr(cb.time,"sleep",lambda *_:None)
-    docs=cb.coletar_wikipedia(tmp_path/"raw","pt",12,[])
-    assert sum(d.idioma=="pt" for d in docs)==12
+        params = parse_qs(urlparse(url).query)
+        if params.get("generator") == ["search"]:
+            return json.dumps({"query": {"pages": {}}})
+        if params.get("list") == ["random"]:
+            return json.dumps({"query": {"random": [
+                {"id": str(2000 + n), "title": f"Random {n}"}
+                for n in range(20)
+            ]}})
+        if "pageids" in params:
+            ids = params["pageids"][0].split("|")
+            paginas = {
+                page_id: {
+                    "pageid": int(page_id),
+                    "title": f"Random {page_id}",
+                    "extract": "Texto enciclopédico suficientemente longo. " * 50,
+                }
+                for page_id in ids
+            }
+            return json.dumps({"query": {"pages": paginas}})
+        raise AssertionError(f"Consulta inesperada: {url}")
+
+    monkeypatch.setattr(cb, "_ler_url_texto", resposta)
+    monkeypatch.setattr(cb.time, "sleep", lambda *_: None)
+    docs = cb.coletar_wikipedia(tmp_path / "raw", "pt", 12, [])
+    assert sum(d.idioma == "pt" for d in docs) == 12
     assert all(d.licenca.startswith("CC BY-SA 4.0") for d in docs)
