@@ -155,9 +155,9 @@ jobs:
             --steps 20000 \
             --batch-size 4 \
             --block-size 128 \
-            --lr 0.00005
-            --min-lr 0.000005
-            --warmup-steps 200
+            --lr 0.00005 \
+            --min-lr 0.000005 \
+            --warmup-steps 200 \
             --early-stopping-patience 12 \
             --eval-interval 100 \
             --save-interval 250 \
