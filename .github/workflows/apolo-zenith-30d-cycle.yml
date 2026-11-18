@@ -13,7 +13,7 @@ on:
         default: status
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 concurrency:
@@ -140,6 +140,24 @@ jobs:
           cp -a "$SOURCE/final" checkpoints/30d/checkpoints/final
           if [ -d "$SOURCE/best" ]; then cp -a "$SOURCE/best" checkpoints/30d/checkpoints/best; fi
           cp -a artifacts/baseline-text/checkpoints/reference-text-baseline checkpoints/30d/reference-text-baseline
+      - name: Preservar checkpoint de código para a avaliação do dia 30
+        if: steps.mode.outputs.start == 'true'
+        run: |
+          set -euo pipefail
+          ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$CODE_BASELINE_RUN_ID/artifacts?per_page=100" --jq ".artifacts[] | select(.name==\"$CODE_BASELINE_ARTIFACT\" and .expired==false) | .id" | head -n1)
+          test -n "$ART_ID"
+          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ART_ID/zip" > baseline-code.zip
+          mkdir -p artifacts/code
+          unzip -q baseline-code.zip -d artifacts/code
+          CODE_SOURCE="artifacts/code/checkpoints/actions-code-43986715117/checkpoints/final"
+          test -s "$CODE_SOURCE/model.pt"
+          tar -czf code-baseline.tar.gz -C artifacts/code/checkpoints/actions-code-43986715117/checkpoints final
+          if ! gh release view apolo-zenith-30d-baseline >/dev/null 2>&1; then
+            gh release create apolo-zenith-30d-baseline \
+              --title "APOLO ZENITH 1.9 — checkpoint de código de referência" \
+              --notes "Checkpoint de código preservado para a avaliação independente ao final do ciclo de 30 dias. Origem: workflow $CODE_BASELINE_RUN_ID."
+          fi
+          gh release upload apolo-zenith-30d-baseline code-baseline.tar.gz --clobber
       - name: Iniciar relógio somente com os pré-requisitos aprovados
         if: steps.mode.outputs.start == 'true'
         run: |
@@ -240,12 +258,11 @@ jobs:
         run: |
           mkdir -p reports
           set -euo pipefail
-          ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$CODE_BASELINE_RUN_ID/artifacts?per_page=100" --jq ".artifacts[] | select(.name==\"$CODE_BASELINE_ARTIFACT\" and .expired==false) | .id" | head -n1)
-          test -n "$ART_ID"
-          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ART_ID/zip" > baseline-code.zip
           mkdir -p artifacts/code
-          unzip -q baseline-code.zip -d artifacts/code
-          CODE_CKPT="artifacts/code/checkpoints/actions-code-43986715117/checkpoints/final"
+          gh release download apolo-zenith-30d-baseline --pattern code-baseline.tar.gz --dir artifacts/code
+          mkdir -p artifacts/code/checkpoint
+          tar -xzf artifacts/code/code-baseline.tar.gz -C artifacts/code/checkpoint
+          CODE_CKPT="artifacts/code/checkpoint/final"
           test -s "$CODE_CKPT/model.pt"
           python -m scripts.evaluate_language_quality \
             --checkpoint-text checkpoints/30d/checkpoints/final \
