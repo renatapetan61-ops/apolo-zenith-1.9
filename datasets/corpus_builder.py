@@ -283,10 +283,11 @@ def coletar_wikipedia(
     max_documentos: int,
     documentos: Optional[List[DocumentoFonte]] = None,
 ) -> List[DocumentoFonte]:
-    """Obtém artigos via MediaWiki API, com licença CC BY-SA 4.0 declarada.
+    """Obtém artigos CC BY-SA 4.0 por busca temática e completa com páginas aleatórias.
 
-    É usado quando o catálogo do Gutenberg está indisponível. Cada artigo
-    mantém título, URL canônica, idioma, licença e hash no manifesto.
+    A busca temática oferece cobertura dirigida; o gerador aleatório evita que
+    consultas muito sobrepostas deixem o corpus abaixo do tamanho solicitado.
+    Cada artigo mantém título, URL canônica, idioma, licença e hash SHA-256.
     """
     documentos = documentos if documentos is not None else []
     pasta = saida_raw / f"wikipedia_{idioma}"
@@ -295,28 +296,9 @@ def coletar_wikipedia(
     vistos: set[int] = set()
     adicionados = 0
 
-    for consulta in WIKIPEDIA_BUSCAS.get(idioma, WIKIPEDIA_BUSCAS["en"]):
-        params = urllib.parse.urlencode({
-            "action": "query",
-            "format": "json",
-            "generator": "search",
-            "gsrsearch": consulta,
-            "gsrnamespace": 0,
-            "gsrlimit": min(max_documentos, 10),
-            "prop": "extracts",
-            "explaintext": 1,
-            "exchars": 50000,
-        })
-        url_api = f"https://{host}/w/api.php?{params}"
-        bruto = _ler_url_texto(url_api, tentativas=2, espera=1.0)
-        if not bruto:
-            continue
-        try:
-            payload = json.loads(bruto)
-        except json.JSONDecodeError:
-            print(f"  [wikipedia:{idioma}] resposta JSON inválida para {consulta!r}")
-            continue
-
+    def registrar_paginas(payload: dict) -> int:
+        nonlocal adicionados
+        novos = 0
         paginas = payload.get("query", {}).get("pages", {})
         for pagina in sorted(paginas.values(), key=lambda item: int(item.get("pageid", 0))):
             page_id = int(pagina.get("pageid", 0))
@@ -328,27 +310,57 @@ def coletar_wikipedia(
             arquivo = pasta / f"{page_id}.txt"
             arquivo.write_text(texto, encoding="utf-8")
             url_artigo = f"https://{host}/wiki/{urllib.parse.quote(titulo.replace(' ', '_'))}"
-            documentos.append(
-                DocumentoFonte(
-                    fonte=f"wikipedia_{idioma}",
-                    titulo=titulo,
-                    arquivo=str(arquivo.relative_to(saida_raw.parent)),
-                    url=url_artigo,
-                    licenca="CC BY-SA 4.0 (Wikipedia; atribuição ao artigo e histórico)",
-                    caracteres=len(texto),
-                    sha256=sha256_arquivo(arquivo),
-                    idioma=idioma,
-                )
-            )
+            documentos.append(DocumentoFonte(
+                fonte=f"wikipedia_{idioma}", titulo=titulo,
+                arquivo=str(arquivo.relative_to(saida_raw.parent)),
+                url=url_artigo,
+                licenca="CC BY-SA 4.0 (Wikipedia; atribuição ao artigo e histórico)",
+                caracteres=len(texto), sha256=sha256_arquivo(arquivo), idioma=idioma,
+            ))
             adicionados += 1
+            novos += 1
             if adicionados >= max_documentos:
-                print(f"  [wikipedia:{idioma}] {adicionados} artigos coletados")
-                return documentos
+                break
+        return novos
+
+    for consulta in WIKIPEDIA_BUSCAS.get(idioma, WIKIPEDIA_BUSCAS["en"]):
+        params = urllib.parse.urlencode({
+            "action": "query", "format": "json", "generator": "search",
+            "gsrsearch": consulta, "gsrnamespace": 0,
+            "gsrlimit": min(max_documentos - adicionados, 10),
+            "prop": "extracts", "explaintext": 1, "exchars": 50000,
+        })
+        bruto = _ler_url_texto(f"https://{host}/w/api.php?{params}", tentativas=2, espera=1.0)
+        if bruto:
+            try:
+                registrar_paginas(json.loads(bruto))
+            except json.JSONDecodeError:
+                print(f"  [wikipedia:{idioma}] JSON inválido para {consulta!r}")
+        if adicionados >= max_documentos:
+            break
         time.sleep(0.2)
 
-    print(f"  [wikipedia:{idioma}] {adicionados} artigos coletados")
-    return documentos
+    # Consultas de texto frequentemente retornam artigos sobrepostos.
+    # Completar com generator=random para alcançar a amostra mínima pedida.
+    tentativas = 0
+    max_tentativas = max(6, ((max_documentos - adicionados + 9) // 10) * 4)
+    while adicionados < max_documentos and tentativas < max_tentativas:
+        tentativas += 1
+        params = urllib.parse.urlencode({
+            "action": "query", "format": "json", "generator": "random",
+            "grnnamespace": 0, "grnlimit": min(max_documentos - adicionados, 10),
+            "prop": "extracts", "explaintext": 1, "exchars": 50000,
+        })
+        bruto = _ler_url_texto(f"https://{host}/w/api.php?{params}", tentativas=2, espera=1.0)
+        if bruto:
+            try:
+                registrar_paginas(json.loads(bruto))
+            except json.JSONDecodeError:
+                print(f"  [wikipedia:{idioma}] JSON aleatório inválido")
+        time.sleep(0.2)
 
+    print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados")
+    return documentos
 
 # --------------------------------------------------------------------------- #
 # Wikisource
