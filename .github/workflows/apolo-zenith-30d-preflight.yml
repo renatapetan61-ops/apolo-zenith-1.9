@@ -50,7 +50,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
           python -m pip install -r requirements.txt
-          python -m pip install pytest
+          python -m pip install pytest pyyaml
       - name: Executar testes unitários e de retomada
         run: |
           mkdir -p reports
@@ -63,6 +63,16 @@ jobs:
           python -m scripts.audit_text_corpus --help >/dev/null
           python -m training.text_trainer --help >/dev/null
           python -m scripts.zenith_30d_cycle --help >/dev/null
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          paths = sorted(Path(".github/workflows").glob("apolo-zenith-30d-*.yml"))
+          assert len(paths) == 3, f"Esperados 3 workflows novos; encontrados {len(paths)}"
+          for path in paths:
+              data = yaml.load(path.read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
+              assert isinstance(data, dict) and isinstance(data.get("jobs"), dict), path
+              print(f"YAML válido: {path}")
+          PY
           python - <<'PY'
           import json
           from pathlib import Path
@@ -88,6 +98,7 @@ jobs:
               "corpus_audit_cli": True,
               "text_trainer_cli": True,
               "cycle_state_cli": True,
+              "workflow_yaml_syntax": True,
               "tokenizer_8192_and_multimodal_tokens": True
             },
             "timer_started": False,
