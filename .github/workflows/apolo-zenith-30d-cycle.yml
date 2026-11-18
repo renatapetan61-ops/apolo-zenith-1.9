@@ -14,7 +14,7 @@ on:
 
 permissions:
   contents: write
-  actions: write
+  actions: read
 
 concurrency:
   group: apolo-zenith-30d-cycle
@@ -49,26 +49,18 @@ jobs:
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
           python -m pip install -r requirements.txt
           python -m pip install pytest
-      - name: Recuperar ID do último artefato de estado
+      - name: Recuperar tag do último estado persistido
         id: old-state
         run: |
           set -euo pipefail
-          API="/repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100"
-          LINE=$(gh api "$API" --jq '.artifacts[] | select(.name=="apolo-zenith-30d-state" and .expired==false) | [.id,.workflow_run.id] | @tsv' | head -n1 || true)
-          if [ -n "$LINE" ]; then
-            echo "artifact_id=$(echo "$LINE" | cut -f1)" >> "$GITHUB_OUTPUT"
-            echo "run_id=$(echo "$LINE" | cut -f2)" >> "$GITHUB_OUTPUT"
-          else
-            echo "artifact_id=" >> "$GITHUB_OUTPUT"
-            echo "run_id=" >> "$GITHUB_OUTPUT"
-          fi
+          TAG=$(gh api "/repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq '.[] | select(.tag_name | startswith("apolo-zenith-30d-state-")) | select(any(.assets[]?; .name=="cycle-state.tar.gz")) | .tag_name' | head -n1 || true)
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
       - name: Restaurar estado anterior do ciclo
-        if: steps.old-state.outputs.artifact_id != ''
+        if: steps.old-state.outputs.tag != ''
         run: |
           set -euo pipefail
-          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/${{ steps.old-state.outputs.artifact_id }}/zip" > state-artifact.zip
           mkdir -p restored-state
-          unzip -q state-artifact.zip -d restored-state
+          gh release download "${{ steps.old-state.outputs.tag }}" --pattern cycle-state.tar.gz --dir restored-state
           test -s restored-state/cycle-state.tar.gz
           tar -xzf restored-state/cycle-state.tar.gz
       - name: Validar comando e estado existente
@@ -293,19 +285,24 @@ jobs:
             echo "Estado/checkpoint excede 150 MB; não substituir o estado anterior."
             exit 1
           fi
-      - name: Publicar novo estado persistente
+      - name: Publicar novo estado persistente como release versionado
+        id: publish-state
         if: steps.mode.outputs.skip != 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: apolo-zenith-30d-state
-          path: cycle-state.tar.gz
-          if-no-files-found: error
-          retention-days: 90
-          compression-level: 0
-      - name: Remover artefato de estado anterior após publicação confirmada
-        if: success() && steps.mode.outputs.skip != 'true' && steps.old-state.outputs.artifact_id != ''
+        env:
+          STATE_TAG: apolo-zenith-30d-state-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
-          gh api --method DELETE "/repos/$GITHUB_REPOSITORY/actions/artifacts/${{ steps.old-state.outputs.artifact_id }}"
+          set -euo pipefail
+          if ! gh release view "$STATE_TAG" >/dev/null 2>&1; then
+            gh release create "$STATE_TAG" \
+              --title "APOLO ZENITH 1.9 — estado persistente do ciclo de 30 dias" \
+              --notes "Checkpoint e estado serializado do ciclo. Run: $GITHUB_RUN_ID; tentativa: $GITHUB_RUN_ATTEMPT."
+          fi
+          gh release upload "$STATE_TAG" cycle-state.tar.gz --clobber
+          echo "tag=$STATE_TAG" >> "$GITHUB_OUTPUT"
+      - name: Remover release de estado anterior após publicar o novo
+        if: success() && steps.mode.outputs.skip != 'true' && steps.old-state.outputs.tag != '' && steps.old-state.outputs.tag != steps.publish-state.outputs.tag
+        run: |
+          gh release delete "${{ steps.old-state.outputs.tag }}" --cleanup-tag --yes
       - name: Publicar avaliação final
         if: success() && steps.tick.outputs.status == 'completed' && hashFiles('reports/language-quality-diagnostic.json') != ''
         uses: actions/upload-artifact@v4
