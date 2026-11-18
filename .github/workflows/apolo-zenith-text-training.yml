@@ -35,7 +35,7 @@ permissions:
 
 # Compartilha o mesmo lock lógico do treino de código: nunca há dois treinos ativos.
 # Não cancela um treinamento ativo quando um novo push/dispatch chega; a nova execução aguarda.
-# A suíte valida o retry HTTP 503 com o intervalo explícito de 1s usado no coletor; execução disparada após correção.
+# A coleta usa IDs aleatórios em lotes e extrai texto separadamente; retentativas respeitam backoff.
 concurrency:
   group: apolo-zenith-training
   cancel-in-progress: false
