@@ -303,6 +303,11 @@ WIKIPEDIA_BUSCAS = {
 }
 
 
+def _limite_lotes_wikipedia(documentos_restantes: int) -> int:
+    """Dimensiona as tentativas aleatórias sem permitir loops ilimitados."""
+    return max(200, min(1200, max(0, documentos_restantes) * 4))
+
+
 def coletar_wikipedia(
     saida_raw: Path,
     idioma: str,
@@ -380,7 +385,7 @@ def coletar_wikipedia(
     # corpora bilíngues maiores. Dimensiona o orçamento de lotes pelo déficit,
     # mantendo teto para evitar execução sem limite.
     restantes_iniciais = max_documentos - adicionados
-    max_lotes = max(200, min(1200, restantes_iniciais * 4))
+    max_lotes = _limite_lotes_wikipedia(restantes_iniciais)
     falhas_consecutivas = 0
     while adicionados < max_documentos and lotes < max_lotes:
         lotes += 1
