@@ -152,13 +152,13 @@ def atualizar_relogio(estado: dict[str, Any], now: datetime | None = None) -> di
     estado["last_seen_at"] = instante.isoformat()
     inicio = parse_data(estado["started_at"])
     fim = parse_data(estado["ends_at"])
-    if estado.get("status") == "running":
+    if estado.get("status") in ("running", "paused"):
         if instante >= fim:
             estado["status"] = "completed"
             estado["day_index"] = DURACAO_DIAS
             estado["completed_at"] = instante.isoformat()
             estado["events"].append({"type": "duration_elapsed", "at": instante.isoformat()})
-        else:
+        elif estado.get("status") == "running":
             dias = math.floor(max(0.0, (instante - inicio).total_seconds()) / 86400) + 1
             estado["day_index"] = min(DURACAO_DIAS, dias)
     return estado
@@ -168,13 +168,15 @@ def registrar_sessao(state_path: Path, checkpoint_path: Path, run_id: str,
                      steps: int, evaluation_path: Path | None = None,
                      now: datetime | None = None) -> dict[str, Any]:
     estado = carregar_json(state_path)
-    estado = atualizar_relogio(estado, now)
     if estado.get("status") != "running":
         raise ValueError("o ciclo não está em estado running")
     meta = validar_checkpoint(checkpoint_path)
     passo = int(meta["step"])
-    if passo <= int(estado.get("last_step", -1)):
-        raise ValueError("checkpoint não avançou em relação à sessão anterior")
+    passo_anterior = int(estado.get("last_step", -1))
+    if passo != passo_anterior + int(steps):
+        raise ValueError(
+            f"sessão incompleta: esperado passo {passo_anterior + int(steps)}, recebido {passo}"
+        )
     avaliacao = carregar_json(evaluation_path) if evaluation_path and evaluation_path.is_file() else {}
     evento = {
         "type": "training_session",
@@ -201,6 +203,9 @@ def registrar_sessao(state_path: Path, checkpoint_path: Path, run_id: str,
 def mudar_status(state_path: Path, comando: str, now: datetime | None = None) -> dict[str, Any]:
     estado = carregar_json(state_path)
     estado = atualizar_relogio(estado, now)
+    if estado.get("status") == "completed":
+        salvar_json_atomico(state_path, estado)
+        return estado
     if comando == "pause":
         if estado.get("status") != "running":
             raise ValueError("só é possível pausar um ciclo running")
@@ -208,10 +213,7 @@ def mudar_status(state_path: Path, comando: str, now: datetime | None = None) ->
     elif comando == "resume":
         if estado.get("status") != "paused":
             raise ValueError("só é possível retomar um ciclo paused")
-        if (now or agora_utc()) >= parse_data(estado["ends_at"]):
-            estado["status"] = "completed"
-        else:
-            estado["status"] = "running"
+        estado["status"] = "running"
     salvar_json_atomico(state_path, estado)
     return estado
 
@@ -239,6 +241,9 @@ def main() -> None:
     p_resume.add_argument("--state", required=True)
     p_show = sub.add_parser("status")
     p_show.add_argument("--state", required=True)
+    p_mark = sub.add_parser("mark-evaluated")
+    p_mark.add_argument("--state", required=True)
+    p_mark.add_argument("--report", required=True)
     args = parser.parse_args()
 
     if args.command == "start":
@@ -253,6 +258,20 @@ def main() -> None:
         salvar_json_atomico(caminho, result)
     elif args.command in ("pause", "resume"):
         result = mudar_status(Path(args.state), args.command)
+    elif args.command == "mark-evaluated":
+        caminho = Path(args.state)
+        result = carregar_json(caminho)
+        relatorio = carregar_json(Path(args.report))
+        result["final_evaluation_done"] = True
+        result["final_evaluation"] = {
+            "status": relatorio.get("status"),
+            "decision": relatorio.get("decision"),
+            "training_authorization": relatorio.get("training_authorization"),
+            "report_path": args.report,
+            "marked_at": agora_utc().isoformat(),
+        }
+        result["events"].append({"type": "final_evaluation_completed", "at": result["final_evaluation"]["marked_at"], "decision": relatorio.get("decision")})
+        salvar_json_atomico(caminho, result)
     else:
         caminho = Path(args.state)
         result = atualizar_relogio(carregar_json(caminho))
