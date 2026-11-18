@@ -9,6 +9,11 @@ on:
       - ".github/workflows/apolo-zenith-language-quality.yml"
       - "scripts/evaluate_language_quality.py"
       - "evaluation/corpus/**"
+  workflow_run:
+    workflows:
+      - "Apolo Zenith 1.9 — próxima etapa de treinamento textual"
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       text_run_id:
@@ -37,6 +42,7 @@ concurrency:
 
 jobs:
   evaluate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     name: "Holdout bilíngue, geração e diagnóstico"
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -46,7 +52,7 @@ jobs:
       MKL_NUM_THREADS: "2"
       OPENBLAS_NUM_THREADS: "2"
       TOKENIZERS_PARALLELISM: "false"
-      TEXT_RUN_ID: ${{ inputs.text_run_id || '44200330638' }}
+      TEXT_RUN_ID: ${{ inputs.text_run_id || github.event.workflow_run.id || '44200330638' }}
       CODE_RUN_ID: ${{ inputs.code_run_id || '43986715117' }}
       HUMAN_REVIEW_PASSED: ${{ inputs.human_review_passed || false }}
 
