@@ -28,7 +28,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
-USER_AGENT = "ApoloZenith/1.9 (dataset-builder; +https://example.invalid/apolo)"
+USER_AGENT = "ApoloZenith/1.9 (dataset-builder; +https://github.com/renatapetan61-ops/apolo-zenith-1.9)"
 TIMEOUT = 20
 
 
@@ -272,8 +272,8 @@ def coletar_gutenberg(
 # Wikipedia — fallback independente do Project Gutenberg
 # --------------------------------------------------------------------------- #
 WIKIPEDIA_BUSCAS = {
-    "pt": ["literatura brasileira", "história do Brasil", "ciência no Brasil", "geografia do Brasil"],
-    "en": ["world history", "science", "literature", "geography"],
+    "pt": ["literatura brasileira", "história do Brasil", "ciência no Brasil", "geografia do Brasil", "língua portuguesa", "biologia", "física", "matemática", "meio ambiente", "tecnologia", "cultura brasileira", "saúde pública"],
+    "en": ["world history", "science", "literature", "geography", "biology", "physics", "mathematics", "environment", "technology", "public health", "computer science", "language"],
 }
 
 
@@ -429,6 +429,7 @@ def construir_corpus(
     max_livros_en: int = 6,
     max_wiki_mb: int = 24,
     usar_wikisource: bool = True,
+    min_documentos_idioma: int = 40,
 ) -> Path:
     """Executa a coleta completa e grava o manifesto."""
     saida = Path(saida)
@@ -438,15 +439,23 @@ def construir_corpus(
     documentos: List[DocumentoFonte] = []
     antes = len(documentos)
     documentos = coletar_gutenberg(raw, "pt", max_livros_pt, documentos)
-    if len(documentos) == antes:
-        print("  [fallback] Gutenberg PT indisponível; usando Wikipedia PT (CC BY-SA 4.0).")
-        documentos = coletar_wikipedia(raw, "pt", max_livros_pt, documentos)
+    pt_existentes = sum(d.idioma == "pt" for d in documentos)
+    if pt_existentes < min_documentos_idioma:
+        faltam = min_documentos_idioma - pt_existentes
+        print(f"  [complemento] PT tem {pt_existentes}/{min_documentos_idioma} documentos; buscando {faltam} artigos na Wikipedia.")
+        documentos = coletar_wikipedia(raw, "pt", faltam, documentos)
 
-    antes = len(documentos)
     documentos = coletar_gutenberg(raw, "en", max_livros_en, documentos)
-    if len(documentos) == antes:
-        print("  [fallback] Gutenberg EN indisponível; usando Wikipedia EN (CC BY-SA 4.0).")
-        documentos = coletar_wikipedia(raw, "en", max_livros_en, documentos)
+    en_existentes = sum(d.idioma == "en" for d in documentos)
+    if en_existentes < min_documentos_idioma:
+        faltam = min_documentos_idioma - en_existentes
+        print(f"  [complemento] EN tem {en_existentes}/{min_documentos_idioma} documentos; buscando {faltam} artigos na Wikipedia.")
+        documentos = coletar_wikipedia(raw, "en", faltam, documentos)
+
+    for idioma in ("pt", "en"):
+        quantidade = sum(d.idioma == idioma for d in documentos)
+        if quantidade < min_documentos_idioma:
+            print(f"  [aviso] corpus {idioma} abaixo do mínimo: {quantidade}/{min_documentos_idioma}; a auditoria bloqueará o treino.")
 
     if not documentos:
         raise RuntimeError(
@@ -472,6 +481,7 @@ def main() -> None:
     parser.add_argument("--max-livros-pt", type=int, default=120)
     parser.add_argument("--max-livros-en", type=int, default=6)
     parser.add_argument("--max-wiki-mb", type=int, default=24)
+    parser.add_argument("--min-documentos-idioma", type=int, default=40)
     parser.add_argument("--sem-wikisource", action="store_true")
     args = parser.parse_args()
     construir_corpus(
@@ -480,6 +490,7 @@ def main() -> None:
         max_livros_en=args.max_livros_en,
         max_wiki_mb=args.max_wiki_mb,
         usar_wikisource=not args.sem_wikisource,
+        min_documentos_idioma=args.min_documentos_idioma,
     )
 
 
