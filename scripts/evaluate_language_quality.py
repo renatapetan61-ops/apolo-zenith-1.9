@@ -116,7 +116,7 @@ def main():
     gates={}
     for lang in ("pt-BR","en"):
         c=comparison[lang]; t=c["text_checkpoint"]; gens=generations[lang]
-        gates[lang]={"at_least_500_eval_tokens":t["tokens_scored"]>=500,
+        gates[lang]={"at_least_2000_eval_tokens":t["tokens_scored"]>=2000,
           "finite_metrics":math.isfinite(t["loss"]) and math.isfinite(t["perplexity"]),
           "perplexity_under_100":t["perplexity"]<=100,
           "not_more_than_5pct_loss_regression_vs_code":c["text_loss_change_pct"]<=5,
@@ -128,7 +128,7 @@ def main():
     approved=all(all(v.values()) if isinstance(v,dict) else v for v in gates.values())
     report={"status":"success","decision":"AUTHORIZED_FOR_CONTROLLED_TRAINING" if approved else "NOT_AUTHORIZED_YET",
       "training_authorization":approved,
-      "criteria":{"minimum_tokens_per_language":500,"maximum_loss_regression_vs_code_pct":5,
+      "criteria":{"minimum_tokens_per_language":2000,"maximum_loss_regression_vs_code_pct":5,
         "minimum_improvement_in_one_language_pct":2,"maximum_perplexity_per_language":100,
         "human_semantic_review_required":True,"max_consecutive_identical_tokens_exclusive":8,
         "max_repeated_3gram_ratio_exclusive":0.75,"unknown_token_rate":0.0},
