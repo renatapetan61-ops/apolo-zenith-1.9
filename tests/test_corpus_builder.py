@@ -76,3 +76,22 @@ def test_construir_corpus_complementa_gutenberg_abaixo_do_minimo(tmp_path, monke
     dados = json.loads(manifesto.read_text(encoding="utf-8"))
     assert sum(x["idioma"] == "pt" for x in dados) == 3
     assert sum(x["idioma"] == "en" for x in dados) == 3
+
+def test_coletar_wikipedia_completa_com_paginas_aleatorias(tmp_path, monkeypatch):
+    def resposta(url, *args, **kwargs):
+        from urllib.parse import urlparse, parse_qs
+        params=parse_qs(urlparse(url).query)
+        if params.get("generator")==["search"]:
+            return json.dumps({"query":{"pages":{}}})
+        start=int(params.get("grnlimit",["10"])[0])
+        paginas={}
+        for n in range(start):
+            page_id=1000+n
+            paginas[str(page_id)]={"pageid":page_id,"title":f"Random {page_id}",
+                "extract":("Texto enciclopédico suficientemente longo. " * 50)}
+        return json.dumps({"query":{"pages":paginas}})
+    monkeypatch.setattr(cb,"_ler_url_texto",resposta)
+    monkeypatch.setattr(cb.time,"sleep",lambda *_:None)
+    docs=cb.coletar_wikipedia(tmp_path/"raw","pt",12,[])
+    assert sum(d.idioma=="pt" for d in docs)==12
+    assert all(d.licenca.startswith("CC BY-SA 4.0") for d in docs)
