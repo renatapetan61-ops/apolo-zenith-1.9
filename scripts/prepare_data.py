@@ -63,8 +63,12 @@ def processar(documentos: List[Dict], raiz: Path) -> tuple[List[str], Dict]:
             fonte_tipo = "gutenberg"
         elif fonte.startswith("wikisource"):
             fonte_tipo = "wikisource"
+        elif fonte.startswith("wikipedia"):
+            fonte_tipo = "wikipedia"
         else:
-            fonte_tipo = "gutenberg"
+            # Fontes sem formato Gutenberg/Wikisource são normalizadas sem
+            # aplicar regras específicas que poderiam apagar conteúdo válido.
+            fonte_tipo = "plain"
         texto = normalizar_texto(bruto, fonte=fonte_tipo)
         texto = remover_pii(texto)
         aprovado, motivo = qualidade_texto(texto)
