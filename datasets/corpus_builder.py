@@ -375,7 +375,13 @@ def coletar_wikipedia(
     # Fallback robusto: list=random retorna IDs; pageids recupera os extracts
     # em lotes de no máximo 50 IDs, limite compatível com consultas anônimas.
     lotes = 0
-    max_lotes = max(60, min(100, (max_documentos - adicionados) * 2))
+    # A coleta anterior limitava o fallback a 100 lotes. Em execuções reais,
+    # isso produziu somente ~0,9–1,1 artigo válido por lote, insuficiente para
+    # corpora bilíngues maiores. Dimensiona o orçamento de lotes pelo déficit,
+    # mantendo teto para evitar execução sem limite.
+    restantes_iniciais = max_documentos - adicionados
+    max_lotes = max(200, min(1200, restantes_iniciais * 4))
+    falhas_consecutivas = 0
     while adicionados < max_documentos and lotes < max_lotes:
         lotes += 1
         restantes = max_documentos - adicionados
@@ -389,8 +395,15 @@ def coletar_wikipedia(
             f"https://{host}/w/api.php?{params_ids}", idioma, "seleção aleatória"
         )
         if not dados_ids:
-            time.sleep(min(2 * lotes, 15))
+            falhas_consecutivas += 1
+            # Interrompe apenas após uma sequência prolongada de falhas reais;
+            # falhas isoladas/HTTP 503 continuam sujeitas a novas tentativas.
+            if falhas_consecutivas >= 25:
+                print(f"  [wikipedia:{idioma}] interrompendo após {falhas_consecutivas} lotes consecutivos sem resposta")
+                break
+            time.sleep(min(2 * falhas_consecutivas, 15))
             continue
+        falhas_consecutivas = 0
         try:
             ids = [
                 str(item.get("id"))
@@ -421,7 +434,7 @@ def coletar_wikipedia(
             if adicionados >= max_documentos:
                 break
             time.sleep(0.25)
-        if lotes % 10 == 0:
+        if lotes % 25 == 0:
             print(f"  [wikipedia:{idioma}] progresso: {adicionados}/{max_documentos}; lote {lotes}/{max_lotes}")
 
     print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados após {lotes} lotes")
