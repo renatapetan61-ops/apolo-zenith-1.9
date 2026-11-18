@@ -285,9 +285,9 @@ def coletar_wikipedia(
 ) -> List[DocumentoFonte]:
     """Obtém artigos CC BY-SA 4.0 por busca temática e completa com páginas aleatórias.
 
-    A busca temática oferece cobertura dirigida; o gerador aleatório evita que
-    consultas muito sobrepostas deixem o corpus abaixo do tamanho solicitado.
-    Cada artigo mantém título, URL canônica, idioma, licença e hash SHA-256.
+    A fase aleatória usa list=random para selecionar IDs e uma segunda consulta
+    pageids para obter extracts. Isso evita depender do gerador combinado
+    generator=random+extracts, que vinha entregando poucos documentos válidos.
     """
     documentos = documentos if documentos is not None else []
     pasta = saida_raw / f"wikipedia_{idioma}"
@@ -300,8 +300,12 @@ def coletar_wikipedia(
         nonlocal adicionados
         novos = 0
         paginas = payload.get("query", {}).get("pages", {})
-        for pagina in sorted(paginas.values(), key=lambda item: int(item.get("pageid", 0))):
-            page_id = int(pagina.get("pageid", 0))
+        if isinstance(paginas, list):
+            iterable = paginas
+        else:
+            iterable = paginas.values()
+        for pagina in sorted(iterable, key=lambda item: int(item.get("pageid", item.get("id", 0)))):
+            page_id = int(pagina.get("pageid", pagina.get("id", 0)))
             titulo = str(pagina.get("title", "")).strip()
             texto = str(pagina.get("extract", "")).strip()[:50000]
             if not page_id or page_id in vistos or len(texto) < 1200:
@@ -323,41 +327,82 @@ def coletar_wikipedia(
                 break
         return novos
 
+    # Primeiro, artigos temáticos. O limite é mantido pequeno para respeitar a API.
     for consulta in WIKIPEDIA_BUSCAS.get(idioma, WIKIPEDIA_BUSCAS["en"]):
+        restantes = max_documentos - adicionados
+        if restantes <= 0:
+            break
         params = urllib.parse.urlencode({
             "action": "query", "format": "json", "generator": "search",
             "gsrsearch": consulta, "gsrnamespace": 0,
-            "gsrlimit": min(max_documentos - adicionados, 10),
-            "prop": "extracts", "explaintext": 1,
+            "gsrlimit": min(restantes, 10),
+            "prop": "extracts", "explaintext": 1, "maxlag": 5,
         })
-        bruto = _ler_url_texto(f"https://{host}/w/api.php?{params}", tentativas=2, espera=1.0)
+        bruto = _ler_url_texto(
+            f"https://{host}/w/api.php?{params}", tentativas=5, espera=2.0
+        )
         if bruto:
             try:
                 registrar_paginas(json.loads(bruto))
             except json.JSONDecodeError:
                 print(f"  [wikipedia:{idioma}] JSON inválido para {consulta!r}")
-        if adicionados >= max_documentos:
-            break
-        time.sleep(0.2)
+        if adicionados < max_documentos:
+            time.sleep(0.5)
 
-    # Consultas de texto frequentemente retornam artigos sobrepostos.
-    # Completar com generator=random para alcançar a amostra mínima pedida.
-    tentativas = 0
-    max_tentativas = max(6, ((max_documentos - adicionados + 9) // 10) * 4)
-    while adicionados < max_documentos and tentativas < max_tentativas:
-        tentativas += 1
-        params = urllib.parse.urlencode({
-            "action": "query", "format": "json", "generator": "random",
-            "grnnamespace": 0, "grnlimit": min(max_documentos - adicionados, 10),
-            "prop": "extracts", "explaintext": 1,
+    # Fallback robusto: list=random retorna IDs; pageids recupera os extracts
+    # em lotes de no máximo 50 IDs, limite compatível com consultas anônimas.
+    lotes = 0
+    max_lotes = max(8, ((max_documentos - adicionados + 9) // 10) * 6)
+    while adicionados < max_documentos and lotes < max_lotes:
+        lotes += 1
+        restantes = max_documentos - adicionados
+        quantidade = min(50, max(20, restantes * 3))
+        params_ids = urllib.parse.urlencode({
+            "action": "query", "format": "json", "list": "random",
+            "rnnamespace": 0, "rnfilterredir": "nonredirects",
+            "rnlimit": quantidade, "maxlag": 5,
         })
-        bruto = _ler_url_texto(f"https://{host}/w/api.php?{params}", tentativas=2, espera=1.0)
-        if bruto:
-            try:
-                registrar_paginas(json.loads(bruto))
-            except json.JSONDecodeError:
-                print(f"  [wikipedia:{idioma}] JSON aleatório inválido")
-        time.sleep(0.2)
+        bruto_ids = _ler_url_texto(
+            f"https://{host}/w/api.php?{params_ids}", tentativas=5, espera=2.0
+        )
+        if not bruto_ids:
+            time.sleep(min(2 * lotes, 15))
+            continue
+        try:
+            dados_ids = json.loads(bruto_ids)
+            ids = [
+                str(item.get("id"))
+                for item in dados_ids.get("query", {}).get("random", [])
+                if item.get("id")
+            ]
+        except (json.JSONDecodeError, TypeError, AttributeError):
+            print(f"  [wikipedia:{idioma}] lista aleatória inválida")
+            time.sleep(1.0)
+            continue
+        if not ids:
+            print(f"  [wikipedia:{idioma}] API não retornou IDs aleatórios")
+            time.sleep(1.0)
+            continue
+
+        for inicio in range(0, len(ids), 50):
+            lote_ids = ids[inicio:inicio + 50]
+            params_texto = urllib.parse.urlencode({
+                "action": "query", "format": "json",
+                "pageids": "|".join(lote_ids),
+                "prop": "extracts", "explaintext": 1, "maxlag": 5,
+            })
+            bruto_texto = _ler_url_texto(
+                f"https://{host}/w/api.php?{params_texto}",
+                tentativas=5, espera=2.0,
+            )
+            if bruto_texto:
+                try:
+                    registrar_paginas(json.loads(bruto_texto))
+                except json.JSONDecodeError:
+                    print(f"  [wikipedia:{idioma}] extracts aleatórios inválidos")
+            if adicionados >= max_documentos:
+                break
+            time.sleep(0.5)
 
     print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados")
     return documentos
