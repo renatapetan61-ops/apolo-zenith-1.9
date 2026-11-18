@@ -47,3 +47,32 @@ def test_construir_corpus_usa_wikipedia_quando_gutenberg_nao_tem_dados(tmp_path,
     dados = json.loads(manifesto.read_text(encoding="utf-8"))
     assert [item["fonte"] for item in dados] == ["wikipedia_pt", "wikipedia_en"]
     assert all(item["licenca"] == "CC BY-SA 4.0" for item in dados)
+
+
+def test_construir_corpus_complementa_gutenberg_abaixo_do_minimo(tmp_path, monkeypatch):
+    def gutenberg(raw, idioma, limite, documentos):
+        documentos.append(cb.DocumentoFonte(
+            fonte=f"gutenberg_{idioma}", titulo=f"Livro {idioma}",
+            arquivo=f"raw/gutenberg_{idioma}/livro.txt",
+            url="https://example.org/livro", licenca="Domínio público",
+            caracteres=3000, sha256="b"*64, idioma=idioma))
+        return documentos
+
+    def wikipedia(raw, idioma, limite, documentos):
+        for n in range(limite):
+            documentos.append(cb.DocumentoFonte(
+                fonte=f"wikipedia_{idioma}", titulo=f"Artigo {idioma} {n}",
+                arquivo=f"raw/wikipedia_{idioma}/{n}.txt",
+                url=f"https://{idioma}.wikipedia.org/wiki/{n}",
+                licenca="CC BY-SA 4.0", caracteres=2500,
+                sha256="c"*64, idioma=idioma))
+        return documentos
+
+    monkeypatch.setattr(cb, "coletar_gutenberg", gutenberg)
+    monkeypatch.setattr(cb, "coletar_wikipedia", wikipedia)
+    monkeypatch.setattr(cb, "coletar_wikisource", lambda raw, max_mb, docs: docs)
+    manifesto = cb.construir_corpus(tmp_path / "saida", max_livros_pt=1,
+        max_livros_en=1, usar_wikisource=False, min_documentos_idioma=3)
+    dados = json.loads(manifesto.read_text(encoding="utf-8"))
+    assert sum(x["idioma"] == "pt" for x in dados) == 3
+    assert sum(x["idioma"] == "en" for x in dados) == 3
