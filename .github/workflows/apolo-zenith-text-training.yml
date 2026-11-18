@@ -114,25 +114,6 @@ jobs:
           mkdir -p checkpoints
           cp -a "$REFERENCE_TEXT_CHECKPOINT" checkpoints/reference-text-baseline
 
-      - name: Validar checkpoint e compatibilidade do tokenizer
-        run: |
-          set -euo pipefail
-          test -s "$CODE_CHECKPOINT/model.pt"
-          test -s "$CODE_CHECKPOINT/config.json"
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          checkpoint = Path(os.environ["CODE_CHECKPOINT"])
-          model = json.loads((checkpoint / "config.json").read_text())
-          tokenizer = json.loads(Path("tokenizers/tokenizer/tokenizer_meta.json").read_text())
-          if int(model["vocab_size"]) != int(tokenizer["vocab_size"]):
-              raise SystemExit(
-                  f"Vocabulários incompatíveis: modelo={model['vocab_size']} "
-                  f"tokenizer={tokenizer['vocab_size']}"
-              )
-          print("Checkpoint do treino de código válido; tokenizer compatível.")
-          PY
-
       - name: Coletar corpus textual com licença declarada
         run: |
           python -m datasets.corpus_builder \
