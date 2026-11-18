@@ -79,15 +79,20 @@ def validar_checkpoint(pasta: Path) -> dict[str, Any]:
     return meta
 
 
-def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path: Path) -> dict[str, Any]:
+def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path: Path,
+                           expected_commit: str | None = None) -> dict[str, Any]:
     preflight = carregar_json(preflight_path)
     audit = carregar_json(audit_path)
     if preflight.get("status") != "passed" or not preflight.get("checks"):
         raise ValueError("preflight não aprovado")
     if not all(value is True for value in preflight["checks"].values()):
         raise ValueError("há verificações de preflight não aprovadas")
+    if expected_commit and preflight.get("commit") != expected_commit:
+        raise ValueError("preflight foi executado em outro commit; repetir validação no HEAD atual")
     if audit.get("passed") is not True:
         raise ValueError("auditoria do corpus não aprovada")
+    if expected_commit and audit.get("source_commit") != expected_commit:
+        raise ValueError("corpus foi construído em outro commit; reconstruir no HEAD atual")
     docs = audit.get("documents", {})
     por_idioma = docs.get("by_language", {})
     if int(docs.get("total", 0)) != DOCUMENTOS_ESPERADOS:
@@ -107,6 +112,7 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
     return {
         "preflight_run_id": preflight.get("run_id"),
         "preflight_commit": preflight.get("commit"),
+        "corpus_source_commit": audit.get("source_commit"),
         "corpus_documents": int(docs["total"]),
         "documents_by_language": por_idioma,
         "manifest_sha256": manifest_hash,
@@ -116,12 +122,13 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
 
 
 def iniciar(state_path: Path, preflight_path: Path, audit_path: Path,
-            manifest_path: Path, checkpoint_path: Path, now: datetime | None = None) -> dict[str, Any]:
+            manifest_path: Path, checkpoint_path: Path, now: datetime | None = None,
+            expected_commit: str | None = None) -> dict[str, Any]:
     if state_path.exists():
         atual = carregar_json(state_path)
         if atual.get("status") in ("running", "paused"):
             raise ValueError("já existe um ciclo ativo ou pausado; não iniciar outro")
-    requisitos = validar_pre_requisitos(preflight_path, audit_path, manifest_path)
+    requisitos = validar_pre_requisitos(preflight_path, audit_path, manifest_path, expected_commit)
     meta = validar_checkpoint(checkpoint_path)
     inicio = (now or agora_utc()).astimezone(timezone.utc)
     fim = inicio + timedelta(days=DURACAO_DIAS)
@@ -242,6 +249,7 @@ def main() -> None:
     p_start.add_argument("--corpus-audit", required=True)
     p_start.add_argument("--manifest", required=True)
     p_start.add_argument("--checkpoint", required=True)
+    p_start.add_argument("--expected-commit", default=None)
     p_record = sub.add_parser("record")
     p_record.add_argument("--state", required=True)
     p_record.add_argument("--checkpoint", required=True)
@@ -263,7 +271,7 @@ def main() -> None:
 
     if args.command == "start":
         result = iniciar(Path(args.state), Path(args.preflight), Path(args.corpus_audit),
-                         Path(args.manifest), Path(args.checkpoint))
+                         Path(args.manifest), Path(args.checkpoint), expected_commit=args.expected_commit)
     elif args.command == "record":
         result = registrar_sessao(Path(args.state), Path(args.checkpoint), args.run_id,
                                   args.steps, Path(args.evaluation) if args.evaluation else None)

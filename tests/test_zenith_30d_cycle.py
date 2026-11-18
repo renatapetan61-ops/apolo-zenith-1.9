@@ -13,10 +13,10 @@ def _prerequisitos(tmp_path: Path):
     import hashlib
     digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
     preflight = tmp_path / "preflight.json"
-    preflight.write_text(json.dumps({"status": "passed", "checks": {"pytest": True, "cli": True}}))
+    preflight.write_text(json.dumps({"status": "passed", "commit": "test-commit", "checks": {"pytest": True, "cli": True}}))
     audit = tmp_path / "audit.json"
     audit.write_text(json.dumps({
-        "passed": True, "manifest_sha256": digest, "release_tag": "apolo-zenith-corpus-30000-test",
+        "passed": True, "manifest_sha256": digest, "release_tag": "apolo-zenith-corpus-30000-test", "source_commit": "test-commit",
         "documents": {"total": 30000, "by_language": {"pt": 15000, "en": 15000}}
     }))
     checkpoint = tmp_path / "checkpoint"
@@ -119,3 +119,10 @@ def test_ciclo_registra_lacuna_de_monitoramento_acima_de_12_horas(tmp_path):
     gaps = [event for event in result["events"] if event["type"] == "monitoring_gap"]
     assert len(gaps) == 1
     assert gaps[0]["gap_hours"] == 18.0
+
+
+def test_ciclo_recusa_preflight_ou_corpus_de_outro_commit(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    with pytest.raises(ValueError, match="outro commit"):
+        iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint,
+                expected_commit="different-commit")

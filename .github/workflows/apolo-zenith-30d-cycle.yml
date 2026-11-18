@@ -166,7 +166,8 @@ jobs:
             --preflight "$PREFLIGHT_REPORT" \
             --corpus-audit "$CORPUS_AUDIT" \
             --manifest datasets_storage/manifest.json \
-            --checkpoint checkpoints/30d/checkpoints/final
+            --checkpoint checkpoints/30d/checkpoints/final \
+            --expected-commit "$GITHUB_SHA"
       - name: Atualizar relógio e decidir se ainda há treinamento
         if: steps.mode.outputs.skip != 'true'
         id: tick

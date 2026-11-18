@@ -85,6 +85,7 @@ jobs:
           path = Path("reports/corpus-audit.json")
           report = json.loads(path.read_text(encoding="utf-8"))
           report["release_tag"] = "apolo-zenith-corpus-30000-" + os.environ["GITHUB_RUN_ID"]
+          report["source_commit"] = os.environ["GITHUB_SHA"]
           path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
           print(report["release_tag"])
           PY
