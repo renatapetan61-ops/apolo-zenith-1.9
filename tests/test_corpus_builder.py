@@ -118,3 +118,11 @@ def test_ler_json_api_repete_erro_maxlag_em_http_200(monkeypatch):
     monkeypatch.setattr(cb.time, "sleep", lambda *_: None)
     payload = cb._ler_json_api("https://pt.wikipedia.org/w/api.php", "pt", "teste", tentativas=2)
     assert payload["query"]["random"][0]["id"] == 42
+
+
+
+def test_limite_lotes_wikipedia_cobre_corpus_maior_sem_loop_ilimitado():
+    assert cb._limite_lotes_wikipedia(300) == 1200
+    assert cb._limite_lotes_wikipedia(50) == 200
+    assert cb._limite_lotes_wikipedia(0) == 200
+    assert cb._limite_lotes_wikipedia(10000) == 1200
