@@ -21,6 +21,11 @@ on:
         required: true
         type: string
         default: "43986715117"
+      human_review_passed:
+        description: "Aprovação humana após revisar as gerações em PT-BR e inglês"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -43,6 +48,7 @@ jobs:
       TOKENIZERS_PARALLELISM: "false"
       TEXT_RUN_ID: ${{ inputs.text_run_id || '44200330638' }}
       CODE_RUN_ID: ${{ inputs.code_run_id || '43986715117' }}
+      HUMAN_REVIEW_PASSED: ${{ inputs.human_review_passed || false }}
 
     steps:
       - name: Validar identificadores
@@ -103,6 +109,7 @@ jobs:
             --tokenizer tokenizers/tokenizer \
             --training-summary "artifacts/text/checkpoints/actions-text-${CODE_RUN_ID}/resumo_treino.json" \
             --data-summary artifacts/text/datasets_storage/processed/resumo.json \
+            --human-review-passed "$HUMAN_REVIEW_PASSED" \
             --output reports/language-quality-diagnostic.json
 
       - name: Publicar relatório e corpus avaliado
