@@ -57,6 +57,7 @@ jobs:
             --processado datasets_storage/processed \
             --min-documentos-idioma 15000 \
             --documentos-esperados 30000 \
+            --min-documentos-processados 27000 \
             --min-tokens-treino 1000000 \
             --min-tokens-avaliacao 10000 \
             --saida reports/corpus-audit.json

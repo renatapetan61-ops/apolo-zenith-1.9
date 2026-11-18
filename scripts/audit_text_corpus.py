@@ -15,7 +15,7 @@ def sha256(path: Path) -> str:
 
 def auditar(manifesto: Path, processed: Path, min_docs: int=40,
             min_train_tokens: int=20000, min_eval_tokens: int=1000,
-            expected_total_documents: int=0) -> dict:
+            expected_total_documents: int=0, min_processed_documents: int=0) -> dict:
     docs=json.loads(manifesto.read_text(encoding="utf-8"))
     por_idioma=Counter(str(d.get("idioma","")).lower() for d in docs)
     por_fonte=Counter(str(d.get("fonte","")) for d in docs)
@@ -47,7 +47,15 @@ def auditar(manifesto: Path, processed: Path, min_docs: int=40,
       or ("Domínio público" in str(d.get("licenca","")))
       for d in docs
     )
+    resumo_path=processed/"resumo.json"
+    resumo=json.loads(resumo_path.read_text(encoding="utf-8")) if resumo_path.is_file() else {}
+    stats=resumo.get("documentos",{})
+    processados_aprovados=int(stats.get("aprovados",0))
+    duplicadas_removidas=int(resumo.get("duplicadas_removidas",0))
+    documentos_finais=max(0,processados_aprovados-duplicadas_removidas)
     gates={
+      "all_manifest_documents_processed":(not resumo_path.is_file() and min_processed_documents<=0) or int(stats.get("lidos",0))==len(docs),
+      "minimum_processed_documents":min_processed_documents<=0 or documentos_finais>=min_processed_documents,
       "minimum_pt_documents":por_idioma.get("pt",0)>=min_docs,
       "minimum_en_documents":por_idioma.get("en",0)>=min_docs,
       "training_tokens":tokens["train"]>=min_train_tokens,
@@ -63,9 +71,13 @@ def auditar(manifesto: Path, processed: Path, min_docs: int=40,
     return {"status":"success","passed":all(gates.values()),"gates":gates,
       "thresholds":{"minimum_documents_per_language":min_docs,
         "expected_total_documents":expected_total_documents,
+        "minimum_processed_documents":min_processed_documents,
         "minimum_train_tokens":min_train_tokens,"minimum_val_test_tokens_each":min_eval_tokens},
       "documents":{"total":len(docs),"by_language":dict(por_idioma),"by_source":dict(por_fonte),
-        "licenses":dict(licencas),"integrity_checked":len(integridade),
+        "licenses":dict(licencas),"processed_approved":processados_aprovados,
+        "processed_duplicates_removed":duplicadas_removidas,
+        "processed_final_documents":documentos_finais,
+        "integrity_checked":len(integridade),
         "duplicate_hashes":duplicados,
         "integrity_failures":sum(not x["ok"] for x in integridade)},
       "tokens_by_split":tokens,"manifest_sha256":sha256(manifesto),
@@ -80,10 +92,13 @@ def main():
     p.add_argument("--min-tokens-avaliacao",type=int,default=1000)
     p.add_argument("--documentos-esperados",type=int,default=0,
                    help="exige a quantidade total exata de documentos quando maior que zero")
+    p.add_argument("--min-documentos-processados",type=int,default=0,
+                   help="mínimo de documentos aprovados após filtros e deduplicação")
     p.add_argument("--saida",default="reports/corpus-audit.json")
     a=p.parse_args()
     report=auditar(Path(a.manifesto),Path(a.processado),a.min_documentos_idioma,
-                   a.min_tokens_treino,a.min_tokens_avaliacao,a.documentos_esperados)
+                   a.min_tokens_treino,a.min_tokens_avaliacao,a.documentos_esperados,
+                   a.min_documentos_processados)
     out=Path(a.saida); out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf-8")
     print(json.dumps(report,indent=2,ensure_ascii=False))
