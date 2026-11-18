@@ -72,7 +72,7 @@ def main():
     p.add_argument("--tokenizer",default="tokenizers/tokenizer")
     p.add_argument("--pt-corpus",default="evaluation/corpus/independent_pt_br.jsonl")
     p.add_argument("--en-corpus",default="evaluation/corpus/independent_en.jsonl")
-    p.add_argument("--training-summary",default=None); p.add_argument("--data-summary",default=None)
+    p.add_argument("--training-summary",default=None); p.add_argument("--data-summary",default=None); p.add_argument("--human-review-passed",choices=("true","false"),default="false")
     p.add_argument("--output",default="reports/language-quality-diagnostic.json")
     a=p.parse_args()
     tok=BPETokenizer.load(a.tokenizer)
@@ -118,16 +118,19 @@ def main():
         c=comparison[lang]; t=c["text_checkpoint"]; gens=generations[lang]
         gates[lang]={"at_least_500_eval_tokens":t["tokens_scored"]>=500,
           "finite_metrics":math.isfinite(t["loss"]) and math.isfinite(t["perplexity"]),
+          "perplexity_under_100":t["perplexity"]<=100,
           "not_more_than_5pct_loss_regression_vs_code":c["text_loss_change_pct"]<=5,
           "all_generation_runs_nonempty":all(bool(g["text"].strip()) for g in gens),
           "no_severe_token_repetition":all(g["max_token_run"]<8 and g["repeated_3gram_ratio"]<0.75 for g in gens)}
     gates["tokenizer_no_unknowns"]=tokenizer_diag["unknown_token_rate"]==0
+    gates["human_semantic_review_passed"]=a.human_review_passed=="true"
     gates["text_improves_at_least_one_language"]=any(comparison[l]["text_loss_change_pct"]< -2 for l in ("pt-BR","en"))
     approved=all(all(v.values()) if isinstance(v,dict) else v for v in gates.values())
     report={"status":"success","decision":"AUTHORIZED_FOR_CONTROLLED_TRAINING" if approved else "NOT_AUTHORIZED_YET",
       "training_authorization":approved,
       "criteria":{"minimum_tokens_per_language":500,"maximum_loss_regression_vs_code_pct":5,
-        "minimum_improvement_in_one_language_pct":2,"max_consecutive_identical_tokens_exclusive":8,
+        "minimum_improvement_in_one_language_pct":2,"maximum_perplexity_per_language":100,
+        "human_semantic_review_required":True,"max_consecutive_identical_tokens_exclusive":8,
         "max_repeated_3gram_ratio_exclusive":0.75,"unknown_token_rate":0.0},
       "gates":gates,"corpus":corpora,"tokenizer":tokenizer_diag,
       "checkpoint":{"text_parameters":text.num_parameters(),"code_parameters":code.num_parameters(),
