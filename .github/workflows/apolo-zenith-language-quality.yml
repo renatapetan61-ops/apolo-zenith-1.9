@@ -3,12 +3,6 @@ name: Apolo Zenith 1.9 — avaliação de qualidade linguística
 run-name: "Apolo Zenith Language Core quality diagnostic"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/apolo-zenith-language-quality.yml"
-      - "scripts/evaluate_language_quality.py"
-      - "evaluation/corpus/**"
   workflow_run:
     workflows:
       - "Apolo Zenith 1.9 — próxima etapa de treinamento textual"
@@ -106,12 +100,17 @@ jobs:
           test -s "$CODE_CKPT/config.json"
           echo "TEXT_CKPT=$TEXT_CKPT" >> "$GITHUB_ENV"
           echo "CODE_CKPT=$CODE_CKPT" >> "$GITHUB_ENV"
+          REFERENCE_CKPT="artifacts/text/checkpoints/reference-text-baseline"
+          test -s "$REFERENCE_CKPT/model.pt"
+          test -s "$REFERENCE_CKPT/config.json"
+          echo "REFERENCE_CKPT=$REFERENCE_CKPT" >> "$GITHUB_ENV"
 
       - name: Executar avaliação independente
         run: |
           python -m scripts.evaluate_language_quality \
             --checkpoint-text "$TEXT_CKPT" \
             --checkpoint-code "$CODE_CKPT" \
+            --checkpoint-reference "$REFERENCE_CKPT" \
             --tokenizer tokenizers/tokenizer \
             --training-summary "artifacts/text/checkpoints/actions-text-${CODE_RUN_ID}/resumo_treino.json" \
             --data-summary artifacts/text/datasets_storage/processed/resumo.json \

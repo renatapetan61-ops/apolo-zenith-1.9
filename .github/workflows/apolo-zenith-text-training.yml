@@ -54,6 +54,9 @@ jobs:
       TOKENIZERS_PARALLELISM: "false"
       CODE_RUN_ID: ${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
       CODE_CHECKPOINT: artifacts/code/checkpoints/actions-code-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}/checkpoints/final
+      REFERENCE_TEXT_RUN_ID: "44389795351"
+      REFERENCE_TEXT_ARTIFACT: apolo-zenith-text-training-after-43986715117
+      REFERENCE_TEXT_CHECKPOINT: artifacts/reference/checkpoints/actions-text-43986715117/checkpoints/final
 
     steps:
       - name: Validar identificador da execução de código
@@ -85,13 +88,31 @@ jobs:
           python -m scripts.prepare_data --help
           python -m training.text_trainer --help
 
-      - name: Recuperar o checkpoint produzido pelo treinamento de código
+      - name: Recuperar o checkpoint textual de referência preservado
         uses: actions/download-artifact@v4
         with:
-          name: apolo-zenith-code-training-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
-          run-id: ${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
+          name: ${{ env.REFERENCE_TEXT_ARTIFACT }}
+          run-id: ${{ env.REFERENCE_TEXT_RUN_ID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: artifacts/code
+          path: artifacts/reference
+
+      - name: Validar checkpoint textual de referência e tokenizer
+        run: |
+          set -euo pipefail
+          test -s "$REFERENCE_TEXT_CHECKPOINT/model.pt"
+          test -s "$REFERENCE_TEXT_CHECKPOINT/config.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          checkpoint = Path(os.environ["REFERENCE_TEXT_CHECKPOINT"])
+          model = json.loads((checkpoint / "config.json").read_text())
+          tokenizer = json.loads(Path("tokenizers/tokenizer/tokenizer_meta.json").read_text())
+          if int(model["vocab_size"]) != int(tokenizer["vocab_size"]):
+              raise SystemExit("Checkpoint de referência e tokenizer incompatíveis.")
+          print("Checkpoint textual anterior preservado e compatível.")
+          PY
+          mkdir -p checkpoints
+          cp -a "$REFERENCE_TEXT_CHECKPOINT" checkpoints/reference-text-baseline
 
       - name: Validar checkpoint e compatibilidade do tokenizer
         run: |
@@ -116,9 +137,9 @@ jobs:
         run: |
           python -m datasets.corpus_builder \
             --saida datasets_storage \
-            --max-livros-pt 80 \
-            --max-livros-en 80 \
-            --min-documentos-idioma 40 \
+            --max-livros-pt 100 \
+            --max-livros-en 100 \
+            --min-documentos-idioma 60 \
             --sem-wikisource
 
       - name: Preparar texto sem alterar o tokenizer do modelo
@@ -136,9 +157,9 @@ jobs:
           python -m scripts.audit_text_corpus \
             --manifesto datasets_storage/manifest.json \
             --processado datasets_storage/processed \
-            --min-documentos-idioma 40 \
-            --min-tokens-treino 20000 \
-            --min-tokens-avaliacao 1000 \
+            --min-documentos-idioma 60 \
+            --min-tokens-treino 40000 \
+            --min-tokens-avaliacao 2000 \
             --saida reports/corpus-audit.json
 
       - name: Continuar o Language Core no corpus textual
@@ -147,11 +168,11 @@ jobs:
             --dados datasets_storage/processed \
             --tokenizer datasets_storage/processed/tokenizer \
             --saida "checkpoints/actions-text-${CODE_RUN_ID}" \
-            --checkpoint-inicial "$CODE_CHECKPOINT" \
-            --steps 2000 \
+            --checkpoint-inicial "$REFERENCE_TEXT_CHECKPOINT" \
+            --steps 2500 \
             --batch-size 4 \
             --block-size 128 \
-            --lr 0.0002 \
+            --lr 0.00005 \
             --eval-interval 100 \
             --save-interval 250 \
             --seed 1337
@@ -163,6 +184,7 @@ jobs:
           name: apolo-zenith-text-training-after-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}
           path: |
             checkpoints/actions-text-${{ inputs.code_run_id || github.event.workflow_run.id || '43986715117' }}/
+            checkpoints/reference-text-baseline/
             datasets_storage/manifest.json
             datasets_storage/processed/resumo.json
             reports/corpus-audit.json

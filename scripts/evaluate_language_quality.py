@@ -69,6 +69,8 @@ def generate(model, tokenizer, prompt, count):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--checkpoint-text",required=True); p.add_argument("--checkpoint-code",required=True)
+    p.add_argument("--checkpoint-reference",required=True,
+                   help="checkpoint textual anterior preservado como baseline")
     p.add_argument("--tokenizer",default="tokenizers/tokenizer")
     p.add_argument("--pt-corpus",default="evaluation/corpus/independent_pt_br.jsonl")
     p.add_argument("--en-corpus",default="evaluation/corpus/independent_en.jsonl")
@@ -78,7 +80,9 @@ def main():
     tok=BPETokenizer.load(a.tokenizer)
     text=ApoloLanguageModel.load(a.checkpoint_text,map_location="cpu").eval()
     code=ApoloLanguageModel.load(a.checkpoint_code,map_location="cpu").eval()
-    if text.config.vocab_size!=tok.vocab_size or code.config.vocab_size!=tok.vocab_size:
+    reference=ApoloLanguageModel.load(a.checkpoint_reference,map_location="cpu").eval()
+    if (text.config.vocab_size!=tok.vocab_size or code.config.vocab_size!=tok.vocab_size
+            or reference.config.vocab_size!=tok.vocab_size):
         raise RuntimeError("Tokenizer e checkpoints incompatíveis.")
     corpora={}
     for lang,path in (("pt-BR",a.pt_corpus),("en",a.en_corpus)):
@@ -89,9 +93,14 @@ def main():
     comparison={}
     for lang,path in (("pt-BR",a.pt_corpus),("en",a.en_corpus)):
         _,docs=load_corpus(path,lang)
-        comparison[lang]={"code_checkpoint":score(code,tok,docs),"text_checkpoint":score(text,tok,docs)}
-        base=comparison[lang]["code_checkpoint"]["loss"]; after=comparison[lang]["text_checkpoint"]["loss"]
+        comparison[lang]={"code_checkpoint":score(code,tok,docs),
+          "reference_text_checkpoint":score(reference,tok,docs),
+          "text_checkpoint":score(text,tok,docs)}
+        base=comparison[lang]["code_checkpoint"]["loss"]
+        previous=comparison[lang]["reference_text_checkpoint"]["loss"]
+        after=comparison[lang]["text_checkpoint"]["loss"]
         comparison[lang]["text_loss_change_pct"]=round((after-base)/max(base,1e-12)*100,3)
+        comparison[lang]["change_vs_previous_text_pct"]=round((after-previous)/max(previous,1e-12)*100,3)
     prompts={"pt-BR":["A ciência de dados ajuda equipes a","Quando uma comunidade planeja o futuro","Uma explicação clara deve apresentar"],
       "en":["Data science helps teams to","When a community plans for the future","A clear explanation should present"]}
     generations={}
@@ -120,6 +129,7 @@ def main():
           "finite_metrics":math.isfinite(t["loss"]) and math.isfinite(t["perplexity"]),
           "perplexity_under_100":t["perplexity"]<=100,
           "not_more_than_5pct_loss_regression_vs_code":c["text_loss_change_pct"]<=5,
+          "not_more_than_5pct_regression_vs_previous_text":c["change_vs_previous_text_pct"]<=5,
           "all_generation_runs_nonempty":all(bool(g["text"].strip()) for g in gens),
           "no_severe_token_repetition":all(g["max_token_run"]<8 and g["repeated_3gram_ratio"]<0.75 for g in gens)}
     gates["tokenizer_no_unknowns"]=tokenizer_diag["unknown_token_rate"]==0
@@ -129,17 +139,20 @@ def main():
     report={"status":"success","decision":"AUTHORIZED_FOR_CONTROLLED_TRAINING" if approved else "NOT_AUTHORIZED_YET",
       "training_authorization":approved,
       "criteria":{"minimum_tokens_per_language":2000,"maximum_loss_regression_vs_code_pct":5,
+        "maximum_loss_regression_vs_previous_text_pct":5,
         "minimum_improvement_in_one_language_pct":2,"maximum_perplexity_per_language":100,
         "human_semantic_review_required":True,"max_consecutive_identical_tokens_exclusive":8,
         "max_repeated_3gram_ratio_exclusive":0.75,"unknown_token_rate":0.0},
       "gates":gates,"corpus":corpora,"tokenizer":tokenizer_diag,
       "checkpoint":{"text_parameters":text.num_parameters(),"code_parameters":code.num_parameters(),
+        "reference_text_parameters":reference.num_parameters(),
         "text_config":text.config.to_dict(),"code_config":code.config.to_dict()},
       "loss_perplexity_comparison":comparison,"generation":generations,
       "training_and_data_metadata":metadata,
       "interpretation":["A aprovação libera somente uma rodada controlada/experimental, não uma declaração de qualidade de produção.",
         "Corpus independente foi escrito para avaliação e não é coletado do corpus de treinamento.",
         "Loss e perplexidade são médias ponderadas por token; não são comparáveis a probes curtos anteriores.",
+        "O checkpoint textual anterior é preservado e usado como baseline adicional; regressão acima de 5% bloqueia a autorização.",
         "Geração usa amostragem fixa de parâmetros e diversidade é medida sobre tokens gerados."]}
     out=Path(a.output); out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf-8")
