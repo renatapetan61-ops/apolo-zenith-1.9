@@ -303,7 +303,7 @@ def coletar_wikipedia(
         for pagina in sorted(paginas.values(), key=lambda item: int(item.get("pageid", 0))):
             page_id = int(pagina.get("pageid", 0))
             titulo = str(pagina.get("title", "")).strip()
-            texto = str(pagina.get("extract", "")).strip()
+            texto = str(pagina.get("extract", "")).strip()[:50000]
             if not page_id or page_id in vistos or len(texto) < 1200:
                 continue
             vistos.add(page_id)
