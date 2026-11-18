@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: apolo-zenith-30d-corpus
@@ -75,23 +75,33 @@ jobs:
           assert original == prepared, "Tokenizer foi alterado durante a preparação."
           print("Corpus e tokenizer aprovados; nenhum treino foi iniciado.")
           PY
+      - name: Vincular auditoria a um release imutável
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path("reports/corpus-audit.json")
+          report = json.loads(path.read_text(encoding="utf-8"))
+          report["release_tag"] = "apolo-zenith-corpus-30000-" + os.environ["GITHUB_RUN_ID"]
+          path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+          print(report["release_tag"])
+          PY
       - name: Empacotar corpus para persistência
         run: |
           set -euo pipefail
           tar -czf corpus.tar.gz datasets_storage
           SIZE=$(stat -c%s corpus.tar.gz)
           echo "Tamanho do pacote: $SIZE bytes"
-          if [ "$SIZE" -gt 350000000 ]; then
-            echo "Pacote excede o orçamento de 350 MB para armazenamento de artefatos."
+          if [ "$SIZE" -gt 1000000000 ]; then
+            echo "Pacote excede o limite operacional de 1 GB para release asset."
             exit 1
           fi
-      - name: Publicar corpus imutável e relatório
-        uses: actions/upload-artifact@v4
-        with:
-          name: apolo-zenith-corpus-30000
-          path: |
-            corpus.tar.gz
-            reports/corpus-audit.json
-          if-no-files-found: error
-          retention-days: 90
-          compression-level: 0
+      - name: Publicar corpus como release asset imutável
+        env:
+          RELEASE_TAG: apolo-zenith-corpus-30000-${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" \
+            --title "APOLO ZENITH 1.9 — corpus bilíngue de 30.000 documentos" \
+            --notes "Corpus auditado e vinculado ao run $GITHUB_RUN_ID. Manifesto, hashes e licenças estão no arquivo corpus-audit.json."
+          gh release upload "$RELEASE_TAG" corpus.tar.gz reports/corpus-audit.json

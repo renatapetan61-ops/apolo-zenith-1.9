@@ -97,7 +97,7 @@ jobs:
             fi
             echo "start=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Localizar e baixar preflight aprovado e corpus 30k
+      - name: Localizar preflight aprovado e release do corpus 30k
         if: steps.mode.outputs.start == 'true'
         run: |
           set -euo pipefail
@@ -117,13 +117,13 @@ jobs:
           test -n "$PREFLIGHT_RUN"
           test -n "$CORPUS_RUN"
           download_artifact "$PREFLIGHT_RUN" "apolo-zenith-30d-preflight" "artifacts/preflight"
-          download_artifact "$CORPUS_RUN" "apolo-zenith-corpus-30000" "artifacts/corpus"
           test -s artifacts/preflight/reports/preflight-validation.json
-          test -s artifacts/corpus/reports/corpus-audit.json
-          mkdir -p datasets_storage
+          mkdir -p artifacts/corpus
+          gh release download "apolo-zenith-corpus-30000-$CORPUS_RUN" --pattern corpus.tar.gz --pattern corpus-audit.json --dir artifacts/corpus
+          test -s artifacts/corpus/corpus-audit.json
           tar -xzf artifacts/corpus/corpus.tar.gz
           echo "PREFLIGHT_REPORT=artifacts/preflight/reports/preflight-validation.json" >> "$GITHUB_ENV"
-          echo "CORPUS_AUDIT=artifacts/corpus/reports/corpus-audit.json" >> "$GITHUB_ENV"
+          echo "CORPUS_AUDIT=artifacts/corpus/corpus-audit.json" >> "$GITHUB_ENV"
       - name: Baixar checkpoint textual de referência preservado
         if: steps.mode.outputs.start == 'true'
         run: |
@@ -208,16 +208,13 @@ jobs:
         with:
           path: datasets_storage
           key: ${{ env.DATASET_CACHE_KEY }}
-      - name: Baixar corpus se o cache não estiver disponível
+      - name: Baixar corpus imutável se o cache não estiver disponível
         if: (steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true') && steps.corpus-cache.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
-          CORPUS_RUN=$(gh api "/repos/$GITHUB_REPOSITORY/actions/workflows/apolo-zenith-30d-corpus.yml/runs?branch=main&status=success&per_page=20" --jq '.workflow_runs[0].id')
-          ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$CORPUS_RUN/artifacts?per_page=100" --jq '.artifacts[] | select(.name=="apolo-zenith-corpus-30000" and .expired==false) | .id' | head -n1)
-          test -n "$ART_ID"
-          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ART_ID/zip" > corpus.zip
+          RELEASE_TAG=$(python -c 'import json; print(json.load(open("state/state.json"))["corpus"]["release_tag"])')
           mkdir -p artifacts/corpus
-          unzip -q corpus.zip -d artifacts/corpus
+          gh release download "$RELEASE_TAG" --pattern corpus.tar.gz --dir artifacts/corpus
           tar -xzf artifacts/corpus/corpus.tar.gz
       - name: Confirmar que o cache contém exatamente o corpus vinculado ao ciclo
         if: steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true'

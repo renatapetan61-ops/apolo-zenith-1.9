@@ -16,7 +16,7 @@ def _prerequisitos(tmp_path: Path):
     preflight.write_text(json.dumps({"status": "passed", "checks": {"pytest": True, "cli": True}}))
     audit = tmp_path / "audit.json"
     audit.write_text(json.dumps({
-        "passed": True, "manifest_sha256": digest,
+        "passed": True, "manifest_sha256": digest, "release_tag": "apolo-zenith-corpus-30000-test",
         "documents": {"total": 30000, "by_language": {"pt": 15000, "en": 15000}}
     }))
     checkpoint = tmp_path / "checkpoint"

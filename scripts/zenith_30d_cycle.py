@@ -98,6 +98,9 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         raise ValueError("corpus não atingiu 15.000 documentos em inglês")
     if not manifest_path.is_file():
         raise ValueError("manifesto de proveniência ausente")
+    release_tag = str(audit.get("release_tag", "")).strip()
+    if not release_tag.startswith("apolo-zenith-corpus-30000-"):
+        raise ValueError("corpus sem release imutável identificado")
     manifest_hash = sha256_arquivo(manifest_path)
     if audit.get("manifest_sha256") != manifest_hash:
         raise ValueError("hash do manifesto não corresponde à auditoria")
@@ -107,6 +110,7 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         "corpus_documents": int(docs["total"]),
         "documents_by_language": por_idioma,
         "manifest_sha256": manifest_hash,
+        "release_tag": release_tag,
         "corpus_audit_passed": True,
     }
 
