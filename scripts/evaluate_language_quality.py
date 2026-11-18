@@ -63,7 +63,7 @@ def generate(model, tokenizer, prompt, count):
     inp=torch.tensor(ids,dtype=torch.long).unsqueeze(0)
     out=model.generate(inp,max_new_tokens=count,temperature=0.8,top_k=40,top_p=0.9,
                        repetition_penalty=1.1,use_cache=True)
-    new=out[0].tolist()[len(ids):]
+    new=out[0].tolist()
     return {"text":tokenizer.decode(new),"token_ids":new,**repetition_metrics(new)}
 
 def main():
