@@ -1,0 +1,116 @@
+name: APOLO ZENITH 1.9 — preflight do ciclo de 30 dias
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "datasets/corpus_builder.py"
+      - "scripts/audit_text_corpus.py"
+      - "scripts/zenith_30d_cycle.py"
+      - "training/**"
+      - "tests/**"
+      - ".github/workflows/apolo-zenith-30d-*.yml"
+  push:
+    branches: [main]
+    paths:
+      - "datasets/corpus_builder.py"
+      - "scripts/audit_text_corpus.py"
+      - "scripts/zenith_30d_cycle.py"
+      - "training/**"
+      - "tests/**"
+      - ".github/workflows/apolo-zenith-30d-*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apolo-zenith-30d-preflight
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Instalar PyTorch CPU e dependências
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+          python -m pip install pytest pyyaml
+      - name: Executar testes unitários e de retomada
+        run: |
+          mkdir -p reports
+          pytest -q --junitxml=reports/pytest.xml
+      - name: Validar interfaces CLI e configurações do pipeline
+        run: |
+          set -euo pipefail
+          python -m datasets.corpus_builder --help >/dev/null
+          python -m scripts.prepare_data --help >/dev/null
+          python -m scripts.audit_text_corpus --help >/dev/null
+          python -m training.text_trainer --help >/dev/null
+          python -m scripts.zenith_30d_cycle --help >/dev/null
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          paths = sorted(Path(".github/workflows").glob("apolo-zenith-30d-*.yml"))
+          assert len(paths) == 3, f"Esperados 3 workflows novos; encontrados {len(paths)}"
+          for path in paths:
+              data = yaml.load(path.read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
+              assert isinstance(data, dict) and isinstance(data.get("jobs"), dict), path
+              print(f"YAML válido: {path}")
+          PY
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          meta = json.loads(Path("tokenizers/tokenizer/tokenizer_meta.json").read_text())
+          assert meta["vocab_size"] == 8192
+          assert meta["special_tokens"]["<|vision|>"] == 7
+          assert meta["special_tokens"]["<|audio|>"] == 9
+          print("Tokenizer BPE 8192 e tokens multimodais preservados.")
+          PY
+      - name: Registrar resultado do preflight
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = {
+            "status": "passed",
+            "run_id": os.environ["GITHUB_RUN_ID"],
+            "commit": os.environ["GITHUB_SHA"],
+            "checks": {
+              "pytest": True,
+              "corpus_builder_cli": True,
+              "prepare_data_cli": True,
+              "corpus_audit_cli": True,
+              "text_trainer_cli": True,
+              "cycle_state_cli": True,
+              "workflow_yaml_syntax": True,
+              "tokenizer_8192_and_multimodal_tokens": True
+            },
+            "timer_started": False,
+            "note": "Preflight de código aprovado; o ciclo só começa após corpus 30k auditado e comando manual start."
+          }
+          Path("reports/preflight-validation.json").write_text(
+            json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
+          )
+          PY
+      - name: Publicar prova do preflight
+        uses: actions/upload-artifact@v4
+        with:
+          name: apolo-zenith-30d-preflight
+          path: reports/preflight-validation.json
+          retention-days: 90

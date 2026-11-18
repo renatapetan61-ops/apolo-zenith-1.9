@@ -1,0 +1,313 @@
+name: APOLO ZENITH 1.9 — ciclo incremental de treinamento de 30 dias
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Ação do ciclo"
+        required: true
+        type: choice
+        options: [start, continue, pause, resume, status]
+        default: status
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: apolo-zenith-30d-cycle
+  cancel-in-progress: false
+
+jobs:
+  cycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CYCLE_COMMAND: ${{ github.event_name == 'schedule' && 'continue' || inputs.command || 'status' }}
+      PYTHONUNBUFFERED: "1"
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+      TOKENIZERS_PARALLELISM: "false"
+      BASELINE_TEXT_RUN_ID: "44400184057"
+      BASELINE_TEXT_ARTIFACT: "apolo-zenith-text-training-after-43986715117"
+      CODE_BASELINE_RUN_ID: "43986715117"
+      CODE_BASELINE_ARTIFACT: "apolo-zenith-code-training-43986715117"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+          python -m pip install pytest
+      - name: Recuperar tag do último estado persistido
+        id: old-state
+        run: |
+          set -euo pipefail
+          TAG=$(gh api "/repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq '.[] | select(.tag_name | startswith("apolo-zenith-30d-state-")) | select(any(.assets[]?; .name=="cycle-state.tar.gz")) | .tag_name' | head -n1 || true)
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      - name: Restaurar estado anterior do ciclo
+        if: steps.old-state.outputs.tag != ''
+        run: |
+          set -euo pipefail
+          mkdir -p restored-state
+          gh release download "${{ steps.old-state.outputs.tag }}" --pattern cycle-state.tar.gz --dir restored-state
+          test -s restored-state/cycle-state.tar.gz
+          tar -xzf restored-state/cycle-state.tar.gz
+      - name: Validar comando e estado existente
+        id: mode
+        run: |
+          set -euo pipefail
+          COMMAND="$CYCLE_COMMAND"
+          if [ "$COMMAND" = "start" ]; then
+            if [ -f state/state.json ]; then
+              STATUS=$(python -c 'import json; print(json.load(open("state/state.json"))["status"])')
+              if [ "$STATUS" = "running" ] || [ "$STATUS" = "paused" ]; then
+                echo "Já existe ciclo ativo/pausado; start recusado."
+                exit 1
+              fi
+            fi
+            echo "start=true" >> "$GITHUB_OUTPUT"
+          else
+            if [ ! -f state/state.json ]; then
+              if [ "$COMMAND" = "continue" ] || [ "$COMMAND" = "status" ]; then
+                echo "Nenhum ciclo iniciado. O agendamento não inicia o relógio."
+                echo "skip=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              echo "Não há estado persistido para $COMMAND."
+              exit 1
+            fi
+            echo "start=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Localizar preflight aprovado e release do corpus 30k
+        if: steps.mode.outputs.start == 'true'
+        run: |
+          set -euo pipefail
+          latest_run() {
+            gh api "/repos/$GITHUB_REPOSITORY/actions/workflows/$1/runs?branch=main&status=success&per_page=20" --jq '.workflow_runs[0].id'
+          }
+          download_artifact() {
+            RUN_ID="$1"; NAME="$2"; DEST="$3"
+            ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts?per_page=100" --jq ".artifacts[] | select(.name==\"$NAME\" and .expired==false) | .id" | head -n1)
+            test -n "$ART_ID"
+            gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ART_ID/zip" > "$DEST.zip"
+            mkdir -p "$DEST"
+            unzip -q "$DEST.zip" -d "$DEST"
+          }
+          PREFLIGHT_RUN=$(latest_run "apolo-zenith-30d-preflight.yml")
+          CORPUS_RUN=$(latest_run "apolo-zenith-30d-corpus.yml")
+          test -n "$PREFLIGHT_RUN"
+          test -n "$CORPUS_RUN"
+          download_artifact "$PREFLIGHT_RUN" "apolo-zenith-30d-preflight" "artifacts/preflight"
+          test -s artifacts/preflight/reports/preflight-validation.json
+          mkdir -p artifacts/corpus
+          gh release download "apolo-zenith-corpus-30000-$CORPUS_RUN" --pattern corpus.tar.gz --pattern corpus-audit.json --dir artifacts/corpus
+          test -s artifacts/corpus/corpus-audit.json
+          tar -xzf artifacts/corpus/corpus.tar.gz
+          echo "PREFLIGHT_REPORT=artifacts/preflight/reports/preflight-validation.json" >> "$GITHUB_ENV"
+          echo "CORPUS_AUDIT=artifacts/corpus/corpus-audit.json" >> "$GITHUB_ENV"
+      - name: Baixar checkpoint textual de referência preservado
+        if: steps.mode.outputs.start == 'true'
+        run: |
+          set -euo pipefail
+          ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$BASELINE_TEXT_RUN_ID/artifacts?per_page=100" --jq ".artifacts[] | select(.name==\"$BASELINE_TEXT_ARTIFACT\" and .expired==false) | .id" | head -n1)
+          test -n "$ART_ID"
+          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ART_ID/zip" > baseline-text.zip
+          mkdir -p artifacts/baseline-text
+          unzip -q baseline-text.zip -d artifacts/baseline-text
+          SOURCE="artifacts/baseline-text/checkpoints/actions-text-43986715117/checkpoints"
+          test -s "$SOURCE/final/model.pt"
+          test -s "$SOURCE/final/optimizer.pt"
+          rm -rf checkpoints/30d
+          mkdir -p checkpoints/30d/checkpoints
+          cp -a "$SOURCE/final" checkpoints/30d/checkpoints/final
+          if [ -d "$SOURCE/best" ]; then cp -a "$SOURCE/best" checkpoints/30d/checkpoints/best; fi
+          cp -a artifacts/baseline-text/checkpoints/reference-text-baseline checkpoints/30d/reference-text-baseline
+      - name: Preservar checkpoint de código para a avaliação do dia 30
+        if: steps.mode.outputs.start == 'true'
+        run: |
+          set -euo pipefail
+          ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$CODE_BASELINE_RUN_ID/artifacts?per_page=100" --jq ".artifacts[] | select(.name==\"$CODE_BASELINE_ARTIFACT\" and .expired==false) | .id" | head -n1)
+          test -n "$ART_ID"
+          gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ART_ID/zip" > baseline-code.zip
+          mkdir -p artifacts/code
+          unzip -q baseline-code.zip -d artifacts/code
+          CODE_SOURCE="artifacts/code/checkpoints/actions-code-43986715117/checkpoints/final"
+          test -s "$CODE_SOURCE/model.pt"
+          tar -czf code-baseline.tar.gz -C artifacts/code/checkpoints/actions-code-43986715117/checkpoints final
+          if ! gh release view apolo-zenith-30d-baseline >/dev/null 2>&1; then
+            gh release create apolo-zenith-30d-baseline \
+              --title "APOLO ZENITH 1.9 — checkpoint de código de referência" \
+              --notes "Checkpoint de código preservado para a avaliação independente ao final do ciclo de 30 dias. Origem: workflow $CODE_BASELINE_RUN_ID."
+          fi
+          gh release upload apolo-zenith-30d-baseline code-baseline.tar.gz --clobber
+      - name: Iniciar relógio somente com os pré-requisitos aprovados
+        if: steps.mode.outputs.start == 'true'
+        run: |
+          python -m scripts.zenith_30d_cycle start \
+            --state state/state.json \
+            --preflight "$PREFLIGHT_REPORT" \
+            --corpus-audit "$CORPUS_AUDIT" \
+            --manifest datasets_storage/manifest.json \
+            --checkpoint checkpoints/30d/checkpoints/final \
+            --expected-commit "$GITHUB_SHA"
+      - name: Atualizar relógio e decidir se ainda há treinamento
+        if: steps.mode.outputs.skip != 'true'
+        id: tick
+        run: |
+          set -euo pipefail
+          if [ "$CYCLE_COMMAND" = "pause" ]; then
+            python -m scripts.zenith_30d_cycle pause --state state/state.json
+          elif [ "$CYCLE_COMMAND" = "resume" ]; then
+            python -m scripts.zenith_30d_cycle resume --state state/state.json
+          fi
+          python -m scripts.zenith_30d_cycle tick --state state/state.json > reports-cycle-tick.json
+          STATUS=$(python -c 'import json; print(json.load(open("state/state.json"))["status"])')
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          DONE=$(python -c 'import json; print(str(json.load(open("state/state.json")).get("final_evaluation_done", False)).lower())')
+          if [ "$CYCLE_COMMAND" = "status" ]; then
+            cat state/state.json
+            echo "train=false" >> "$GITHUB_OUTPUT"
+            echo "final_eval=false" >> "$GITHUB_OUTPUT"
+          elif [ "$STATUS" = "running" ]; then
+            echo "train=true" >> "$GITHUB_OUTPUT"
+            echo "final_eval=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "train=false" >> "$GITHUB_OUTPUT"
+            if [ "$STATUS" = "completed" ] && [ "$DONE" = "false" ]; then
+              echo "final_eval=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "final_eval=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - name: Derivar chave imutável do cache do corpus
+        if: steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true'
+        run: |
+          DATASET_HASH=$(python -c 'import json; print(json.load(open("state/state.json"))["corpus"]["manifest_sha256"])')
+          echo "DATASET_CACHE_KEY=apolo-zenith-corpus-30000-$DATASET_HASH" >> "$GITHUB_ENV"
+      - name: Recuperar corpus armazenado para a sessão
+        if: steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true'
+        uses: actions/cache@v4
+        id: corpus-cache
+        with:
+          path: datasets_storage
+          key: ${{ env.DATASET_CACHE_KEY }}
+      - name: Baixar corpus imutável se o cache não estiver disponível
+        if: (steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true') && steps.corpus-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          RELEASE_TAG=$(python -c 'import json; print(json.load(open("state/state.json"))["corpus"]["release_tag"])')
+          mkdir -p artifacts/corpus
+          gh release download "$RELEASE_TAG" --pattern corpus.tar.gz --dir artifacts/corpus
+          tar -xzf artifacts/corpus/corpus.tar.gz
+      - name: Confirmar que o cache contém exatamente o corpus vinculado ao ciclo
+        if: steps.tick.outputs.train == 'true' || steps.tick.outputs.final_eval == 'true'
+        run: |
+          ACTUAL=$(sha256sum datasets_storage/manifest.json | cut -d" " -f1)
+          EXPECTED=$(python -c 'import json; print(json.load(open("state/state.json"))["corpus"]["manifest_sha256"])')
+          test "$ACTUAL" = "$EXPECTED"
+      - name: Executar sessão incremental com retomada integral
+        if: steps.tick.outputs.train == 'true'
+        run: |
+          set -euo pipefail
+          python -m training.text_trainer \
+            --dados datasets_storage/processed \
+            --tokenizer datasets_storage/processed/tokenizer \
+            --saida checkpoints/30d \
+            --retomar checkpoints/30d/checkpoints/final \
+            --steps 1000 \
+            --batch-size 4 \
+            --block-size 128 \
+            --lr 0.00005 \
+            --min-lr 0.000005 \
+            --warmup-steps 200 \
+            --early-stopping-patience 0 \
+            --eval-interval 100 \
+            --save-interval 250 \
+            --seed 1337 \
+            --sobrescrever
+          python -m scripts.zenith_30d_cycle record \
+            --state state/state.json \
+            --checkpoint checkpoints/30d/checkpoints/final \
+            --run-id "$GITHUB_RUN_ID" \
+            --steps 1000 \
+            --evaluation checkpoints/30d/resumo_treino.json
+      - name: Avaliação independente ao completar os 30 dias
+        id: final-eval
+        if: steps.tick.outputs.final_eval == 'true'
+        continue-on-error: true
+        run: |
+          mkdir -p reports
+          set -euo pipefail
+          mkdir -p artifacts/code
+          gh release download apolo-zenith-30d-baseline --pattern code-baseline.tar.gz --dir artifacts/code
+          mkdir -p artifacts/code/checkpoint
+          tar -xzf artifacts/code/code-baseline.tar.gz -C artifacts/code/checkpoint
+          CODE_CKPT="artifacts/code/checkpoint/final"
+          test -s "$CODE_CKPT/model.pt"
+          python -m scripts.evaluate_language_quality \
+            --checkpoint-text checkpoints/30d/checkpoints/final \
+            --checkpoint-code "$CODE_CKPT" \
+            --checkpoint-reference checkpoints/30d/reference-text-baseline \
+            --tokenizer tokenizers/tokenizer \
+            --training-summary checkpoints/30d/resumo_treino.json \
+            --data-summary datasets_storage/processed/resumo.json \
+            --human-review-passed false \
+            --output reports/language-quality-diagnostic.json
+      - name: Registrar conclusão da avaliação independente
+        if: steps.final-eval.outcome == 'success' && hashFiles('reports/language-quality-diagnostic.json') != ''
+        run: |
+          python -m scripts.zenith_30d_cycle mark-evaluated \
+            --state state/state.json \
+            --report reports/language-quality-diagnostic.json
+      - name: Empacotar estado e checkpoints persistentes
+        if: steps.mode.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p state
+          PATHS="state checkpoints/30d/checkpoints/final"
+          [ -d checkpoints/30d/checkpoints/best ] && PATHS="$PATHS checkpoints/30d/checkpoints/best"
+          [ -d checkpoints/30d/reference-text-baseline ] && PATHS="$PATHS checkpoints/30d/reference-text-baseline"
+          [ -f checkpoints/30d/metricas.jsonl ] && PATHS="$PATHS checkpoints/30d/metricas.jsonl"
+          [ -f checkpoints/30d/resumo_treino.json ] && PATHS="$PATHS checkpoints/30d/resumo_treino.json"
+          tar -czf cycle-state.tar.gz $PATHS
+          SIZE=$(stat -c%s cycle-state.tar.gz)
+          if [ "$SIZE" -gt 150000000 ]; then
+            echo "Estado/checkpoint excede 150 MB; não substituir o estado anterior."
+            exit 1
+          fi
+      - name: Publicar novo estado persistente como release versionado
+        id: publish-state
+        if: steps.mode.outputs.skip != 'true'
+        env:
+          STATE_TAG: apolo-zenith-30d-state-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$STATE_TAG" >/dev/null 2>&1; then
+            gh release create "$STATE_TAG" \
+              --title "APOLO ZENITH 1.9 — estado persistente do ciclo de 30 dias" \
+              --notes "Checkpoint e estado serializado do ciclo. Run: $GITHUB_RUN_ID; tentativa: $GITHUB_RUN_ATTEMPT."
+          fi
+          gh release upload "$STATE_TAG" cycle-state.tar.gz --clobber
+          echo "tag=$STATE_TAG" >> "$GITHUB_OUTPUT"
+      - name: Remover release de estado anterior após publicar o novo
+        if: success() && steps.mode.outputs.skip != 'true' && steps.old-state.outputs.tag != '' && steps.old-state.outputs.tag != steps.publish-state.outputs.tag
+        run: |
+          gh release delete "${{ steps.old-state.outputs.tag }}" --cleanup-tag --yes
+      - name: Publicar avaliação final
+        if: success() && steps.tick.outputs.status == 'completed' && hashFiles('reports/language-quality-diagnostic.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: apolo-zenith-30d-final-quality
+          path: reports/language-quality-diagnostic.json
+          retention-days: 90
