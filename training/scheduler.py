@@ -34,6 +34,12 @@ class WarmupCosineScheduler:
         self.warmup_steps = min(warmup_steps, max_steps)
         self.min_lr = min_lr
         self.base_lrs: List[float] = [g["lr"] for g in optimizer.param_groups]
+        if min_lr < 0:
+            raise ValueError("min_lr não pode ser negativo")
+        if min_lr > min(self.base_lrs):
+            raise ValueError(
+                f"min_lr ({min_lr}) não pode ser maior que a taxa base ({min(self.base_lrs)})"
+            )
         self.last_epoch = last_epoch
         self.step_update(0)
 

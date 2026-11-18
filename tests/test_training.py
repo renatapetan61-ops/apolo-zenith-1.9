@@ -47,6 +47,14 @@ def _modelo_pequeno() -> ApoloLanguageModel:
     )
 
 
+def test_scheduler_rejeita_min_lr_maior_que_lr() -> None:
+    from training.scheduler import WarmupCosineScheduler
+    parametro = torch.nn.Parameter(torch.zeros(()))
+    otimizador = torch.optim.AdamW([parametro], lr=5e-5)
+    with pytest.raises(ValueError, match="min_lr"):
+        WarmupCosineScheduler(otimizador, max_steps=100, warmup_steps=10, min_lr=6e-5)
+
+
 def test_treino_reduz_perda(tmp_path: Path) -> None:
     """O Trainer deve reduzir a perda de forma mensurável."""
     modelo = _modelo_pequeno()

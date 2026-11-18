@@ -48,6 +48,9 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--block-size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=6e-4)
+    parser.add_argument("--min-lr", type=float, default=None)
+    parser.add_argument("--warmup-steps", type=int, default=None)
+    parser.add_argument("--early-stopping-patience", type=int, default=None)
     parser.add_argument("--eval-interval", type=int, default=50)
     parser.add_argument("--save-interval", type=int, default=100)
     parser.add_argument("--seed", type=int, default=1337)
@@ -66,6 +69,16 @@ def main() -> None:
     treino_config.block_size = args.block_size
     treino_config.max_steps = args.steps
     treino_config.lr = args.lr
+    if args.min_lr is not None:
+        treino_config.min_lr = args.min_lr
+    if args.warmup_steps is not None:
+        treino_config.warmup_steps = args.warmup_steps
+    if args.early_stopping_patience is not None:
+        treino_config.early_stopping_patience = args.early_stopping_patience
+    if treino_config.min_lr > treino_config.lr:
+        raise SystemExit(
+            f"min_lr ({treino_config.min_lr}) não pode ser maior que lr ({treino_config.lr})."
+        )
     treino_config.eval_interval = args.eval_interval
     treino_config.save_interval = args.save_interval
     treino_config.seed = args.seed

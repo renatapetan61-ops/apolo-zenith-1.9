@@ -14,6 +14,8 @@ on:
       - "scripts/prepare_data.py"
       - "tests/test_prepare_data_sources.py"
       - "training/text_trainer.py"
+      - "training/scheduler.py"
+      - "tests/test_training.py"
       - "tests/test_corpus_builder.py"
       - "tests/test_text_data_split.py"
   workflow_dispatch:
@@ -120,7 +122,7 @@ jobs:
             --saida datasets_storage \
             --max-livros-pt 100 \
             --max-livros-en 100 \
-            --min-documentos-idioma 60 \
+            --min-documentos-idioma 300 \
             --sem-wikisource
 
       - name: Preparar texto sem alterar o tokenizer do modelo
@@ -138,9 +140,9 @@ jobs:
           python -m scripts.audit_text_corpus \
             --manifesto datasets_storage/manifest.json \
             --processado datasets_storage/processed \
-            --min-documentos-idioma 60 \
-            --min-tokens-treino 40000 \
-            --min-tokens-avaliacao 2000 \
+            --min-documentos-idioma 300 \
+            --min-tokens-treino 1000000 \
+            --min-tokens-avaliacao 10000 \
             --saida reports/corpus-audit.json
 
       - name: Continuar o Language Core no corpus textual
@@ -150,10 +152,13 @@ jobs:
             --tokenizer datasets_storage/processed/tokenizer \
             --saida "checkpoints/actions-text-${CODE_RUN_ID}" \
             --checkpoint-inicial "$REFERENCE_TEXT_CHECKPOINT" \
-            --steps 2500 \
+            --steps 20000 \
             --batch-size 4 \
             --block-size 128 \
-            --lr 0.00005 \
+            --lr 0.00005
+            --min-lr 0.000005
+            --warmup-steps 200
+            --early-stopping-patience 12 \
             --eval-interval 100 \
             --save-interval 250 \
             --seed 1337
