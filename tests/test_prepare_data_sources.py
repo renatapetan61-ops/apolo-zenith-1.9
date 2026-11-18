@@ -18,4 +18,4 @@ def test_processar_preserva_fonte_wikipedia_sem_limpeza_gutenberg(tmp_path, monk
     processados,stats=prepare_data.processar(documentos,tmp_path)
     assert fontes==["wikipedia"]
     assert stats["aprovados"]==1
-    assert processados and processados[0].startswith("Conteúdo enciclopédico")
+    assert processados and processados[0].startswith("A biblioteca preserva")
