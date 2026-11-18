@@ -108,3 +108,14 @@ def test_ciclo_pausado_tambem_expira_ao_completar_30_dias(tmp_path):
     mudar_status(state, "pause", start + timedelta(hours=1))
     result = atualizar_relogio(json.loads(state.read_text()), start + timedelta(days=30))
     assert result["status"] == "completed"
+
+
+def test_ciclo_registra_lacuna_de_monitoramento_acima_de_12_horas(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    state = tmp_path / "state.json"
+    start = datetime(2026, 11, 18, tzinfo=timezone.utc)
+    iniciar(state, preflight, audit, manifest, checkpoint, start)
+    result = atualizar_relogio(json.loads(state.read_text()), start + timedelta(hours=18))
+    gaps = [event for event in result["events"] if event["type"] == "monitoring_gap"]
+    assert len(gaps) == 1
+    assert gaps[0]["gap_hours"] == 18.0

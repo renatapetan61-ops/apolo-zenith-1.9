@@ -153,6 +153,17 @@ def iniciar(state_path: Path, preflight_path: Path, audit_path: Path,
 
 def atualizar_relogio(estado: dict[str, Any], now: datetime | None = None) -> dict[str, Any]:
     instante = (now or agora_utc()).astimezone(timezone.utc)
+    ultimo_ping = estado.get("last_seen_at")
+    if ultimo_ping and estado.get("status") in ("running", "paused"):
+        lacuna_horas = max(0.0, (instante - parse_data(ultimo_ping)).total_seconds() / 3600.0)
+        estado["max_observed_gap_hours"] = max(float(estado.get("max_observed_gap_hours", 0.0)), lacuna_horas)
+        if lacuna_horas > 12.0:
+            estado["events"].append({
+                "type": "monitoring_gap",
+                "at": instante.isoformat(),
+                "gap_hours": round(lacuna_horas, 2),
+                "threshold_hours": 12.0,
+            })
     estado["last_seen_at"] = instante.isoformat()
     inicio = parse_data(estado["started_at"])
     fim = parse_data(estado["ends_at"])
