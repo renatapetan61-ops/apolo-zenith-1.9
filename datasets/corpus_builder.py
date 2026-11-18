@@ -268,6 +268,32 @@ def coletar_gutenberg(
     return documentos
 
 
+def _ler_json_api(url: str, idioma: str, contexto: str, tentativas: int = 6) -> Optional[dict]:
+    """Consulta a API MediaWiki e repete erros JSON transitórios em HTTP 200."""
+    transitorios = {"maxlag", "ratelimited", "readonly", "internal_api_error_DBConnectionError"}
+    for tentativa in range(tentativas):
+        bruto = _ler_url_texto(url, tentativas=3, espera=2.0)
+        if bruto:
+            try:
+                payload = json.loads(bruto)
+            except json.JSONDecodeError:
+                print(f"  [wikipedia:{idioma}] JSON inválido ({contexto})")
+                payload = None
+            if isinstance(payload, dict):
+                erro = payload.get("error") or {}
+                codigo = str(erro.get("code", ""))
+                if not erro:
+                    return payload
+                if codigo not in transitorios:
+                    print(f"  [wikipedia:{idioma}] erro da API ({contexto}): {codigo or erro}")
+                    return payload
+                print(f"  [wikipedia:{idioma}] API {codigo} ({contexto}); tentativa {tentativa + 1}/{tentativas}")
+        if tentativa < tentativas - 1:
+            time.sleep(min(2 ** tentativa, 15))
+    print(f"  [wikipedia:{idioma}] consulta esgotou retentativas ({contexto})")
+    return None
+
+
 # --------------------------------------------------------------------------- #
 # Wikipedia — fallback independente do Project Gutenberg
 # --------------------------------------------------------------------------- #
@@ -308,7 +334,7 @@ def coletar_wikipedia(
             page_id = int(pagina.get("pageid", pagina.get("id", 0)))
             titulo = str(pagina.get("title", "")).strip()
             texto = str(pagina.get("extract", "")).strip()[:50000]
-            if not page_id or page_id in vistos or len(texto) < 1200:
+            if not page_id or page_id in vistos or len(texto) < 500:
                 continue
             vistos.add(page_id)
             arquivo = pasta / f"{page_id}.txt"
@@ -338,44 +364,40 @@ def coletar_wikipedia(
             "gsrlimit": min(restantes, 10),
             "prop": "extracts", "explaintext": 1, "maxlag": 5,
         })
-        bruto = _ler_url_texto(
-            f"https://{host}/w/api.php?{params}", tentativas=5, espera=2.0
+        payload = _ler_json_api(
+            f"https://{host}/w/api.php?{params}", idioma, f"busca {consulta!r}"
         )
-        if bruto:
-            try:
-                registrar_paginas(json.loads(bruto))
-            except json.JSONDecodeError:
-                print(f"  [wikipedia:{idioma}] JSON inválido para {consulta!r}")
+        if payload:
+            registrar_paginas(payload)
         if adicionados < max_documentos:
             time.sleep(0.5)
 
     # Fallback robusto: list=random retorna IDs; pageids recupera os extracts
     # em lotes de no máximo 50 IDs, limite compatível com consultas anônimas.
     lotes = 0
-    max_lotes = max(8, ((max_documentos - adicionados + 9) // 10) * 6)
+    max_lotes = max(60, min(100, (max_documentos - adicionados) * 2))
     while adicionados < max_documentos and lotes < max_lotes:
         lotes += 1
         restantes = max_documentos - adicionados
-        quantidade = min(50, max(20, restantes * 3))
+        quantidade = 50
         params_ids = urllib.parse.urlencode({
             "action": "query", "format": "json", "list": "random",
             "rnnamespace": 0, "rnfilterredir": "nonredirects",
             "rnlimit": quantidade, "maxlag": 5,
         })
-        bruto_ids = _ler_url_texto(
-            f"https://{host}/w/api.php?{params_ids}", tentativas=5, espera=2.0
+        dados_ids = _ler_json_api(
+            f"https://{host}/w/api.php?{params_ids}", idioma, "seleção aleatória"
         )
-        if not bruto_ids:
+        if not dados_ids:
             time.sleep(min(2 * lotes, 15))
             continue
         try:
-            dados_ids = json.loads(bruto_ids)
             ids = [
                 str(item.get("id"))
                 for item in dados_ids.get("query", {}).get("random", [])
                 if item.get("id")
             ]
-        except (json.JSONDecodeError, TypeError, AttributeError):
+        except (TypeError, AttributeError):
             print(f"  [wikipedia:{idioma}] lista aleatória inválida")
             time.sleep(1.0)
             continue
@@ -391,20 +413,18 @@ def coletar_wikipedia(
                 "pageids": "|".join(lote_ids),
                 "prop": "extracts", "explaintext": 1, "maxlag": 5,
             })
-            bruto_texto = _ler_url_texto(
-                f"https://{host}/w/api.php?{params_texto}",
-                tentativas=5, espera=2.0,
+            payload_texto = _ler_json_api(
+                f"https://{host}/w/api.php?{params_texto}", idioma, "extração por pageids"
             )
-            if bruto_texto:
-                try:
-                    registrar_paginas(json.loads(bruto_texto))
-                except json.JSONDecodeError:
-                    print(f"  [wikipedia:{idioma}] extracts aleatórios inválidos")
+            if payload_texto:
+                registrar_paginas(payload_texto)
             if adicionados >= max_documentos:
                 break
-            time.sleep(0.5)
+            time.sleep(0.25)
+        if lotes % 10 == 0:
+            print(f"  [wikipedia:{idioma}] progresso: {adicionados}/{max_documentos}; lote {lotes}/{max_lotes}")
 
-    print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados")
+    print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados após {lotes} lotes")
     return documentos
 
 # --------------------------------------------------------------------------- #

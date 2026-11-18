@@ -95,7 +95,7 @@ def test_coletar_wikipedia_completa_com_paginas_aleatorias(tmp_path, monkeypatch
                 page_id: {
                     "pageid": int(page_id),
                     "title": f"Random {page_id}",
-                    "extract": "Texto enciclopédico suficientemente longo. " * 50,
+                    "extract": "Texto enciclopédico válido para treinamento. " * 15,
                 }
                 for page_id in ids
             }
@@ -107,3 +107,14 @@ def test_coletar_wikipedia_completa_com_paginas_aleatorias(tmp_path, monkeypatch
     docs = cb.coletar_wikipedia(tmp_path / "raw", "pt", 12, [])
     assert sum(d.idioma == "pt" for d in docs) == 12
     assert all(d.licenca.startswith("CC BY-SA 4.0") for d in docs)
+
+
+def test_ler_json_api_repete_erro_maxlag_em_http_200(monkeypatch):
+    respostas = iter([
+        json.dumps({"error": {"code": "maxlag", "info": "Waiting for replica"}}),
+        json.dumps({"query": {"random": [{"id": 42}]}}),
+    ])
+    monkeypatch.setattr(cb, "_ler_url_texto", lambda *args, **kwargs: next(respostas))
+    monkeypatch.setattr(cb.time, "sleep", lambda *_: None)
+    payload = cb._ler_json_api("https://pt.wikipedia.org/w/api.php", "pt", "teste", tentativas=2)
+    assert payload["query"]["random"][0]["id"] == 42
