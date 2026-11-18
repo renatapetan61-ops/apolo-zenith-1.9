@@ -132,12 +132,12 @@ jobs:
             --tokenizer datasets_storage/processed/tokenizer \
             --saida "checkpoints/actions-text-${CODE_RUN_ID}" \
             --checkpoint-inicial "$CODE_CHECKPOINT" \
-            --steps 80 \
-            --batch-size 1 \
-            --block-size 64 \
-            --lr 0.0001 \
-            --eval-interval 20 \
-            --save-interval 20 \
+            --steps 2000 \
+            --batch-size 4 \
+            --block-size 128 \
+            --lr 0.0002 \
+            --eval-interval 100 \
+            --save-interval 250 \
             --seed 1337
 
       - name: Publicar checkpoint textual, métricas e proveniência
