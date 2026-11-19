@@ -140,3 +140,21 @@ def test_ciclo_recusa_preflight_ou_corpus_de_outro_commit(tmp_path):
     with pytest.raises(ValueError, match="outro commit"):
         iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint,
                 expected_commit="different-commit")
+
+
+def test_start_recusa_gate_individual_reprovado(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    payload = json.loads(audit.read_text())
+    payload["gates"]["approved_licenses"] = False
+    audit.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="approved_licenses"):
+        iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint)
+
+
+def test_start_recusa_relatorio_sem_contagem_de_hashes(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    payload = json.loads(audit.read_text())
+    payload["documents"]["integrity_checked"] = 29999
+    audit.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="hashes não foram verificados"):
+        iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint)
