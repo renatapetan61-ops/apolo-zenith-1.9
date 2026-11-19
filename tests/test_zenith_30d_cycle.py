@@ -156,5 +156,5 @@ def test_start_recusa_relatorio_sem_contagem_de_hashes(tmp_path):
     payload = json.loads(audit.read_text())
     payload["documents"]["integrity_checked"] = 29999
     audit.write_text(json.dumps(payload))
-    with pytest.raises(ValueError, match="hashes não foram verificados"):
+    with pytest.raises(ValueError, match="hashes não verificados"):
         iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint)
