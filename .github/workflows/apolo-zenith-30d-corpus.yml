@@ -77,6 +77,15 @@ jobs:
           assert original == prepared, "Tokenizer foi alterado durante a preparação."
           print("Corpus e tokenizer aprovados; nenhum treino foi iniciado.")
           PY
+      - name: Benchmark real de 1.000 passos e avaliações em CPU
+        timeout-minutes: 300
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=60s 300m python -m scripts.benchmark_zenith_cpu \
+            --dados datasets_storage/processed \
+            --tokenizer datasets_storage/processed/tokenizer \
+            --steps 1000 --eval-interval 100 --save-interval 100 \
+            --output reports/cpu-1000-step-benchmark.json
       - name: Vincular auditoria a um release imutável
         run: |
           python - <<'PY'
@@ -107,4 +116,4 @@ jobs:
           gh release create "$RELEASE_TAG" \
             --title "APOLO ZENITH 1.9 — corpus bilíngue de 30.000 documentos" \
             --notes "Corpus auditado e vinculado ao run $GITHUB_RUN_ID. Manifesto, hashes e licenças estão no arquivo corpus-audit.json."
-          gh release upload "$RELEASE_TAG" corpus.tar.gz reports/corpus-audit.json
+          gh release upload "$RELEASE_TAG" corpus.tar.gz reports/corpus-audit.json reports/cpu-1000-step-benchmark.json
