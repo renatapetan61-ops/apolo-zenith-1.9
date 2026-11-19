@@ -101,6 +101,39 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         raise ValueError("corpus não atingiu 15.000 documentos em português")
     if int(por_idioma.get("en", 0)) < MIN_DOCUMENTOS_IDIOMA:
         raise ValueError("corpus não atingiu 15.000 documentos em inglês")
+
+    # Revalidar cada gate, sem confiar apenas no campo agregado "passed".
+    gates = audit.get("gates")
+    obrigatorios = (
+        "all_manifest_documents_processed", "minimum_processed_documents",
+        "minimum_pt_documents", "minimum_en_documents", "training_tokens",
+        "validation_tokens", "test_tokens", "manifest_files_and_hashes",
+        "unique_document_hashes", "approved_licenses", "expected_total_documents",
+        "declared_licenses", "both_languages_present",
+    )
+    if not isinstance(gates, dict):
+        raise ValueError("auditoria sem gates individuais; reconstruir o corpus")
+    falhas = [nome for nome in obrigatorios if gates.get(nome) is not True]
+    if falhas:
+        raise ValueError("gates individuais reprovados: " + ", ".join(falhas))
+    if int(docs.get("processed_final_documents", 0)) < 27000:
+        raise ValueError("menos de 27.000 documentos processados")
+    if int(docs.get("integrity_checked", 0)) != DOCUMENTOS_ESPERADOS:
+        raise ValueError("hashes não verificados para os 30.000 documentos")
+    if int(docs.get("integrity_failures", -1)) != 0:
+        raise ValueError("há hashes divergentes ou arquivos ausentes")
+    if int(docs.get("duplicate_hashes", -1)) != 0:
+        raise ValueError("há hashes duplicados")
+    tokens = audit.get("tokens_by_split", {})
+    thresholds = audit.get("thresholds", {})
+    if int(tokens.get("train", 0)) < max(1000000, int(thresholds.get("minimum_train_tokens", 0))):
+        raise ValueError("tokens de treinamento abaixo do mínimo")
+    minimo_avaliacao = max(10000, int(thresholds.get("minimum_val_test_tokens_each", 0)))
+    if int(tokens.get("val", 0)) < minimo_avaliacao or int(tokens.get("test", 0)) < minimo_avaliacao:
+        raise ValueError("tokens de validação/teste abaixo do mínimo")
+    licencas = docs.get("licenses", {})
+    if not licencas or any(not str(nome).strip() or int(qtd) <= 0 for nome, qtd in licencas.items()):
+        raise ValueError("contagem de licenças ausente ou inválida")
     if not manifest_path.is_file():
         raise ValueError("manifesto de proveniência ausente")
     release_tag = str(audit.get("release_tag", "")).strip()
