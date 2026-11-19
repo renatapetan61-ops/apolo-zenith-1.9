@@ -17,7 +17,21 @@ def _prerequisitos(tmp_path: Path):
     audit = tmp_path / "audit.json"
     audit.write_text(json.dumps({
         "passed": True, "manifest_sha256": digest, "release_tag": "apolo-zenith-corpus-30000-test", "source_commit": "test-commit",
-        "documents": {"total": 30000, "by_language": {"pt": 15000, "en": 15000}}
+        "gates": {name: True for name in (
+            "all_manifest_documents_processed", "minimum_processed_documents",
+            "minimum_pt_documents", "minimum_en_documents", "training_tokens",
+            "validation_tokens", "test_tokens", "manifest_files_and_hashes",
+            "unique_document_hashes", "approved_licenses", "expected_total_documents",
+            "declared_licenses", "both_languages_present"
+        )},
+        "thresholds": {"minimum_train_tokens": 1000000, "minimum_val_test_tokens_each": 10000},
+        "tokens_by_split": {"train": 1000000, "val": 10000, "test": 10000},
+        "documents": {
+            "total": 30000, "by_language": {"pt": 15000, "en": 15000},
+            "processed_final_documents": 27000, "integrity_checked": 30000,
+            "integrity_failures": 0, "duplicate_hashes": 0,
+            "licenses": {"CC BY-SA 4.0": 15000, "Domínio público": 15000}
+        }
     }))
     checkpoint = tmp_path / "checkpoint"
     checkpoint.mkdir()
