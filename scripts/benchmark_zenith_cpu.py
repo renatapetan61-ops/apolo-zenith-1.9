@@ -63,13 +63,13 @@ def main() -> None:
         summary = json.loads(summary_path.read_text(encoding="utf-8"))
         metrics_path = out / "metricas.jsonl"
         records = [json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines() if line.strip()]
-        evaluations = [row for row in records if row.get("fase") == "validacao"]
+        evaluations = [row for row in records if row.get("fase") == "validacao" and isinstance(row.get("val_loss"), (int, float))]
         expected = args.steps // args.eval_interval
         if int(summary.get("passos", -1)) != 1000:
             raise RuntimeError(f"Benchmark terminou em {summary.get('passos')} passos, esperado 1000")
         if len(evaluations) < expected:
             raise RuntimeError(f"Apenas {len(evaluations)} avaliações registradas; esperadas >= {expected}")
-        if not summary.get("melhor_perda_validacao") or summary["melhor_perda_validacao"] <= 0:
+        if not isinstance(summary.get("melhor_perda_validacao"), (int, float)) or not (0 < summary["melhor_perda_validacao"] < float("inf")):
             raise RuntimeError("Métrica de validação ausente/inválida")
         report = {
             "status": "passed", "device": "cpu", "steps": 1000,
