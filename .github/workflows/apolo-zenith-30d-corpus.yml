@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: apolo-zenith-30d-corpus
@@ -96,6 +97,22 @@ jobs:
             --tokenizer datasets_storage/processed/tokenizer \
             --steps 1000 --eval-interval 100 --save-interval 100 \
             --output reports/cpu-1000-step-benchmark.json
+      - name: Aguardar Preflight aprovado no mesmo commit da main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PREFLIGHT_RUN=""
+          for attempt in $(seq 1 60); do
+            PREFLIGHT_RUN=$(gh api "/repos/$GITHUB_REPOSITORY/actions/workflows/apolo-zenith-30d-preflight.yml/runs?branch=main&per_page=50" --jq ".workflow_runs[] | select(.head_sha==\"$GITHUB_SHA\" and .conclusion==\"success\") | .id" | head -n1 || true)
+            if [ -n "$PREFLIGHT_RUN" ]; then break; fi
+            echo "Aguardando Preflight aprovado para $GITHUB_SHA ($attempt/60)"
+            sleep 30
+          done
+          test -n "$PREFLIGHT_RUN"
+          ART_ID=$(gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$PREFLIGHT_RUN/artifacts?per_page=100" --jq '.artifacts[] | select(.name=="apolo-zenith-30d-preflight" and .expired==false) | .id' | head -n1)
+          test -n "$ART_ID"
+          echo "Preflight $PREFLIGHT_RUN aprovado para $GITHUB_SHA"
       - name: Vincular auditoria a um release imutável
         run: |
           python - <<'PY'
