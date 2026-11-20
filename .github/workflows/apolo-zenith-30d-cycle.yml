@@ -315,7 +315,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p state
-          PATHS="state checkpoints/30d/checkpoints"
+          PATHS="state checkpoints/30d/checkpoints/final"
+          [ -d checkpoints/30d/checkpoints/last ] && PATHS="$PATHS checkpoints/30d/checkpoints/last"
+          [ -d checkpoints/30d/checkpoints/best ] && PATHS="$PATHS checkpoints/30d/checkpoints/best"
           [ -d checkpoints/30d/reference-text-baseline ] && PATHS="$PATHS checkpoints/30d/reference-text-baseline"
           [ -f checkpoints/30d/metricas.jsonl ] && PATHS="$PATHS checkpoints/30d/metricas.jsonl"
           [ -f checkpoints/30d/resumo_treino.json ] && PATHS="$PATHS checkpoints/30d/resumo_treino.json"
