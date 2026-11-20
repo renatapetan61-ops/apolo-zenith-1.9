@@ -3,6 +3,10 @@ name: APOLO ZENITH 1.9 — ciclo incremental de treinamento de 30 dias
 on:
   schedule:
     - cron: "17 */6 * * *"
+  workflow_run:
+    workflows: ["APOLO ZENITH 1.9 — construir e auditar corpus de 30.000 documentos"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       command:
@@ -22,11 +26,12 @@ concurrency:
 
 jobs:
   cycle:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 330
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CYCLE_COMMAND: ${{ github.event_name == 'schedule' && 'continue' || inputs.command || 'status' }}
+      CYCLE_COMMAND: ${{ github.event_name == 'schedule' && 'continue' || github.event_name == 'workflow_run' && 'start' || inputs.command || 'status' }}
       PYTHONUNBUFFERED: "1"
       OMP_NUM_THREADS: "2"
       MKL_NUM_THREADS: "2"
@@ -111,8 +116,18 @@ jobs:
           download_artifact "$PREFLIGHT_RUN" "apolo-zenith-30d-preflight" "artifacts/preflight"
           test -s artifacts/preflight/reports/preflight-validation.json
           mkdir -p artifacts/corpus
-          gh release download "apolo-zenith-corpus-30000-$CORPUS_RUN" --pattern corpus.tar.gz --pattern corpus-audit.json --dir artifacts/corpus
+          gh release download "apolo-zenith-corpus-30000-$CORPUS_RUN" --pattern corpus.tar.gz --pattern corpus-audit.json --pattern cpu-1000-step-benchmark.json --dir artifacts/corpus
           test -s artifacts/corpus/corpus-audit.json
+          test -s artifacts/corpus/cpu-1000-step-benchmark.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("artifacts/corpus/cpu-1000-step-benchmark.json").read_text())
+          assert report.get("status") == "passed" and report.get("device") == "cpu"
+          assert report.get("steps") == 1000 and report.get("evaluation_count", 0) >= 10
+          assert 0 < report.get("elapsed_seconds", 0) <= 300 * 60
+          print("Benchmark CPU aprovado:", report["elapsed_seconds"], "s;", report["evaluation_count"], "avaliações")
+          PY
           tar -xzf artifacts/corpus/corpus.tar.gz
           echo "PREFLIGHT_REPORT=artifacts/preflight/reports/preflight-validation.json" >> "$GITHUB_ENV"
           echo "CORPUS_AUDIT=artifacts/corpus/corpus-audit.json" >> "$GITHUB_ENV"
@@ -160,7 +175,8 @@ jobs:
             --corpus-audit "$CORPUS_AUDIT" \
             --manifest datasets_storage/manifest.json \
             --checkpoint checkpoints/30d/checkpoints/final \
-            --expected-commit "$GITHUB_SHA"
+            --expected-commit "$GITHUB_SHA" \
+            --benchmark artifacts/corpus/cpu-1000-step-benchmark.json
       - name: Atualizar relógio e decidir se ainda há treinamento
         if: steps.mode.outputs.skip != 'true'
         id: tick
@@ -216,26 +232,50 @@ jobs:
           ACTUAL=$(sha256sum datasets_storage/manifest.json | cut -d" " -f1)
           EXPECTED=$(python -c 'import json; print(json.load(open("state/state.json"))["corpus"]["manifest_sha256"])')
           test "$ACTUAL" = "$EXPECTED"
-      - name: Executar sessão incremental com retomada integral
+      - name: Recuperar checkpoint válido e calcular passos restantes da sessão
+        if: steps.tick.outputs.train == 'true'
+        id: recovery
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          state = json.loads(Path('state/state.json').read_text())
+          raw = subprocess.check_output(['python', '-m', 'scripts.zenith_30d_cycle', 'recover', '--root', 'checkpoints/30d/checkpoints'], text=True)
+          recovered = json.loads(raw)
+          base = int(state['last_step'])
+          target = base + 1000
+          step = int(recovered['step'])
+          if step < base or step > target:
+              raise SystemExit(f'Checkpoint fora da janela: base={base}, checkpoint={step}, alvo={target}')
+          remaining = target - step
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f"path={recovered['path']}\nstep={step}\nremaining={remaining}\ntarget={target}\n")
+          print(json.dumps({'checkpoint': recovered['path'], 'step': step, 'target': target, 'remaining_steps': remaining}))
+          PY
+      - name: Executar ou concluir sessão incremental recuperada
         if: steps.tick.outputs.train == 'true'
         run: |
           set -euo pipefail
-          python -m training.text_trainer \
-            --dados datasets_storage/processed \
-            --tokenizer datasets_storage/processed/tokenizer \
-            --saida checkpoints/30d \
-            --retomar checkpoints/30d/checkpoints/final \
-            --steps 1000 \
-            --batch-size 4 \
-            --block-size 128 \
-            --lr 0.00005 \
-            --min-lr 0.000005 \
-            --warmup-steps 200 \
-            --early-stopping-patience 0 \
-            --eval-interval 100 \
-            --save-interval 250 \
-            --seed 1337 \
-            --sobrescrever
+          REMAINING="${{ steps.recovery.outputs.remaining }}"
+          if [ "$REMAINING" -gt 0 ]; then
+            timeout --signal=TERM --kill-after=60s 300m python -m training.text_trainer \
+              --dados datasets_storage/processed \
+              --tokenizer datasets_storage/processed/tokenizer \
+              --saida checkpoints/30d \
+              --retomar "${{ steps.recovery.outputs.path }}" \
+              --steps "$REMAINING" \
+              --batch-size 4 \
+              --block-size 128 \
+              --lr 0.00005 \
+              --min-lr 0.000005 \
+              --warmup-steps 200 \
+              --early-stopping-patience 0 \
+              --eval-interval 100 \
+              --save-interval 25 \
+              --seed 1337 \
+              --sobrescrever
+          fi
           python -m scripts.zenith_30d_cycle record \
             --state state/state.json \
             --checkpoint checkpoints/30d/checkpoints/final \
@@ -271,11 +311,12 @@ jobs:
             --state state/state.json \
             --report reports/language-quality-diagnostic.json
       - name: Empacotar estado e checkpoints persistentes
-        if: steps.mode.outputs.skip != 'true'
+        if: always() && steps.mode.outputs.skip != 'true' && hashFiles('state/state.json') != ''
         run: |
           set -euo pipefail
           mkdir -p state
           PATHS="state checkpoints/30d/checkpoints/final"
+          [ -d checkpoints/30d/checkpoints/last ] && PATHS="$PATHS checkpoints/30d/checkpoints/last"
           [ -d checkpoints/30d/checkpoints/best ] && PATHS="$PATHS checkpoints/30d/checkpoints/best"
           [ -d checkpoints/30d/reference-text-baseline ] && PATHS="$PATHS checkpoints/30d/reference-text-baseline"
           [ -f checkpoints/30d/metricas.jsonl ] && PATHS="$PATHS checkpoints/30d/metricas.jsonl"
@@ -288,7 +329,7 @@ jobs:
           fi
       - name: Publicar novo estado persistente como release versionado
         id: publish-state
-        if: steps.mode.outputs.skip != 'true'
+        if: always() && steps.mode.outputs.skip != 'true' && hashFiles('cycle-state.tar.gz') != ''
         env:
           STATE_TAG: apolo-zenith-30d-state-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
@@ -301,7 +342,7 @@ jobs:
           gh release upload "$STATE_TAG" cycle-state.tar.gz --clobber
           echo "tag=$STATE_TAG" >> "$GITHUB_OUTPUT"
       - name: Remover release de estado anterior após publicar o novo
-        if: success() && steps.mode.outputs.skip != 'true' && steps.old-state.outputs.tag != '' && steps.old-state.outputs.tag != steps.publish-state.outputs.tag
+        if: success() && steps.mode.outputs.skip != 'true' && steps.publish-state.outputs.tag != '' && steps.old-state.outputs.tag != '' && steps.old-state.outputs.tag != steps.publish-state.outputs.tag
         run: |
           gh release delete "${{ steps.old-state.outputs.tag }}" --cleanup-tag --yes
       - name: Publicar avaliação final

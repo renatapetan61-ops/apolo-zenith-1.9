@@ -79,8 +79,32 @@ def validar_checkpoint(pasta: Path) -> dict[str, Any]:
     return meta
 
 
+def localizar_checkpoint_recuperavel(raiz: Path) -> tuple[Path, dict[str, Any]]:
+    """Seleciona o checkpoint completo de maior passo, ignorando gravações truncadas."""
+    if not raiz.is_dir():
+        raise FileNotFoundError(f"diretório de checkpoints não encontrado: {raiz}")
+    candidatos: list[tuple[int, Path, dict[str, Any]]] = []
+    for pasta in raiz.iterdir():
+        if not pasta.is_dir() or pasta.name.endswith((".tmp", ".old", ".copytmp")):
+            continue
+        try:
+            meta = validar_checkpoint(pasta)
+            # A retomada de treino exige pesos, AdamW e scheduler, não só inferência.
+            if not all((pasta / nome).is_file() and (pasta / nome).stat().st_size > 0
+                       for nome in ("model.pt", "optimizer.pt", "scheduler.pt", "meta.json")):
+                continue
+            candidatos.append((int(meta["step"]), pasta, meta))
+        except (OSError, ValueError, json.JSONDecodeError, TypeError):
+            continue
+    if not candidatos:
+        raise ValueError(f"nenhum checkpoint completo e recuperável em {raiz}")
+    passo, pasta, meta = max(candidatos, key=lambda item: (item[0], item[1].name))
+    return pasta, meta
+
+
 def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path: Path,
-                           expected_commit: str | None = None) -> dict[str, Any]:
+                           expected_commit: str | None = None,
+                           benchmark_path: Path | None = None) -> dict[str, Any]:
     preflight = carregar_json(preflight_path)
     audit = carregar_json(audit_path)
     if preflight.get("status") != "passed" or not preflight.get("checks"):
@@ -91,6 +115,19 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         raise ValueError("preflight foi executado em outro commit; repetir validação no HEAD atual")
     if audit.get("passed") is not True:
         raise ValueError("auditoria do corpus não aprovada")
+    benchmark_path = benchmark_path or audit_path.with_name("benchmark.json")
+    benchmark = carregar_json(benchmark_path)
+    if benchmark.get("status") != "passed" or benchmark.get("device") != "cpu":
+        raise ValueError("benchmark real de CPU não aprovado")
+    if expected_commit and benchmark.get("source_commit") != expected_commit:
+        raise ValueError("benchmark foi executado em outro commit; reconstruir corpus e benchmark")
+    if int(benchmark.get("steps", 0)) != 1000:
+        raise ValueError("benchmark precisa comprovar exatamente 1.000 passos")
+    if int(benchmark.get("evaluation_count", 0)) < 10:
+        raise ValueError("benchmark precisa conter pelo menos 10 avaliações")
+    elapsed = float(benchmark.get("elapsed_seconds", 0))
+    if not (0 < elapsed <= 300 * 60):
+        raise ValueError("benchmark excedeu a janela operacional de 300 minutos")
     if expected_commit and audit.get("source_commit") != expected_commit:
         raise ValueError("corpus foi construído em outro commit; reconstruir no HEAD atual")
     docs = audit.get("documents", {})
@@ -101,6 +138,39 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         raise ValueError("corpus não atingiu 15.000 documentos em português")
     if int(por_idioma.get("en", 0)) < MIN_DOCUMENTOS_IDIOMA:
         raise ValueError("corpus não atingiu 15.000 documentos em inglês")
+
+    # Revalidar cada gate, sem confiar apenas no campo agregado "passed".
+    gates = audit.get("gates")
+    obrigatorios = (
+        "all_manifest_documents_processed", "minimum_processed_documents",
+        "minimum_pt_documents", "minimum_en_documents", "training_tokens",
+        "validation_tokens", "test_tokens", "manifest_files_and_hashes",
+        "unique_document_hashes", "approved_licenses", "expected_total_documents",
+        "declared_licenses", "both_languages_present",
+    )
+    if not isinstance(gates, dict):
+        raise ValueError("auditoria sem gates individuais; reconstruir o corpus")
+    falhas = [nome for nome in obrigatorios if gates.get(nome) is not True]
+    if falhas:
+        raise ValueError("gates individuais reprovados: " + ", ".join(falhas))
+    if int(docs.get("processed_final_documents", 0)) < 27000:
+        raise ValueError("menos de 27.000 documentos processados")
+    if int(docs.get("integrity_checked", 0)) != DOCUMENTOS_ESPERADOS:
+        raise ValueError("hashes não verificados para os 30.000 documentos")
+    if int(docs.get("integrity_failures", -1)) != 0:
+        raise ValueError("há hashes divergentes ou arquivos ausentes")
+    if int(docs.get("duplicate_hashes", -1)) != 0:
+        raise ValueError("há hashes duplicados")
+    tokens = audit.get("tokens_by_split", {})
+    thresholds = audit.get("thresholds", {})
+    if int(tokens.get("train", 0)) < max(1000000, int(thresholds.get("minimum_train_tokens", 0))):
+        raise ValueError("tokens de treinamento abaixo do mínimo")
+    minimo_avaliacao = max(10000, int(thresholds.get("minimum_val_test_tokens_each", 0)))
+    if int(tokens.get("val", 0)) < minimo_avaliacao or int(tokens.get("test", 0)) < minimo_avaliacao:
+        raise ValueError("tokens de validação/teste abaixo do mínimo")
+    licencas = docs.get("licenses", {})
+    if not licencas or any(not str(nome).strip() or int(qtd) <= 0 for nome, qtd in licencas.items()):
+        raise ValueError("contagem de licenças ausente ou inválida")
     if not manifest_path.is_file():
         raise ValueError("manifesto de proveniência ausente")
     release_tag = str(audit.get("release_tag", "")).strip()
@@ -118,17 +188,24 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         "manifest_sha256": manifest_hash,
         "release_tag": release_tag,
         "corpus_audit_passed": True,
+        "cpu_benchmark": {
+            "status": benchmark["status"],
+            "steps": int(benchmark["steps"]),
+            "elapsed_seconds": elapsed,
+            "evaluation_count": int(benchmark["evaluation_count"]),
+        },
     }
 
 
 def iniciar(state_path: Path, preflight_path: Path, audit_path: Path,
             manifest_path: Path, checkpoint_path: Path, now: datetime | None = None,
-            expected_commit: str | None = None) -> dict[str, Any]:
+            expected_commit: str | None = None,
+            benchmark_path: Path | None = None) -> dict[str, Any]:
     if state_path.exists():
         atual = carregar_json(state_path)
         if atual.get("status") in ("running", "paused"):
             raise ValueError("já existe um ciclo ativo ou pausado; não iniciar outro")
-    requisitos = validar_pre_requisitos(preflight_path, audit_path, manifest_path, expected_commit)
+    requisitos = validar_pre_requisitos(preflight_path, audit_path, manifest_path, expected_commit, benchmark_path)
     meta = validar_checkpoint(checkpoint_path)
     inicio = (now or agora_utc()).astimezone(timezone.utc)
     fim = inicio + timedelta(days=DURACAO_DIAS)
@@ -250,6 +327,9 @@ def main() -> None:
     p_start.add_argument("--manifest", required=True)
     p_start.add_argument("--checkpoint", required=True)
     p_start.add_argument("--expected-commit", default=None)
+    p_start.add_argument("--benchmark", required=True)
+    p_recover = sub.add_parser("recover")
+    p_recover.add_argument("--root", required=True)
     p_record = sub.add_parser("record")
     p_record.add_argument("--state", required=True)
     p_record.add_argument("--checkpoint", required=True)
@@ -269,9 +349,14 @@ def main() -> None:
     p_mark.add_argument("--report", required=True)
     args = parser.parse_args()
 
+    if args.command == "recover":
+        pasta, meta = localizar_checkpoint_recuperavel(Path(args.root))
+        print(json.dumps({"path": str(pasta), "step": int(meta["step"])}, ensure_ascii=False))
+        return
     if args.command == "start":
         result = iniciar(Path(args.state), Path(args.preflight), Path(args.corpus_audit),
-                         Path(args.manifest), Path(args.checkpoint), expected_commit=args.expected_commit)
+                         Path(args.manifest), Path(args.checkpoint), expected_commit=args.expected_commit,
+                         benchmark_path=Path(args.benchmark))
     elif args.command == "record":
         result = registrar_sessao(Path(args.state), Path(args.checkpoint), args.run_id,
                                   args.steps, Path(args.evaluation) if args.evaluation else None)

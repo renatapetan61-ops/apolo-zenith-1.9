@@ -1,4 +1,5 @@
 name: APOLO ZENITH 1.9 — preflight do ciclo de 30 dias
+# Reexecutar validação após corrigir a mensagem esperada do teste de integridade.
 
 on:
   pull_request:
@@ -63,6 +64,7 @@ jobs:
           python -m scripts.audit_text_corpus --help >/dev/null
           python -m training.text_trainer --help >/dev/null
           python -m scripts.zenith_30d_cycle --help >/dev/null
+          python -m scripts.benchmark_zenith_cpu --help >/dev/null
           python - <<'PY'
           from pathlib import Path
           import yaml
@@ -98,6 +100,7 @@ jobs:
               "corpus_audit_cli": True,
               "text_trainer_cli": True,
               "cycle_state_cli": True,
+              "cpu_benchmark_cli": True,
               "workflow_yaml_syntax": True,
               "tokenizer_8192_and_multimodal_tokens": True
             },

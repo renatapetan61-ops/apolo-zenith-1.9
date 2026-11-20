@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.zenith_30d_cycle import iniciar, registrar_sessao, atualizar_relogio, mudar_status
+from scripts.zenith_30d_cycle import iniciar, registrar_sessao, atualizar_relogio, mudar_status, localizar_checkpoint_recuperavel
 
 
 def _prerequisitos(tmp_path: Path):
@@ -17,7 +17,26 @@ def _prerequisitos(tmp_path: Path):
     audit = tmp_path / "audit.json"
     audit.write_text(json.dumps({
         "passed": True, "manifest_sha256": digest, "release_tag": "apolo-zenith-corpus-30000-test", "source_commit": "test-commit",
-        "documents": {"total": 30000, "by_language": {"pt": 15000, "en": 15000}}
+        "gates": {name: True for name in (
+            "all_manifest_documents_processed", "minimum_processed_documents",
+            "minimum_pt_documents", "minimum_en_documents", "training_tokens",
+            "validation_tokens", "test_tokens", "manifest_files_and_hashes",
+            "unique_document_hashes", "approved_licenses", "expected_total_documents",
+            "declared_licenses", "both_languages_present"
+        )},
+        "thresholds": {"minimum_train_tokens": 1000000, "minimum_val_test_tokens_each": 10000},
+        "tokens_by_split": {"train": 1000000, "val": 10000, "test": 10000},
+        "documents": {
+            "total": 30000, "by_language": {"pt": 15000, "en": 15000},
+            "processed_final_documents": 27000, "integrity_checked": 30000,
+            "integrity_failures": 0, "duplicate_hashes": 0,
+            "licenses": {"CC BY-SA 4.0": 15000, "Domínio público": 15000}
+        }
+    }))
+    benchmark = tmp_path / "benchmark.json"
+    benchmark.write_text(json.dumps({
+        "status": "passed", "device": "cpu", "steps": 1000,
+        "elapsed_seconds": 1200, "evaluation_count": 10
     }))
     checkpoint = tmp_path / "checkpoint"
     checkpoint.mkdir()
@@ -126,3 +145,51 @@ def test_ciclo_recusa_preflight_ou_corpus_de_outro_commit(tmp_path):
     with pytest.raises(ValueError, match="outro commit"):
         iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint,
                 expected_commit="different-commit")
+
+
+def test_start_recusa_gate_individual_reprovado(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    payload = json.loads(audit.read_text())
+    payload["gates"]["approved_licenses"] = False
+    audit.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="approved_licenses"):
+        iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint)
+
+
+def test_start_recusa_relatorio_sem_contagem_de_hashes(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    payload = json.loads(audit.read_text())
+    payload["documents"]["integrity_checked"] = 29999
+    audit.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="hashes não verificados"):
+        iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint)
+
+
+def test_start_recusa_benchmark_sem_1000_passos(tmp_path):
+    preflight, audit, manifest, checkpoint = _prerequisitos(tmp_path)
+    benchmark = tmp_path / "benchmark.json"
+    benchmark.write_text(json.dumps({
+        "status": "passed", "device": "cpu", "steps": 999,
+        "elapsed_seconds": 1200, "evaluation_count": 10
+    }))
+    with pytest.raises(ValueError, match="1.000 passos"):
+        iniciar(tmp_path / "state.json", preflight, audit, manifest, checkpoint,
+                benchmark_path=benchmark)
+
+
+def test_recuperacao_escolhe_checkpoint_completo_mais_recente(tmp_path):
+    root = tmp_path / "checkpoints"
+    root.mkdir()
+    for name, step in (("step_000025", 25), ("last", 50), ("step_000075", 75)):
+        folder = root / name
+        folder.mkdir()
+        for filename in ("model.pt", "optimizer.pt", "scheduler.pt"):
+            (folder / filename).write_bytes(b"valid")
+        (folder / "meta.json").write_text(json.dumps({"step": step}))
+    broken = root / "step_000100"
+    broken.mkdir()
+    (broken / "model.pt").write_bytes(b"partial")
+    (broken / "meta.json").write_text(json.dumps({"step": 100}))
+    selected, meta = localizar_checkpoint_recuperavel(root)
+    assert selected.name == "step_000075"
+    assert meta["step"] == 75
