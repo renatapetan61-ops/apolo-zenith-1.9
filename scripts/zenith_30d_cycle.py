@@ -119,6 +119,8 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
     benchmark = carregar_json(benchmark_path)
     if benchmark.get("status") != "passed" or benchmark.get("device") != "cpu":
         raise ValueError("benchmark real de CPU não aprovado")
+    if expected_commit and benchmark.get("source_commit") != expected_commit:
+        raise ValueError("benchmark foi executado em outro commit; reconstruir corpus e benchmark")
     if int(benchmark.get("steps", 0)) != 1000:
         raise ValueError("benchmark precisa comprovar exatamente 1.000 passos")
     if int(benchmark.get("evaluation_count", 0)) < 10:
