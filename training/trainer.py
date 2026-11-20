@@ -574,10 +574,14 @@ class Trainer:
 
             # -------------------------------------------------- checkpoint
             if self.config.save_interval and self.passo % self.config.save_interval == 0:
+                extra_checkpoint = {"treino": {"perda": perda_media, "lr": lr_atual}}
                 self._salvar_checkpoint(
                     f"step_{self.passo:06d}",
-                    extra={"treino": {"perda": perda_media, "lr": lr_atual}},
+                    extra=extra_checkpoint,
                 )
+                # Alias estável para recuperação automática após interrupção.
+                # CheckpointManager grava de forma atômica e protege "last".
+                self._salvar_checkpoint("last", extra=extra_checkpoint)
 
         # Checkpoint final
         self._salvar_checkpoint(
