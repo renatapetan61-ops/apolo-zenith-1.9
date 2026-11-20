@@ -111,8 +111,18 @@ jobs:
           download_artifact "$PREFLIGHT_RUN" "apolo-zenith-30d-preflight" "artifacts/preflight"
           test -s artifacts/preflight/reports/preflight-validation.json
           mkdir -p artifacts/corpus
-          gh release download "apolo-zenith-corpus-30000-$CORPUS_RUN" --pattern corpus.tar.gz --pattern corpus-audit.json --dir artifacts/corpus
+          gh release download "apolo-zenith-corpus-30000-$CORPUS_RUN" --pattern corpus.tar.gz --pattern corpus-audit.json --pattern cpu-1000-step-benchmark.json --dir artifacts/corpus
           test -s artifacts/corpus/corpus-audit.json
+          test -s artifacts/corpus/cpu-1000-step-benchmark.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("artifacts/corpus/cpu-1000-step-benchmark.json").read_text())
+          assert report.get("status") == "passed" and report.get("device") == "cpu"
+          assert report.get("steps") == 1000 and report.get("evaluation_count", 0) >= 10
+          assert 0 < report.get("elapsed_seconds", 0) <= 300 * 60
+          print("Benchmark CPU aprovado:", report["elapsed_seconds"], "s;", report["evaluation_count"], "avaliações")
+          PY
           tar -xzf artifacts/corpus/corpus.tar.gz
           echo "PREFLIGHT_REPORT=artifacts/preflight/reports/preflight-validation.json" >> "$GITHUB_ENV"
           echo "CORPUS_AUDIT=artifacts/corpus/corpus-audit.json" >> "$GITHUB_ENV"
@@ -234,20 +244,20 @@ jobs:
               raise SystemExit(f'Checkpoint fora da janela: base={base}, checkpoint={step}, alvo={target}')
           remaining = target - step
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write(f"path={recovered['path']}\\nstep={step}\\nremaining={remaining}\\ntarget={target}\\n")
+              output.write(f"path={recovered['path']}\nstep={step}\nremaining={remaining}\ntarget={target}\n")
           print(json.dumps({'checkpoint': recovered['path'], 'step': step, 'target': target, 'remaining_steps': remaining}))
           PY
       - name: Executar ou concluir sessão incremental recuperada
         if: steps.tick.outputs.train == 'true'
         run: |
           set -euo pipefail
-          REMAINING="\${{ steps.recovery.outputs.remaining }}"
+          REMAINING="${{ steps.recovery.outputs.remaining }}"
           if [ "$REMAINING" -gt 0 ]; then
             python -m training.text_trainer \
               --dados datasets_storage/processed \
               --tokenizer datasets_storage/processed/tokenizer \
               --saida checkpoints/30d \
-              --retomar "\${{ steps.recovery.outputs.path }}" \
+              --retomar "${{ steps.recovery.outputs.path }}" \
               --steps "$REMAINING" \
               --batch-size 4 \
               --block-size 128 \
