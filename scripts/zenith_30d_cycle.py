@@ -103,7 +103,8 @@ def localizar_checkpoint_recuperavel(raiz: Path) -> tuple[Path, dict[str, Any]]:
 
 
 def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path: Path,
-                           expected_commit: str | None = None) -> dict[str, Any]:
+                           expected_commit: str | None = None,
+                           benchmark_path: Path | None = None) -> dict[str, Any]:
     preflight = carregar_json(preflight_path)
     audit = carregar_json(audit_path)
     if preflight.get("status") != "passed" or not preflight.get("checks"):
@@ -114,6 +115,17 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         raise ValueError("preflight foi executado em outro commit; repetir validação no HEAD atual")
     if audit.get("passed") is not True:
         raise ValueError("auditoria do corpus não aprovada")
+    benchmark_path = benchmark_path or audit_path.with_name("benchmark.json")
+    benchmark = carregar_json(benchmark_path)
+    if benchmark.get("status") != "passed" or benchmark.get("device") != "cpu":
+        raise ValueError("benchmark real de CPU não aprovado")
+    if int(benchmark.get("steps", 0)) != 1000:
+        raise ValueError("benchmark precisa comprovar exatamente 1.000 passos")
+    if int(benchmark.get("evaluation_count", 0)) < 10:
+        raise ValueError("benchmark precisa conter pelo menos 10 avaliações")
+    elapsed = float(benchmark.get("elapsed_seconds", 0))
+    if not (0 < elapsed <= 300 * 60):
+        raise ValueError("benchmark excedeu a janela operacional de 300 minutos")
     if expected_commit and audit.get("source_commit") != expected_commit:
         raise ValueError("corpus foi construído em outro commit; reconstruir no HEAD atual")
     docs = audit.get("documents", {})
@@ -174,17 +186,24 @@ def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path
         "manifest_sha256": manifest_hash,
         "release_tag": release_tag,
         "corpus_audit_passed": True,
+        "cpu_benchmark": {
+            "status": benchmark["status"],
+            "steps": int(benchmark["steps"]),
+            "elapsed_seconds": elapsed,
+            "evaluation_count": int(benchmark["evaluation_count"]),
+        },
     }
 
 
 def iniciar(state_path: Path, preflight_path: Path, audit_path: Path,
             manifest_path: Path, checkpoint_path: Path, now: datetime | None = None,
-            expected_commit: str | None = None) -> dict[str, Any]:
+            expected_commit: str | None = None,
+            benchmark_path: Path | None = None) -> dict[str, Any]:
     if state_path.exists():
         atual = carregar_json(state_path)
         if atual.get("status") in ("running", "paused"):
             raise ValueError("já existe um ciclo ativo ou pausado; não iniciar outro")
-    requisitos = validar_pre_requisitos(preflight_path, audit_path, manifest_path, expected_commit)
+    requisitos = validar_pre_requisitos(preflight_path, audit_path, manifest_path, expected_commit, benchmark_path)
     meta = validar_checkpoint(checkpoint_path)
     inicio = (now or agora_utc()).astimezone(timezone.utc)
     fim = inicio + timedelta(days=DURACAO_DIAS)
@@ -306,6 +325,7 @@ def main() -> None:
     p_start.add_argument("--manifest", required=True)
     p_start.add_argument("--checkpoint", required=True)
     p_start.add_argument("--expected-commit", default=None)
+    p_start.add_argument("--benchmark", required=True)
     p_recover = sub.add_parser("recover")
     p_recover.add_argument("--root", required=True)
     p_record = sub.add_parser("record")
@@ -333,7 +353,8 @@ def main() -> None:
         return
     if args.command == "start":
         result = iniciar(Path(args.state), Path(args.preflight), Path(args.corpus_audit),
-                         Path(args.manifest), Path(args.checkpoint), expected_commit=args.expected_commit)
+                         Path(args.manifest), Path(args.checkpoint), expected_commit=args.expected_commit,
+                         benchmark_path=Path(args.benchmark))
     elif args.command == "record":
         result = registrar_sessao(Path(args.state), Path(args.checkpoint), args.run_id,
                                   args.steps, Path(args.evaluation) if args.evaluation else None)
