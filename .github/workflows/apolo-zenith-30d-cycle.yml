@@ -254,7 +254,7 @@ jobs:
           set -euo pipefail
           REMAINING="${{ steps.recovery.outputs.remaining }}"
           if [ "$REMAINING" -gt 0 ]; then
-            python -m training.text_trainer \
+            timeout --signal=TERM --kill-after=60s 300m python -m training.text_trainer \
               --dados datasets_storage/processed \
               --tokenizer datasets_storage/processed/tokenizer \
               --saida checkpoints/30d \
