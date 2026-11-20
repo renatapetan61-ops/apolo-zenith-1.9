@@ -73,6 +73,8 @@ def main() -> None:
             raise RuntimeError("Métrica de validação ausente/inválida")
         report = {
             "status": "passed", "device": "cpu", "steps": 1000,
+            "source_commit": os.environ.get("GITHUB_SHA"),
+            "source_run_id": os.environ.get("GITHUB_RUN_ID"),
             "elapsed_seconds": round(elapsed, 3),
             "seconds_per_step": round(elapsed / 1000, 6),
             "evaluation_count": len(evaluations),
