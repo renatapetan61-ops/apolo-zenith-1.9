@@ -79,6 +79,29 @@ def validar_checkpoint(pasta: Path) -> dict[str, Any]:
     return meta
 
 
+def localizar_checkpoint_recuperavel(raiz: Path) -> tuple[Path, dict[str, Any]]:
+    """Seleciona o checkpoint completo de maior passo, ignorando gravações truncadas."""
+    if not raiz.is_dir():
+        raise FileNotFoundError(f"diretório de checkpoints não encontrado: {raiz}")
+    candidatos: list[tuple[int, Path, dict[str, Any]]] = []
+    for pasta in raiz.iterdir():
+        if not pasta.is_dir() or pasta.name.endswith((".tmp", ".old", ".copytmp")):
+            continue
+        try:
+            meta = validar_checkpoint(pasta)
+            # A retomada de treino exige pesos, AdamW e scheduler, não só inferência.
+            if not all((pasta / nome).is_file() and (pasta / nome).stat().st_size > 0
+                       for nome in ("model.pt", "optimizer.pt", "scheduler.pt", "meta.json")):
+                continue
+            candidatos.append((int(meta["step"]), pasta, meta))
+        except (OSError, ValueError, json.JSONDecodeError, TypeError):
+            continue
+    if not candidatos:
+        raise ValueError(f"nenhum checkpoint completo e recuperável em {raiz}")
+    passo, pasta, meta = max(candidatos, key=lambda item: (item[0], item[1].name))
+    return pasta, meta
+
+
 def validar_pre_requisitos(preflight_path: Path, audit_path: Path, manifest_path: Path,
                            expected_commit: str | None = None) -> dict[str, Any]:
     preflight = carregar_json(preflight_path)
@@ -283,6 +306,8 @@ def main() -> None:
     p_start.add_argument("--manifest", required=True)
     p_start.add_argument("--checkpoint", required=True)
     p_start.add_argument("--expected-commit", default=None)
+    p_recover = sub.add_parser("recover")
+    p_recover.add_argument("--root", required=True)
     p_record = sub.add_parser("record")
     p_record.add_argument("--state", required=True)
     p_record.add_argument("--checkpoint", required=True)
@@ -302,6 +327,10 @@ def main() -> None:
     p_mark.add_argument("--report", required=True)
     args = parser.parse_args()
 
+    if args.command == "recover":
+        pasta, meta = localizar_checkpoint_recuperavel(Path(args.root))
+        print(json.dumps({"path": str(pasta), "step": int(meta["step"])}, ensure_ascii=False))
+        return
     if args.command == "start":
         result = iniciar(Path(args.state), Path(args.preflight), Path(args.corpus_audit),
                          Path(args.manifest), Path(args.checkpoint), expected_commit=args.expected_commit)
