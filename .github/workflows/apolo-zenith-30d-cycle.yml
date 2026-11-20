@@ -3,6 +3,10 @@ name: APOLO ZENITH 1.9 — ciclo incremental de treinamento de 30 dias
 on:
   schedule:
     - cron: "17 */6 * * *"
+  workflow_run:
+    workflows: ["APOLO ZENITH 1.9 — construir e auditar corpus de 30.000 documentos"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       command:
@@ -22,11 +26,12 @@ concurrency:
 
 jobs:
   cycle:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CYCLE_COMMAND: ${{ github.event_name == 'schedule' && 'continue' || inputs.command || 'status' }}
+      CYCLE_COMMAND: ${{ github.event_name == 'schedule' && 'continue' || github.event_name == 'workflow_run' && 'start' || inputs.command || 'status' }}
       PYTHONUNBUFFERED: "1"
       OMP_NUM_THREADS: "2"
       MKL_NUM_THREADS: "2"
