@@ -23,7 +23,7 @@ concurrency:
 jobs:
   cycle:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 330
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       CYCLE_COMMAND: ${{ github.event_name == 'schedule' && 'continue' || inputs.command || 'status' }}
@@ -170,7 +170,8 @@ jobs:
             --corpus-audit "$CORPUS_AUDIT" \
             --manifest datasets_storage/manifest.json \
             --checkpoint checkpoints/30d/checkpoints/final \
-            --expected-commit "$GITHUB_SHA"
+            --expected-commit "$GITHUB_SHA" \
+            --benchmark artifacts/corpus/cpu-1000-step-benchmark.json
       - name: Atualizar relógio e decidir se ainda há treinamento
         if: steps.mode.outputs.skip != 'true'
         id: tick
