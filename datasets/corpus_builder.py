@@ -392,6 +392,8 @@ def coletar_wikipedia(
         falhas_consecutivas = 0
         entradas = catalogo.get("query", {}).get("allpages", [])
         ids = [str(item.get("pageid")) for item in entradas if item.get("pageid")]
+        # Evita buscar extracts além da meta restante, especialmente na última página.
+        ids = ids[:max_documentos - adicionados]
         if not ids:
             raise RuntimeError(f"Wikipedia {idioma}: allpages terminou antes da meta ({adicionados}/{max_documentos}).")
         paginas_catalogo += 1
