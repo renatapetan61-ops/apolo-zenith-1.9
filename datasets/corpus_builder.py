@@ -54,9 +54,9 @@ def _ler_url_texto(url: str, tentativas: int = 5, espera: float = 2.0) -> Option
             try:
                 # Um servidor indisponível não deve bloquear o CI por minutos.
                 # Respeitamos Retry-After, mas com teto curto e backoff limitado.
-                atraso = min(float(retry_after), 5.0) if retry_after else min(espera * (2 ** tentativa), 5.0)
+                atraso = min(max(float(retry_after), 1.0), 120.0) if retry_after else min(espera * (2 ** tentativa), 60.0)
             except (TypeError, ValueError):
-                atraso = min(espera * (2 ** tentativa), 5.0)
+                atraso = min(espera * (2 ** tentativa), 60.0)
             print(f"  [retry {tentativa + 1}/{tentativas - 1}] HTTP {exc.code}; aguardando {atraso:.1f}s")
             time.sleep(atraso)
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
