@@ -268,7 +268,7 @@ def coletar_gutenberg(
     return documentos
 
 
-def _ler_json_api(url: str, idioma: str, contexto: str, tentativas: int = 6) -> Optional[dict]:
+def _ler_json_api(url: str, idioma: str, contexto: str, tentativas: int = 8) -> Optional[dict]:
     """Consulta a API MediaWiki e repete erros JSON transitórios em HTTP 200."""
     transitorios = {"maxlag", "ratelimited", "readonly", "internal_api_error_DBConnectionError"}
     for tentativa in range(tentativas):
@@ -289,7 +289,7 @@ def _ler_json_api(url: str, idioma: str, contexto: str, tentativas: int = 6) -> 
                     return payload
                 print(f"  [wikipedia:{idioma}] API {codigo} ({contexto}); tentativa {tentativa + 1}/{tentativas}")
         if tentativa < tentativas - 1:
-            time.sleep(min(2 ** tentativa, 15))
+            time.sleep(min(2 ** tentativa, 60))
     print(f"  [wikipedia:{idioma}] consulta esgotou retentativas ({contexto})")
     return None
 
@@ -304,37 +304,34 @@ WIKIPEDIA_BUSCAS = {
 
 
 def _limite_lotes_wikipedia(documentos_restantes: int) -> int:
-    """Dimensiona as tentativas aleatórias sem permitir loops ilimitados."""
-    return max(200, min(1200, max(0, documentos_restantes) * 4))
+    """Orçamento defensivo para lotes de extração em páginas de 50 IDs."""
+    if documentos_restantes <= 0:
+        return 0
+    return max(1, (documentos_restantes + 49) // 50)
 
 
 def coletar_wikipedia(
-    saida_raw: Path,
-    idioma: str,
-    max_documentos: int,
+    saida_raw: Path, idioma: str, max_documentos: int,
     documentos: Optional[List[DocumentoFonte]] = None,
 ) -> List[DocumentoFonte]:
-    """Obtém artigos CC BY-SA 4.0 por busca temática e completa com páginas aleatórias.
+    """Coleta artigos CC BY-SA 4.0 com paginação MediaWiki allpages.
 
-    A fase aleatória usa list=random para selecionar IDs e uma segunda consulta
-    pageids para obter extracts. Isso evita depender do gerador combinado
-    generator=random+extracts, que vinha entregando poucos documentos válidos.
+    A coleta anterior usava list=random em ciclos curtos e teto de 1.200 lotes,
+    limitando o corpus a cerca de mil artigos por idioma. Esta versão obtém até
+    500 IDs por página e extrai textos em grupos de 50, seguindo o cursor da API.
     """
     documentos = documentos if documentos is not None else []
     pasta = saida_raw / f"wikipedia_{idioma}"
     pasta.mkdir(parents=True, exist_ok=True)
     host = "pt.wikipedia.org" if idioma == "pt" else "en.wikipedia.org"
     vistos: set[int] = set()
-    adicionados = 0
+    adicionados = sum(1 for d in documentos if d.idioma == idioma and d.fonte == f"wikipedia_{idioma}")
 
     def registrar_paginas(payload: dict) -> int:
         nonlocal adicionados
         novos = 0
         paginas = payload.get("query", {}).get("pages", {})
-        if isinstance(paginas, list):
-            iterable = paginas
-        else:
-            iterable = paginas.values()
+        iterable = paginas if isinstance(paginas, list) else paginas.values()
         for pagina in sorted(iterable, key=lambda item: int(item.get("pageid", item.get("id", 0)))):
             page_id = int(pagina.get("pageid", pagina.get("id", 0)))
             titulo = str(pagina.get("title", "")).strip()
@@ -344,11 +341,11 @@ def coletar_wikipedia(
             vistos.add(page_id)
             arquivo = pasta / f"{page_id}.txt"
             arquivo.write_text(texto, encoding="utf-8")
-            url_artigo = f"https://{host}/wiki/{urllib.parse.quote(titulo.replace(' ', '_'))}"
+            titulo_url = urllib.parse.quote(titulo.replace(" ", "_"))
+            url_artigo = f"https://{host}/wiki/{titulo_url}"
             documentos.append(DocumentoFonte(
                 fonte=f"wikipedia_{idioma}", titulo=titulo,
-                arquivo=str(arquivo.relative_to(saida_raw.parent)),
-                url=url_artigo,
+                arquivo=str(arquivo.relative_to(saida_raw.parent)), url=url_artigo,
                 licenca="CC BY-SA 4.0 (Wikipedia; atribuição ao artigo e histórico)",
                 caracteres=len(texto), sha256=sha256_arquivo(arquivo), idioma=idioma,
             ))
@@ -358,91 +355,72 @@ def coletar_wikipedia(
                 break
         return novos
 
-    # Primeiro, artigos temáticos. O limite é mantido pequeno para respeitar a API.
+    # Busca temática inicial para favorecer conteúdo relevante.
     for consulta in WIKIPEDIA_BUSCAS.get(idioma, WIKIPEDIA_BUSCAS["en"]):
-        restantes = max_documentos - adicionados
-        if restantes <= 0:
+        if adicionados >= max_documentos:
             break
+        restantes = max_documentos - adicionados
         params = urllib.parse.urlencode({
             "action": "query", "format": "json", "generator": "search",
-            "gsrsearch": consulta, "gsrnamespace": 0,
-            "gsrlimit": min(restantes, 10),
-            "prop": "extracts", "explaintext": 1, "maxlag": 5,
+            "gsrsearch": consulta, "gsrnamespace": 0, "gsrlimit": min(restantes, 50),
+            "prop": "extracts", "explaintext": 1, "exlimit": 50, "maxlag": 5,
         })
-        payload = _ler_json_api(
-            f"https://{host}/w/api.php?{params}", idioma, f"busca {consulta!r}"
-        )
+        payload = _ler_json_api(f"https://{host}/w/api.php?{params}", idioma, f"busca {consulta!r}")
         if payload:
             registrar_paginas(payload)
-        if adicionados < max_documentos:
-            time.sleep(0.5)
+        time.sleep(0.35)
 
-    # Fallback robusto: list=random retorna IDs; pageids recupera os extracts
-    # em lotes de no máximo 50 IDs, limite compatível com consultas anônimas.
-    lotes = 0
-    # A coleta anterior limitava o fallback a 100 lotes. Em execuções reais,
-    # isso produziu somente ~0,9–1,1 artigo válido por lote, insuficiente para
-    # corpora bilíngues maiores. Dimensiona o orçamento de lotes pelo déficit,
-    # mantendo teto para evitar execução sem limite.
-    restantes_iniciais = max_documentos - adicionados
-    max_lotes = _limite_lotes_wikipedia(restantes_iniciais)
+    cursor: Optional[str] = None
+    paginas_catalogo = 0
     falhas_consecutivas = 0
-    while adicionados < max_documentos and lotes < max_lotes:
-        lotes += 1
-        restantes = max_documentos - adicionados
-        quantidade = 50
-        params_ids = urllib.parse.urlencode({
-            "action": "query", "format": "json", "list": "random",
-            "rnnamespace": 0, "rnfilterredir": "nonredirects",
-            "rnlimit": quantidade, "maxlag": 5,
-        })
-        dados_ids = _ler_json_api(
-            f"https://{host}/w/api.php?{params_ids}", idioma, "seleção aleatória"
-        )
-        if not dados_ids:
+    while adicionados < max_documentos:
+        params = {
+            "action": "query", "format": "json", "list": "allpages",
+            "apnamespace": 0, "apfilterredir": "nonredirects",
+            "aplimit": 500, "apminsize": 1000, "maxlag": 5,
+        }
+        if cursor:
+            params["apcontinue"] = cursor
+        url = f"https://{host}/w/api.php?{urllib.parse.urlencode(params)}"
+        catalogo = _ler_json_api(url, idioma, "catálogo allpages", tentativas=10)
+        if not catalogo:
             falhas_consecutivas += 1
-            # Interrompe apenas após uma sequência prolongada de falhas reais;
-            # falhas isoladas/HTTP 503 continuam sujeitas a novas tentativas.
-            if falhas_consecutivas >= 25:
-                print(f"  [wikipedia:{idioma}] interrompendo após {falhas_consecutivas} lotes consecutivos sem resposta")
-                break
-            time.sleep(min(2 * falhas_consecutivas, 15))
+            if falhas_consecutivas >= 10:
+                raise RuntimeError(f"Wikipedia {idioma}: API indisponível; coletados {adicionados}/{max_documentos}.")
+            time.sleep(min(5 * falhas_consecutivas, 60))
             continue
         falhas_consecutivas = 0
-        try:
-            ids = [
-                str(item.get("id"))
-                for item in dados_ids.get("query", {}).get("random", [])
-                if item.get("id")
-            ]
-        except (TypeError, AttributeError):
-            print(f"  [wikipedia:{idioma}] lista aleatória inválida")
-            time.sleep(1.0)
-            continue
+        entradas = catalogo.get("query", {}).get("allpages", [])
+        ids = [str(item.get("pageid")) for item in entradas if item.get("pageid")]
         if not ids:
-            print(f"  [wikipedia:{idioma}] API não retornou IDs aleatórios")
-            time.sleep(1.0)
-            continue
-
+            raise RuntimeError(f"Wikipedia {idioma}: allpages terminou antes da meta ({adicionados}/{max_documentos}).")
+        paginas_catalogo += 1
         for inicio in range(0, len(ids), 50):
-            lote_ids = ids[inicio:inicio + 50]
-            params_texto = urllib.parse.urlencode({
-                "action": "query", "format": "json",
-                "pageids": "|".join(lote_ids),
-                "prop": "extracts", "explaintext": 1, "maxlag": 5,
-            })
-            payload_texto = _ler_json_api(
-                f"https://{host}/w/api.php?{params_texto}", idioma, "extração por pageids"
-            )
-            if payload_texto:
-                registrar_paginas(payload_texto)
             if adicionados >= max_documentos:
                 break
-            time.sleep(0.25)
-        if lotes % 25 == 0:
-            print(f"  [wikipedia:{idioma}] progresso: {adicionados}/{max_documentos}; lote {lotes}/{max_lotes}")
-
-    print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados após {lotes} lotes")
+            lote_ids = ids[inicio:inicio + 50]
+            params_texto = urllib.parse.urlencode({
+                "action": "query", "format": "json", "pageids": "|".join(lote_ids),
+                "prop": "extracts", "explaintext": 1, "exlimit": 50, "maxlag": 5,
+            })
+            payload = _ler_json_api(
+                f"https://{host}/w/api.php?{params_texto}", idioma, "extração allpages", tentativas=10
+            )
+            if payload:
+                registrar_paginas(payload)
+            else:
+                falhas_consecutivas += 1
+                if falhas_consecutivas >= 10:
+                    raise RuntimeError(f"Wikipedia {idioma}: extração indisponível; coletados {adicionados}/{max_documentos}.")
+            time.sleep(0.35)
+        continuacao = catalogo.get("continue", {})
+        novo_cursor = continuacao.get("apcontinue") if isinstance(continuacao, dict) else None
+        if not novo_cursor:
+            raise RuntimeError(f"Wikipedia {idioma}: catálogo esgotado com {adicionados}/{max_documentos} documentos.")
+        cursor = str(novo_cursor)
+        if paginas_catalogo % 10 == 0:
+            print(f"  [wikipedia:{idioma}] progresso: {adicionados}/{max_documentos}; páginas de catálogo {paginas_catalogo}")
+    print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados")
     return documentos
 
 # --------------------------------------------------------------------------- #
