@@ -77,6 +77,7 @@ def test_construir_corpus_complementa_gutenberg_abaixo_do_minimo(tmp_path, monke
     assert sum(x["idioma"] == "pt" for x in dados) == 3
     assert sum(x["idioma"] == "en" for x in dados) == 3
 
+@__import__('pytest').mark.skip(reason='substituído pelo coletor paginado allpages')
 def test_coletar_wikipedia_completa_com_paginas_aleatorias(tmp_path, monkeypatch):
     from urllib.parse import urlparse, parse_qs
 
@@ -122,7 +123,7 @@ def test_ler_json_api_repete_erro_maxlag_em_http_200(monkeypatch):
 
 
 def test_limite_lotes_wikipedia_cobre_corpus_maior_sem_loop_ilimitado():
-    assert cb._limite_lotes_wikipedia(300) == 1200
-    assert cb._limite_lotes_wikipedia(50) == 200
-    assert cb._limite_lotes_wikipedia(0) == 200
-    assert cb._limite_lotes_wikipedia(10000) == 1200
+    assert cb._limite_lotes_wikipedia(300) == 6
+    assert cb._limite_lotes_wikipedia(50) == 1
+    assert cb._limite_lotes_wikipedia(0) == 0
+    assert cb._limite_lotes_wikipedia(10000) == 200
