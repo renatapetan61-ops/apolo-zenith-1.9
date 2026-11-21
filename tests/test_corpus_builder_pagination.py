@@ -15,7 +15,7 @@ def test_wikipedia_collector_uses_allpages_and_extracts_in_batches(tmp_path, mon
             ids = params["pageids"][0].split("|")
             return json.dumps({"query": {"pages": {
                 page_id: {"pageid": int(page_id), "title": "Article " + page_id,
-                          "extract": "Texto enciclopédico válido. " * 30}
+                          "extract": ("Texto enciclopédico válido para o artigo " + page_id + ". ") * 30}
                 for page_id in ids
             }}})
         raise AssertionError("Unexpected MediaWiki request: " + url)
