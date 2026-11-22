@@ -324,7 +324,13 @@ def coletar_wikipedia(
     pasta = saida_raw / f"wikipedia_{idioma}"
     pasta.mkdir(parents=True, exist_ok=True)
     host = "pt.wikipedia.org" if idioma == "pt" else "en.wikipedia.org"
-    vistos: set[int] = set()
+    # Reuse page IDs already collected by the thematic search.
+    vistos: set[int] = {
+        int(Path(d.arquivo).stem)
+        for d in documentos
+        if d.idioma == idioma and d.fonte == f"wikipedia_{idioma}"
+        and Path(d.arquivo).stem.isdigit()
+    }
     adicionados = sum(1 for d in documentos if d.idioma == idioma and d.fonte == f"wikipedia_{idioma}")
 
     def registrar_paginas(payload: dict) -> int:
@@ -370,57 +376,58 @@ def coletar_wikipedia(
             registrar_paginas(payload)
         time.sleep(0.35)
 
-    cursor: Optional[str] = None
+    parametros_continuacao: dict = {}
     paginas_catalogo = 0
-    falhas_consecutivas = 0
+    falhas_catalogo_consecutivas = 0
     while adicionados < max_documentos:
         params = {
             "action": "query", "format": "json", "list": "allpages",
             "apnamespace": 0, "apfilterredir": "nonredirects",
             "aplimit": 500, "apminsize": 1000, "maxlag": 5,
+            **parametros_continuacao,
         }
-        if cursor:
-            params["apcontinue"] = cursor
         url = f"https://{host}/w/api.php?{urllib.parse.urlencode(params)}"
         catalogo = _ler_json_api(url, idioma, "catálogo allpages", tentativas=10)
-        if not catalogo:
-            falhas_consecutivas += 1
-            if falhas_consecutivas >= 10:
+        if not catalogo or catalogo.get("error"):
+            falhas_catalogo_consecutivas += 1
+            if falhas_catalogo_consecutivas >= 10:
                 raise RuntimeError(f"Wikipedia {idioma}: API indisponível; coletados {adicionados}/{max_documentos}.")
-            time.sleep(min(5 * falhas_consecutivas, 60))
+            time.sleep(min(5 * falhas_catalogo_consecutivas, 60))
             continue
-        falhas_consecutivas = 0
+        falhas_catalogo_consecutivas = 0
         entradas = catalogo.get("query", {}).get("allpages", [])
-        ids = [str(item.get("pageid")) for item in entradas if item.get("pageid")]
-        # Evita buscar extracts além da meta restante, especialmente na última página.
+        # Remove artigos obtidos pela busca temática antes de aplicar a cota restante.
+        ids = [
+            str(item.get("pageid")) for item in entradas
+            if item.get("pageid") and int(item["pageid"]) not in vistos
+        ]
         ids = ids[:max_documentos - adicionados]
-        if not ids:
-            raise RuntimeError(f"Wikipedia {idioma}: allpages terminou antes da meta ({adicionados}/{max_documentos}).")
-        paginas_catalogo += 1
-        for inicio in range(0, len(ids), 50):
-            if adicionados >= max_documentos:
-                break
-            lote_ids = ids[inicio:inicio + 50]
-            params_texto = urllib.parse.urlencode({
-                "action": "query", "format": "json", "pageids": "|".join(lote_ids),
-                "prop": "extracts", "explaintext": 1, "exlimit": 50, "maxlag": 5,
-            })
-            payload = _ler_json_api(
-                f"https://{host}/w/api.php?{params_texto}", idioma, "extração allpages", tentativas=10
-            )
-            if payload:
+        if ids:
+            paginas_catalogo += 1
+            for inicio in range(0, len(ids), 50):
+                if adicionados >= max_documentos:
+                    break
+                lote_ids = ids[inicio:inicio + 50]
+                params_texto = urllib.parse.urlencode({
+                    "action": "query", "format": "json", "pageids": "|".join(lote_ids),
+                    "prop": "extracts", "explaintext": 1, "exlimit": 50, "maxlag": 5,
+                })
+                payload = _ler_json_api(
+                    f"https://{host}/w/api.php?{params_texto}", idioma, "extração allpages", tentativas=10
+                )
+                if not payload or payload.get("error"):
+                    raise RuntimeError(
+                        f"Wikipedia {idioma}: falha na extração allpages; "
+                        f"coletados {adicionados}/{max_documentos}. Repita a execução."
+                    )
                 registrar_paginas(payload)
-            else:
-                falhas_consecutivas += 1
-                if falhas_consecutivas >= 10:
-                    raise RuntimeError(f"Wikipedia {idioma}: extração indisponível; coletados {adicionados}/{max_documentos}.")
-            time.sleep(0.35)
+                time.sleep(0.35)
+        # MediaWiki exige todos os campos de continuação retornados pela resposta.
         continuacao = catalogo.get("continue", {})
-        novo_cursor = continuacao.get("apcontinue") if isinstance(continuacao, dict) else None
-        if not novo_cursor:
+        if not isinstance(continuacao, dict) or not continuacao:
             raise RuntimeError(f"Wikipedia {idioma}: catálogo esgotado com {adicionados}/{max_documentos} documentos.")
-        cursor = str(novo_cursor)
-        if paginas_catalogo % 10 == 0:
+        parametros_continuacao = {str(k): str(v) for k, v in continuacao.items()}
+        if paginas_catalogo and paginas_catalogo % 10 == 0:
             print(f"  [wikipedia:{idioma}] progresso: {adicionados}/{max_documentos}; páginas de catálogo {paginas_catalogo}")
     print(f"  [wikipedia:{idioma}] {adicionados}/{max_documentos} artigos coletados")
     return documentos
