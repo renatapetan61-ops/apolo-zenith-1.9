@@ -16,11 +16,14 @@ def test_wikipedia_collector_follows_allpages_continuation_cursor(tmp_path, monk
 
         if params.get("list") == ["allpages"]:
             cursor = params.get("apcontinue", [None])[0]
-            cursors.append(cursor)
+            generic_continue = params.get("continue", [None])[0]
+            cursors.append((cursor, generic_continue))
             if cursor is None:
+                assert generic_continue is None
                 start = 1
                 continuation = "cursor-page-two"
             elif cursor == "cursor-page-two":
+                assert generic_continue == "-||"
                 start = 11
                 continuation = "cursor-page-three"
             else:
@@ -65,6 +68,6 @@ def test_wikipedia_collector_follows_allpages_continuation_cursor(tmp_path, monk
     docs = cb.coletar_wikipedia(tmp_path / "raw", "pt", 12, [])
 
     assert len(docs) == 12
-    assert cursors == [None, "cursor-page-two"]
+    assert cursors == [(None, None), ("cursor-page-two", "-||")]
     assert extracted_ids == [str(i) for i in range(1, 13)]
     assert len({doc.sha256 for doc in docs}) == 12
