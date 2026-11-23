@@ -1,7 +1,21 @@
 """Testes do coletor textual e dos fallbacks de fonte."""
 
+import importlib.util
 import json
-from datasets import corpus_builder as cb
+import sys
+from pathlib import Path
+
+# Carrega somente o módulo sob teste. Importar o pacote "datasets" executa
+# datasets/__init__.py e puxa dependências multimodais (NumPy/PyTorch) que
+# não fazem parte dos requisitos deste coletor HTTP baseado na biblioteca padrão.
+_SPEC = importlib.util.spec_from_file_location(
+    "_apolo_corpus_builder_under_test",
+    Path(__file__).resolve().parents[1] / "datasets" / "corpus_builder.py",
+)
+assert _SPEC is not None and _SPEC.loader is not None
+cb = importlib.util.module_from_spec(_SPEC)
+sys.modules[_SPEC.name] = cb
+_SPEC.loader.exec_module(cb)
 
 
 def test_coletar_wikipedia_registra_licenca_url_e_hash(tmp_path, monkeypatch):
