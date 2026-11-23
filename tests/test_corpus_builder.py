@@ -1,7 +1,21 @@
 """Testes do coletor textual e dos fallbacks de fonte."""
 
+import importlib.util
 import json
-from datasets import corpus_builder as cb
+import sys
+from pathlib import Path
+
+# Carrega somente o módulo sob teste. Importar o pacote "datasets" executa
+# datasets/__init__.py e puxa dependências multimodais (NumPy/PyTorch) que
+# não fazem parte dos requisitos deste coletor HTTP baseado na biblioteca padrão.
+_SPEC = importlib.util.spec_from_file_location(
+    "_apolo_corpus_builder_under_test",
+    Path(__file__).resolve().parents[1] / "datasets" / "corpus_builder.py",
+)
+assert _SPEC is not None and _SPEC.loader is not None
+cb = importlib.util.module_from_spec(_SPEC)
+sys.modules[_SPEC.name] = cb
+_SPEC.loader.exec_module(cb)
 
 
 def test_coletar_wikipedia_registra_licenca_url_e_hash(tmp_path, monkeypatch):
@@ -21,6 +35,42 @@ def test_coletar_wikipedia_registra_licenca_url_e_hash(tmp_path, monkeypatch):
     assert documento.url == "https://pt.wikipedia.org/wiki/Literatura_brasileira"
     assert documento.sha256
     assert (tmp_path / "datasets_storage" / documento.arquivo).read_text() == texto.strip()
+
+
+def test_coletor_wikipedia_filtra_stubs_no_catalogo_allpages(tmp_path, monkeypatch):
+    from urllib.parse import parse_qs, urlparse
+
+    texto = "Artigo enciclopédico completo para o corpus. " * 30
+    chamadas = []
+
+    def resposta(url, *args, **kwargs):
+        params = parse_qs(urlparse(url).query)
+        chamadas.append(params)
+        if params.get("generator") == ["search"]:
+            return json.dumps({"query": {"pages": {}}})
+        if params.get("list") == ["allpages"]:
+            return json.dumps({"query": {"allpages": [
+                {"pageid": 456, "title": "Substantial English article"}
+            ]}})
+        if "pageids" in params:
+            return json.dumps({"query": {"pages": {"456": {
+                "pageid": 456,
+                "title": "Substantial English article",
+                "extract": texto,
+            }}}})
+        raise AssertionError(f"Consulta inesperada: {url}")
+
+    monkeypatch.setattr(cb, "_ler_url_texto", resposta)
+    monkeypatch.setattr(cb.time, "sleep", lambda *_: None)
+
+    docs = cb.coletar_wikipedia(tmp_path / "raw", "en", 1, [])
+
+    assert len(docs) == 1
+    assert docs[0].idioma == "en"
+    catalogo = next(p for p in chamadas if p.get("list") == ["allpages"])
+    assert catalogo["apminsize"] == ["5000"]
+    assert catalogo["aplimit"] == ["500"]
+    assert catalogo["maxlag"] == ["5"]
 
 
 def test_construir_corpus_usa_wikipedia_quando_gutenberg_nao_tem_dados(tmp_path, monkeypatch):
