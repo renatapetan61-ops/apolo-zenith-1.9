@@ -383,7 +383,10 @@ def coletar_wikipedia(
         params = {
             "action": "query", "format": "json", "list": "allpages",
             "apnamespace": 0, "apfilterredir": "nonredirects",
-            "aplimit": 500, "apminsize": 1000, "maxlag": 5,
+            # Exclui stubs e páginas pequenas já no catálogo, antes de gastar
+            # uma chamada de extração por lote. A auditoria continua exigindo
+            # texto útil (>= 500 caracteres) e 15.000 documentos por idioma.
+            "aplimit": 500, "apminsize": 5000, "maxlag": 5,
             **parametros_continuacao,
         }
         url = f"https://{host}/w/api.php?{urllib.parse.urlencode(params)}"
@@ -422,6 +425,10 @@ def coletar_wikipedia(
                     )
                 registrar_paginas(payload)
                 time.sleep(0.35)
+        # Atingir a cota encerra a coleta; não é necessário exigir cursor
+        # de continuação quando já temos todos os documentos solicitados.
+        if adicionados >= max_documentos:
+            break
         # MediaWiki exige todos os campos de continuação retornados pela resposta.
         continuacao = catalogo.get("continue", {})
         if not isinstance(continuacao, dict) or not continuacao:
