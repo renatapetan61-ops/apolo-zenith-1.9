@@ -56,6 +56,7 @@ def test_coletor_wikipedia_filtra_stubs_no_catalogo_allpages(tmp_path, monkeypat
     catalogo = next(p for p in chamadas if p.get("list") == ["allpages"])
     assert catalogo["apminsize"] == ["5000"]
     assert catalogo["aplimit"] == ["500"]
+    assert catalogo["maxlag"] == ["5"]
 
 
 def test_construir_corpus_usa_wikipedia_quando_gutenberg_nao_tem_dados(tmp_path, monkeypatch):
