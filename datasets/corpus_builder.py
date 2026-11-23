@@ -425,6 +425,10 @@ def coletar_wikipedia(
                     )
                 registrar_paginas(payload)
                 time.sleep(0.35)
+        # Atingir a cota encerra a coleta; não é necessário exigir cursor
+        # de continuação quando já temos todos os documentos solicitados.
+        if adicionados >= max_documentos:
+            break
         # MediaWiki exige todos os campos de continuação retornados pela resposta.
         continuacao = catalogo.get("continue", {})
         if not isinstance(continuacao, dict) or not continuacao:
