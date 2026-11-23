@@ -1,6 +1,12 @@
 name: APOLO ZENITH — testes do construtor de corpus
 
 on:
+  push:
+    branches: [main, "fix/**"]
+    paths:
+      - "datasets/corpus_builder.py"
+      - "tests/test_corpus_builder.py"
+      - ".github/workflows/corpus-builder-tests.yml"
   pull_request:
     branches: [main]
     paths:
