@@ -4,13 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - "datasets/corpus_builder.py"
       - "scripts/prepare_data.py"
       - "scripts/audit_text_corpus.py"
       - "scripts/benchmark_zenith_cpu.py"
       - "training/**"
       - "tokenizers/tokenizer/**"
-      - ".github/workflows/apolo-zenith-30d-corpus.yml"
   workflow_dispatch:
 
 permissions:
