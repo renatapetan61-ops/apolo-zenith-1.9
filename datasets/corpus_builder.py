@@ -256,6 +256,9 @@ def coletar_gutenberg(
     print(f"  [gutenberg:{idioma}] {len(livros)} livros candidatos")
     for ebook_id, titulo in livros:
         arquivo = pasta / f"{ebook_id}.txt"
+        caminho_relativo = str(arquivo.relative_to(saida_raw.parent))
+        if any(d.arquivo == caminho_relativo for d in documentos):
+            continue
         if arquivo.exists() and arquivo.stat().st_size > 2000:
             url = f"https://www.gutenberg.org/cache/epub/{ebook_id}/pg{ebook_id}.txt"
         else:
