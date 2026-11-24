@@ -321,6 +321,17 @@ def coletar_wikipedia(
     500 IDs por página e extrai textos em grupos de 50, seguindo o cursor da API.
     """
     documentos = documentos if documentos is not None else []
+
+    def salvar_manifesto_parcial() -> None:
+        """Persiste progresso para que falha em EN não descarte documentos PT já coletados."""
+        destino = saida_raw.parent / "manifest.partial.json"
+        temporario = destino.with_suffix(".json.tmp")
+        temporario.write_text(
+            json.dumps([asdict(d) for d in documentos], indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        temporario.replace(destino)
+
     pasta = saida_raw / f"wikipedia_{idioma}"
     pasta.mkdir(parents=True, exist_ok=True)
     host = "pt.wikipedia.org" if idioma == "pt" else "en.wikipedia.org"
@@ -359,6 +370,8 @@ def coletar_wikipedia(
             novos += 1
             if adicionados >= max_documentos:
                 break
+        if novos:
+            salvar_manifesto_parcial()
         return novos
 
     # Busca temática inicial para favorecer conteúdo relevante.
@@ -531,6 +544,20 @@ def construir_corpus(
     raw = saida / "raw"
     raw.mkdir(parents=True, exist_ok=True)
     documentos: List[DocumentoFonte] = []
+    # Retoma manifestos parciais somente quando cada arquivo existe e seu SHA-256
+    # confere. Isso preserva PT-BR ao continuar uma execução apenas em inglês.
+    manifesto_parcial = saida / "manifest.partial.json"
+    if manifesto_parcial.is_file():
+        try:
+            itens = json.loads(manifesto_parcial.read_text(encoding="utf-8"))
+            for item in itens:
+                documento = DocumentoFonte(**item)
+                caminho = saida / documento.arquivo
+                if caminho.is_file() and sha256_arquivo(caminho) == documento.sha256:
+                    documentos.append(documento)
+            print(f"  [retomada] {len(documentos)} documentos anteriores íntegros recuperados.")
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            raise RuntimeError(f"Manifesto parcial inválido: {exc}") from exc
 
     for idioma in idiomas:
         limite_livros = max_livros_pt if idioma == "pt" else max_livros_en
@@ -565,6 +592,8 @@ def construir_corpus(
         json.dumps([asdict(d) for d in documentos], indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
+    if manifesto_parcial.exists():
+        manifesto_parcial.unlink()
     total = sum(d.caracteres for d in documentos)
     print(
         f"  [manifesto] {len(documentos)} documentos, "
