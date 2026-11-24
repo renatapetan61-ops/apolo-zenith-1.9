@@ -1,0 +1,61 @@
+name: APOLO ZENITH 1.9 — coletar somente corpus inglês
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "datasets/corpus_builder.py"
+      - ".github/workflows/apolo-zenith-english-corpus.yml"
+  workflow_dispatch:
+    inputs:
+      resume_run_id:
+        description: "ID de uma execução anterior com artifact apolo-zenith-english-corpus (opcional)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: apolo-zenith-english-corpus
+  cancel-in-progress: false
+
+jobs:
+  collect-english:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restaurar progresso anterior, se informado
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.resume_run_id != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESUME_RUN_ID: ${{ inputs.resume_run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p datasets_storage
+          gh run download "$RESUME_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name apolo-zenith-english-corpus --dir datasets_storage
+      - name: Coletar somente inglês — preservar PT-BR existente
+        run: |
+          set -euo pipefail
+          python datasets/corpus_builder.py \
+            --saida datasets_storage \
+            --max-livros-en 100 \
+            --min-documentos-idioma 15000 \
+            --idiomas en \
+            --sem-wikisource
+      - name: Publicar progresso inglês como artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: apolo-zenith-english-corpus
+          path: datasets_storage/
+          if-no-files-found: warn
+          retention-days: 30

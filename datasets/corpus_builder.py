@@ -321,6 +321,17 @@ def coletar_wikipedia(
     500 IDs por página e extrai textos em grupos de 50, seguindo o cursor da API.
     """
     documentos = documentos if documentos is not None else []
+
+    def salvar_manifesto_parcial() -> None:
+        """Persiste progresso para que falha em EN não descarte documentos PT já coletados."""
+        destino = saida_raw.parent / "manifest.partial.json"
+        temporario = destino.with_suffix(".json.tmp")
+        temporario.write_text(
+            json.dumps([asdict(d) for d in documentos], indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        temporario.replace(destino)
+
     pasta = saida_raw / f"wikipedia_{idioma}"
     pasta.mkdir(parents=True, exist_ok=True)
     host = "pt.wikipedia.org" if idioma == "pt" else "en.wikipedia.org"
@@ -359,6 +370,8 @@ def coletar_wikipedia(
             novos += 1
             if adicionados >= max_documentos:
                 break
+        if novos:
+            salvar_manifesto_parcial()
         return novos
 
     # Busca temática inicial para favorecer conteúdo relevante.
@@ -383,10 +396,11 @@ def coletar_wikipedia(
         params = {
             "action": "query", "format": "json", "list": "allpages",
             "apnamespace": 0, "apfilterredir": "nonredirects",
-            # Exclui stubs e páginas pequenas já no catálogo, antes de gastar
-            # uma chamada de extração por lote. A auditoria continua exigindo
-            # texto útil (>= 500 caracteres) e 15.000 documentos por idioma.
-            "aplimit": 500, "apminsize": 5000, "maxlag": 5,
+            # O filtro de 5 KB acelera a coleta EN, que tem catálogo amplo.
+            # Em PT-BR ele esgota o catálogo cedo demais (8.038/15.000 no run
+            # 45258994933); manter 1 KB para preservar cobertura e alcançar a meta.
+            # A validação final continua exigindo pelo menos 500 caracteres.
+            "aplimit": 500, "apminsize": 5000 if idioma == "en" else 1000, "maxlag": 5,
             **parametros_continuacao,
         }
         url = f"https://{host}/w/api.php?{urllib.parse.urlencode(params)}"
@@ -519,39 +533,58 @@ def construir_corpus(
     max_wiki_mb: int = 24,
     usar_wikisource: bool = True,
     min_documentos_idioma: int = 40,
+    idiomas: Tuple[str, ...] = ("pt", "en"),
 ) -> Path:
-    """Executa a coleta completa e grava o manifesto."""
+    """Executa a coleta dos idiomas solicitados e grava o manifesto."""
+    idiomas = tuple(dict.fromkeys(idiomas))
+    if not idiomas or any(idioma not in ("pt", "en") for idioma in idiomas):
+        raise ValueError("idiomas deve conter pt e/ou en")
+
     saida = Path(saida)
     raw = saida / "raw"
     raw.mkdir(parents=True, exist_ok=True)
-
     documentos: List[DocumentoFonte] = []
-    antes = len(documentos)
-    documentos = coletar_gutenberg(raw, "pt", max_livros_pt, documentos)
-    pt_existentes = sum(d.idioma == "pt" for d in documentos)
-    if pt_existentes < min_documentos_idioma:
-        faltam = min_documentos_idioma - pt_existentes
-        print(f"  [complemento] PT tem {pt_existentes}/{min_documentos_idioma} documentos; buscando {faltam} artigos na Wikipedia.")
-        documentos = coletar_wikipedia(raw, "pt", faltam, documentos)
+    # Retoma manifestos parciais somente quando cada arquivo existe e seu SHA-256
+    # confere. Isso preserva PT-BR ao continuar uma execução apenas em inglês.
+    manifesto_parcial = saida / "manifest.partial.json"
+    if manifesto_parcial.is_file():
+        try:
+            itens = json.loads(manifesto_parcial.read_text(encoding="utf-8"))
+            for item in itens:
+                documento = DocumentoFonte(**item)
+                caminho = saida / documento.arquivo
+                if caminho.is_file() and sha256_arquivo(caminho) == documento.sha256:
+                    documentos.append(documento)
+            print(f"  [retomada] {len(documentos)} documentos anteriores íntegros recuperados.")
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            raise RuntimeError(f"Manifesto parcial inválido: {exc}") from exc
 
-    documentos = coletar_gutenberg(raw, "en", max_livros_en, documentos)
-    en_existentes = sum(d.idioma == "en" for d in documentos)
-    if en_existentes < min_documentos_idioma:
-        faltam = min_documentos_idioma - en_existentes
-        print(f"  [complemento] EN tem {en_existentes}/{min_documentos_idioma} documentos; buscando {faltam} artigos na Wikipedia.")
-        documentos = coletar_wikipedia(raw, "en", faltam, documentos)
+    for idioma in idiomas:
+        limite_livros = max_livros_pt if idioma == "pt" else max_livros_en
+        documentos = coletar_gutenberg(raw, idioma, limite_livros, documentos)
+        existentes = sum(d.idioma == idioma for d in documentos)
+        if existentes < min_documentos_idioma:
+            faltam = min_documentos_idioma - existentes
+            print(
+                f"  [complemento] {idioma.upper()} tem "
+                f"{existentes}/{min_documentos_idioma} documentos; "
+                f"buscando {faltam} artigos na Wikipedia."
+            )
+            documentos = coletar_wikipedia(raw, idioma, faltam, documentos)
 
-    for idioma in ("pt", "en"):
+    for idioma in idiomas:
         quantidade = sum(d.idioma == idioma for d in documentos)
         if quantidade < min_documentos_idioma:
-            print(f"  [aviso] corpus {idioma} abaixo do mínimo: {quantidade}/{min_documentos_idioma}; a auditoria bloqueará o treino.")
+            print(
+                f"  [aviso] corpus {idioma} abaixo do mínimo: "
+                f"{quantidade}/{min_documentos_idioma}; a auditoria bloqueará o treino."
+            )
 
     if not documentos:
         raise RuntimeError(
-            "Nenhum livro foi coletado. O catálogo do Project Gutenberg pode estar "
-            "temporariamente indisponível; execute novamente após alguns minutos."
+            "Nenhum documento foi coletado. As fontes podem estar temporariamente indisponíveis."
         )
-    if usar_wikisource:
+    if usar_wikisource and "pt" in idiomas:
         documentos = coletar_wikisource(raw, max_wiki_mb, documentos)
 
     manifesto = saida / "manifest.json"
@@ -559,8 +592,13 @@ def construir_corpus(
         json.dumps([asdict(d) for d in documentos], indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
+    if manifesto_parcial.exists():
+        manifesto_parcial.unlink()
     total = sum(d.caracteres for d in documentos)
-    print(f"  [manifesto] {len(documentos)} documentos, {total/1024/1024:.1f} MB -> {manifesto}")
+    print(
+        f"  [manifesto] {len(documentos)} documentos, "
+        f"{total/1024/1024:.1f} MB -> {manifesto}"
+    )
     return manifesto
 
 
@@ -571,6 +609,10 @@ def main() -> None:
     parser.add_argument("--max-livros-en", type=int, default=6)
     parser.add_argument("--max-wiki-mb", type=int, default=24)
     parser.add_argument("--min-documentos-idioma", type=int, default=40)
+    parser.add_argument(
+        "--idiomas", nargs="+", choices=("pt", "en"), default=("pt", "en"),
+        help="Idiomas a coletar. Use apenas 'en' para continuar o inglês sem refazer PT-BR.",
+    )
     parser.add_argument("--sem-wikisource", action="store_true")
     args = parser.parse_args()
     construir_corpus(
@@ -580,6 +622,7 @@ def main() -> None:
         max_wiki_mb=args.max_wiki_mb,
         usar_wikisource=not args.sem_wikisource,
         min_documentos_idioma=args.min_documentos_idioma,
+        idiomas=tuple(args.idiomas),
     )
 
 

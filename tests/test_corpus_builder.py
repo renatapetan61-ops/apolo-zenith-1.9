@@ -37,40 +37,38 @@ def test_coletar_wikipedia_registra_licenca_url_e_hash(tmp_path, monkeypatch):
     assert (tmp_path / "datasets_storage" / documento.arquivo).read_text() == texto.strip()
 
 
-def test_coletor_wikipedia_filtra_stubs_no_catalogo_allpages(tmp_path, monkeypatch):
+def test_coletor_wikipedia_usa_filtro_de_tamanho_por_idioma(tmp_path, monkeypatch):
     from urllib.parse import parse_qs, urlparse
 
     texto = "Artigo enciclopédico completo para o corpus. " * 30
-    chamadas = []
 
-    def resposta(url, *args, **kwargs):
-        params = parse_qs(urlparse(url).query)
-        chamadas.append(params)
-        if params.get("generator") == ["search"]:
-            return json.dumps({"query": {"pages": {}}})
-        if params.get("list") == ["allpages"]:
-            return json.dumps({"query": {"allpages": [
-                {"pageid": 456, "title": "Substantial English article"}
-            ]}})
-        if "pageids" in params:
-            return json.dumps({"query": {"pages": {"456": {
-                "pageid": 456,
-                "title": "Substantial English article",
-                "extract": texto,
-            }}}})
-        raise AssertionError(f"Consulta inesperada: {url}")
+    for idioma, tamanho_esperado in (("pt", "1000"), ("en", "5000")):
+        chamadas = []
 
-    monkeypatch.setattr(cb, "_ler_url_texto", resposta)
-    monkeypatch.setattr(cb.time, "sleep", lambda *_: None)
+        def resposta(url, *args, **kwargs):
+            params = parse_qs(urlparse(url).query)
+            chamadas.append(params)
+            if params.get("generator") == ["search"]:
+                return json.dumps({"query": {"pages": {}}})
+            if params.get("list") == ["allpages"]:
+                return json.dumps({"query": {"allpages": [
+                    {"pageid": 456, "title": "Substantial article"}
+                ]}})
+            if "pageids" in params:
+                return json.dumps({"query": {"pages": {"456": {
+                    "pageid": 456, "title": "Substantial article", "extract": texto,
+                }}}})
+            raise AssertionError(f"Consulta inesperada: {url}")
 
-    docs = cb.coletar_wikipedia(tmp_path / "raw", "en", 1, [])
-
-    assert len(docs) == 1
-    assert docs[0].idioma == "en"
-    catalogo = next(p for p in chamadas if p.get("list") == ["allpages"])
-    assert catalogo["apminsize"] == ["5000"]
-    assert catalogo["aplimit"] == ["500"]
-    assert catalogo["maxlag"] == ["5"]
+        monkeypatch.setattr(cb, "_ler_url_texto", resposta)
+        monkeypatch.setattr(cb.time, "sleep", lambda *_: None)
+        docs = cb.coletar_wikipedia(tmp_path / idioma, idioma, 1, [])
+        assert len(docs) == 1
+        assert docs[0].idioma == idioma
+        catalogo = next(p for p in chamadas if p.get("list") == ["allpages"])
+        assert catalogo["apminsize"] == [tamanho_esperado]
+        assert catalogo["aplimit"] == ["500"]
+        assert catalogo["maxlag"] == ["5"]
 
 
 def test_construir_corpus_usa_wikipedia_quando_gutenberg_nao_tem_dados(tmp_path, monkeypatch):
@@ -126,6 +124,98 @@ def test_construir_corpus_complementa_gutenberg_abaixo_do_minimo(tmp_path, monke
     dados = json.loads(manifesto.read_text(encoding="utf-8"))
     assert sum(x["idioma"] == "pt" for x in dados) == 3
     assert sum(x["idioma"] == "en" for x in dados) == 3
+
+
+
+def test_retoma_pt_br_valido_e_coleta_somente_ingles(tmp_path, monkeypatch):
+    saida = tmp_path / "saida"
+    raw_pt = saida / "raw" / "wikipedia_pt"
+    raw_pt.mkdir(parents=True)
+    arquivo_pt = raw_pt / "123.txt"
+    texto_pt = "Documento português preservado. " * 40
+    arquivo_pt.write_text(texto_pt, encoding="utf-8")
+    doc_pt = cb.DocumentoFonte(
+        fonte="wikipedia_pt", titulo="Artigo PT",
+        arquivo="raw/wikipedia_pt/123.txt",
+        url="https://pt.wikipedia.org/wiki/Artigo_PT",
+        licenca="CC BY-SA 4.0", caracteres=len(texto_pt),
+        sha256=cb.sha256_arquivo(arquivo_pt), idioma="pt",
+    )
+    (saida / "manifest.partial.json").write_text(
+        json.dumps([cb.asdict(doc_pt)], ensure_ascii=False), encoding="utf-8"
+    )
+    chamadas = []
+
+    def gutenberg(raw, idioma, limite, documentos):
+        chamadas.append(("gutenberg", idioma))
+        return documentos
+
+    def wikipedia(raw, idioma, limite, documentos):
+        chamadas.append(("wikipedia", idioma))
+        arquivo = raw / f"wikipedia_{idioma}" / "456.txt"
+        arquivo.parent.mkdir(parents=True, exist_ok=True)
+        texto = "English encyclopedia document. " * 40
+        arquivo.write_text(texto, encoding="utf-8")
+        documentos.append(cb.DocumentoFonte(
+            fonte=f"wikipedia_{idioma}", titulo="Article EN",
+            arquivo=f"raw/wikipedia_{idioma}/456.txt",
+            url="https://en.wikipedia.org/wiki/Article_EN",
+            licenca="CC BY-SA 4.0", caracteres=len(texto),
+            sha256=cb.sha256_arquivo(arquivo), idioma=idioma,
+        ))
+        return documentos
+
+    monkeypatch.setattr(cb, "coletar_gutenberg", gutenberg)
+    monkeypatch.setattr(cb, "coletar_wikipedia", wikipedia)
+    manifesto = cb.construir_corpus(
+        saida, usar_wikisource=False, min_documentos_idioma=1,
+        idiomas=("en",),
+    )
+    dados = json.loads(manifesto.read_text(encoding="utf-8"))
+    assert chamadas == [("gutenberg", "en"), ("wikipedia", "en")]
+    assert {item["idioma"] for item in dados} == {"pt", "en"}
+    assert sum(item["idioma"] == "pt" for item in dados) == 1
+    assert not (saida / "manifest.partial.json").exists()
+
+
+
+def test_construir_corpus_somente_ingles_nao_refaz_pt(tmp_path, monkeypatch):
+    chamadas = []
+
+    def gutenberg(raw, idioma, limite, documentos):
+        chamadas.append(("gutenberg", idioma))
+        return documentos
+
+    def wikipedia(raw, idioma, limite, documentos):
+        chamadas.append(("wikipedia", idioma))
+        arquivo = raw / f"wikipedia_{idioma}" / "artigo.txt"
+        arquivo.parent.mkdir(parents=True, exist_ok=True)
+        arquivo.write_text("Texto enciclopédico válido. " * 30, encoding="utf-8")
+        documentos.append(cb.DocumentoFonte(
+            fonte=f"wikipedia_{idioma}", titulo=f"Article {idioma}",
+            arquivo=str(arquivo.relative_to(raw.parent)),
+            url=f"https://{idioma}.wikipedia.org/wiki/Article",
+            licenca="CC BY-SA 4.0", caracteres=900, sha256="d" * 64,
+            idioma=idioma,
+        ))
+        return documentos
+
+    monkeypatch.setattr(cb, "coletar_gutenberg", gutenberg)
+    monkeypatch.setattr(cb, "coletar_wikipedia", wikipedia)
+    monkeypatch.setattr(cb, "coletar_wikisource", lambda *args: (_ for _ in ()).throw(
+        AssertionError("Wikisource PT não deve rodar na coleta somente EN")
+    ))
+
+    manifesto = cb.construir_corpus(
+        tmp_path / "saida", usar_wikisource=True,
+        min_documentos_idioma=1, idiomas=("en",),
+    )
+    dados = json.loads(manifesto.read_text(encoding="utf-8"))
+    assert chamadas == [("gutenberg", "en"), ("wikipedia", "en")]
+    assert len(dados) == 1
+    assert dados[0]["idioma"] == "en"
+
+
 
 @__import__('pytest').mark.skip(reason='substituído pelo coletor paginado allpages')
 def test_coletar_wikipedia_completa_com_paginas_aleatorias(tmp_path, monkeypatch):
