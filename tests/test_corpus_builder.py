@@ -125,6 +125,45 @@ def test_construir_corpus_complementa_gutenberg_abaixo_do_minimo(tmp_path, monke
     assert sum(x["idioma"] == "pt" for x in dados) == 3
     assert sum(x["idioma"] == "en" for x in dados) == 3
 
+
+def test_construir_corpus_somente_ingles_nao_refaz_pt(tmp_path, monkeypatch):
+    chamadas = []
+
+    def gutenberg(raw, idioma, limite, documentos):
+        chamadas.append(("gutenberg", idioma))
+        return documentos
+
+    def wikipedia(raw, idioma, limite, documentos):
+        chamadas.append(("wikipedia", idioma))
+        arquivo = raw / f"wikipedia_{idioma}" / "artigo.txt"
+        arquivo.parent.mkdir(parents=True, exist_ok=True)
+        arquivo.write_text("Texto enciclopédico válido. " * 30, encoding="utf-8")
+        documentos.append(cb.DocumentoFonte(
+            fonte=f"wikipedia_{idioma}", titulo=f"Article {idioma}",
+            arquivo=str(arquivo.relative_to(raw.parent)),
+            url=f"https://{idioma}.wikipedia.org/wiki/Article",
+            licenca="CC BY-SA 4.0", caracteres=900, sha256="d" * 64,
+            idioma=idioma,
+        ))
+        return documentos
+
+    monkeypatch.setattr(cb, "coletar_gutenberg", gutenberg)
+    monkeypatch.setattr(cb, "coletar_wikipedia", wikipedia)
+    monkeypatch.setattr(cb, "coletar_wikisource", lambda *args: (_ for _ in ()).throw(
+        AssertionError("Wikisource PT não deve rodar na coleta somente EN")
+    ))
+
+    manifesto = cb.construir_corpus(
+        tmp_path / "saida", usar_wikisource=True,
+        min_documentos_idioma=1, idiomas=("en",),
+    )
+    dados = json.loads(manifesto.read_text(encoding="utf-8"))
+    assert chamadas == [("gutenberg", "en"), ("wikipedia", "en")]
+    assert len(dados) == 1
+    assert dados[0]["idioma"] == "en"
+
+
+
 @__import__('pytest').mark.skip(reason='substituído pelo coletor paginado allpages')
 def test_coletar_wikipedia_completa_com_paginas_aleatorias(tmp_path, monkeypatch):
     from urllib.parse import urlparse, parse_qs
