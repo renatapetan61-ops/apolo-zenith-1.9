@@ -126,6 +126,59 @@ def test_construir_corpus_complementa_gutenberg_abaixo_do_minimo(tmp_path, monke
     assert sum(x["idioma"] == "en" for x in dados) == 3
 
 
+
+def test_retoma_pt_br_valido_e_coleta_somente_ingles(tmp_path, monkeypatch):
+    saida = tmp_path / "saida"
+    raw_pt = saida / "raw" / "wikipedia_pt"
+    raw_pt.mkdir(parents=True)
+    arquivo_pt = raw_pt / "123.txt"
+    texto_pt = "Documento português preservado. " * 40
+    arquivo_pt.write_text(texto_pt, encoding="utf-8")
+    doc_pt = cb.DocumentoFonte(
+        fonte="wikipedia_pt", titulo="Artigo PT",
+        arquivo="raw/wikipedia_pt/123.txt",
+        url="https://pt.wikipedia.org/wiki/Artigo_PT",
+        licenca="CC BY-SA 4.0", caracteres=len(texto_pt),
+        sha256=cb.sha256_arquivo(arquivo_pt), idioma="pt",
+    )
+    (saida / "manifest.partial.json").write_text(
+        json.dumps([cb.asdict(doc_pt)], ensure_ascii=False), encoding="utf-8"
+    )
+    chamadas = []
+
+    def gutenberg(raw, idioma, limite, documentos):
+        chamadas.append(("gutenberg", idioma))
+        return documentos
+
+    def wikipedia(raw, idioma, limite, documentos):
+        chamadas.append(("wikipedia", idioma))
+        arquivo = raw / f"wikipedia_{idioma}" / "456.txt"
+        arquivo.parent.mkdir(parents=True, exist_ok=True)
+        texto = "English encyclopedia document. " * 40
+        arquivo.write_text(texto, encoding="utf-8")
+        documentos.append(cb.DocumentoFonte(
+            fonte=f"wikipedia_{idioma}", titulo="Article EN",
+            arquivo=f"raw/wikipedia_{idioma}/456.txt",
+            url="https://en.wikipedia.org/wiki/Article_EN",
+            licenca="CC BY-SA 4.0", caracteres=len(texto),
+            sha256=cb.sha256_arquivo(arquivo), idioma=idioma,
+        ))
+        return documentos
+
+    monkeypatch.setattr(cb, "coletar_gutenberg", gutenberg)
+    monkeypatch.setattr(cb, "coletar_wikipedia", wikipedia)
+    manifesto = cb.construir_corpus(
+        saida, usar_wikisource=False, min_documentos_idioma=1,
+        idiomas=("en",),
+    )
+    dados = json.loads(manifesto.read_text(encoding="utf-8"))
+    assert chamadas == [("gutenberg", "en"), ("wikipedia", "en")]
+    assert {item["idioma"] for item in dados} == {"pt", "en"}
+    assert sum(item["idioma"] == "pt" for item in dados) == 1
+    assert not (saida / "manifest.partial.json").exists()
+
+
+
 def test_construir_corpus_somente_ingles_nao_refaz_pt(tmp_path, monkeypatch):
     chamadas = []
 
