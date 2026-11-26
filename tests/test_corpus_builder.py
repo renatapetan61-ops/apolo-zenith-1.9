@@ -267,3 +267,61 @@ def test_limite_lotes_wikipedia_cobre_corpus_maior_sem_loop_ilimitado():
     assert cb._limite_lotes_wikipedia(50) == 1
     assert cb._limite_lotes_wikipedia(0) == 0
     assert cb._limite_lotes_wikipedia(10000) == 200
+
+
+
+def test_gutenberg_salva_checkpoint_a_cada_livro(tmp_path, monkeypatch):
+    monkeypatch.setattr(cb, "listar_livros_gutenberg", lambda idioma, limite: [(7, "Livro")])
+    monkeypatch.setattr(cb, "texto_plain_gutenberg", lambda ebook_id: (
+        "https://www.gutenberg.org/ebooks/7.txt", "Texto de domínio público. " * 120
+    ))
+    monkeypatch.setattr(cb.time, "sleep", lambda *_: None)
+    raw = tmp_path / "datasets_storage" / "raw"
+    docs = cb.coletar_gutenberg(raw, "pt", 1, [])
+    parcial = tmp_path / "datasets_storage" / "manifest.partial.json"
+    dados = json.loads(parcial.read_text(encoding="utf-8"))
+    assert len(docs) == 1
+    assert len(dados) == 1
+    assert dados[0]["idioma"] == "pt"
+
+
+def test_etapa_inglesa_reutiliza_manifesto_pt_concluido(tmp_path, monkeypatch):
+    saida = tmp_path / "saida"
+    raw = saida / "raw" / "wikipedia_pt"
+    raw.mkdir(parents=True)
+    arquivo = raw / "pt.txt"
+    texto = "Documento PT-BR já concluído. " * 50
+    arquivo.write_text(texto, encoding="utf-8")
+    pt = cb.DocumentoFonte(
+        fonte="wikipedia_pt", titulo="Artigo PT", arquivo="raw/wikipedia_pt/pt.txt",
+        url="https://pt.wikipedia.org/wiki/Artigo_PT", licenca="CC BY-SA 4.0",
+        caracteres=len(texto), sha256=cb.sha256_arquivo(arquivo), idioma="pt",
+    )
+    (saida / "manifest.json").write_text(
+        json.dumps([cb.asdict(pt)], ensure_ascii=False), encoding="utf-8"
+    )
+    chamadas = []
+
+    def gutenberg(raw, idioma, limite, docs):
+        chamadas.append(idioma)
+        return docs
+
+    def wikipedia(raw, idioma, limite, docs):
+        chamadas.append(idioma)
+        p = raw / "wikipedia_en" / "en.txt"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        txt = "English document for training. " * 50
+        p.write_text(txt, encoding="utf-8")
+        docs.append(cb.DocumentoFonte(
+            fonte="wikipedia_en", titulo="Article EN", arquivo="raw/wikipedia_en/en.txt",
+            url="https://en.wikipedia.org/wiki/Article_EN", licenca="CC BY-SA 4.0",
+            caracteres=len(txt), sha256=cb.sha256_arquivo(p), idioma="en",
+        ))
+        return docs
+
+    monkeypatch.setattr(cb, "coletar_gutenberg", gutenberg)
+    monkeypatch.setattr(cb, "coletar_wikipedia", wikipedia)
+    result = cb.construir_corpus(saida, usar_wikisource=False, min_documentos_idioma=1, idiomas=("en",))
+    final = json.loads(result.read_text(encoding="utf-8"))
+    assert chamadas == ["en", "en"]
+    assert {d["idioma"] for d in final} == {"pt", "en"}

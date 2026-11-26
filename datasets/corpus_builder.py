@@ -138,6 +138,18 @@ class DocumentoFonte:
     idioma: str
 
 
+
+def salvar_manifesto_parcial(saida: Path, documentos: List[DocumentoFonte]) -> None:
+    """Grava checkpoint atômico após cada fonte/lote para permitir retomada."""
+    destino = saida / "manifest.partial.json"
+    temporario = destino.with_suffix(".json.tmp")
+    temporario.write_text(
+        json.dumps([asdict(d) for d in documentos], indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    temporario.replace(destino)
+
+
 # --------------------------------------------------------------------------- #
 # Project Gutenberg
 # --------------------------------------------------------------------------- #
@@ -244,6 +256,9 @@ def coletar_gutenberg(
     print(f"  [gutenberg:{idioma}] {len(livros)} livros candidatos")
     for ebook_id, titulo in livros:
         arquivo = pasta / f"{ebook_id}.txt"
+        caminho_relativo = str(arquivo.relative_to(saida_raw.parent))
+        if any(d.arquivo == caminho_relativo for d in documentos):
+            continue
         if arquivo.exists() and arquivo.stat().st_size > 2000:
             url = f"https://www.gutenberg.org/cache/epub/{ebook_id}/pg{ebook_id}.txt"
         else:
@@ -265,6 +280,7 @@ def coletar_gutenberg(
                 idioma=idioma,
             )
         )
+        salvar_manifesto_parcial(saida_raw.parent, documentos)
     return documentos
 
 
@@ -322,16 +338,6 @@ def coletar_wikipedia(
     """
     documentos = documentos if documentos is not None else []
 
-    def salvar_manifesto_parcial() -> None:
-        """Persiste progresso para que falha em EN não descarte documentos PT já coletados."""
-        destino = saida_raw.parent / "manifest.partial.json"
-        temporario = destino.with_suffix(".json.tmp")
-        temporario.write_text(
-            json.dumps([asdict(d) for d in documentos], indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        temporario.replace(destino)
-
     pasta = saida_raw / f"wikipedia_{idioma}"
     pasta.mkdir(parents=True, exist_ok=True)
     host = "pt.wikipedia.org" if idioma == "pt" else "en.wikipedia.org"
@@ -371,7 +377,7 @@ def coletar_wikipedia(
             if adicionados >= max_documentos:
                 break
         if novos:
-            salvar_manifesto_parcial()
+            salvar_manifesto_parcial(saida_raw.parent, documentos)
         return novos
 
     # Busca temática inicial para favorecer conteúdo relevante.
@@ -547,9 +553,13 @@ def construir_corpus(
     # Retoma manifestos parciais somente quando cada arquivo existe e seu SHA-256
     # confere. Isso preserva PT-BR ao continuar uma execução apenas em inglês.
     manifesto_parcial = saida / "manifest.partial.json"
-    if manifesto_parcial.is_file():
+    manifesto_origem = manifesto_parcial
+    # Na etapa EN, o artifact PT concluído chega com manifest.json.
+    if not manifesto_origem.is_file() and idiomas == ("en",) and (saida / "manifest.json").is_file():
+        manifesto_origem = saida / "manifest.json"
+    if manifesto_origem.is_file():
         try:
-            itens = json.loads(manifesto_parcial.read_text(encoding="utf-8"))
+            itens = json.loads(manifesto_origem.read_text(encoding="utf-8"))
             for item in itens:
                 documento = DocumentoFonte(**item)
                 caminho = saida / documento.arquivo
