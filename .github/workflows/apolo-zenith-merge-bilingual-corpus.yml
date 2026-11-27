@@ -1,0 +1,68 @@
+name: APOLO ZENITH 1.9 — unir corpus bilíngue 30k
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/apolo-zenith-merge-bilingual-corpus.yml"
+      - "scripts/merge_corpora.py"
+  workflow_dispatch:
+    inputs:
+      pt_run_id:
+        description: "Execução que publicou o corpus PT-BR"
+        required: true
+        default: "45906162082"
+        type: string
+      en_run_id:
+        description: "Execução que publicou o corpus inglês"
+        required: true
+        default: "45485734710"
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: apolo-zenith-merge-bilingual-corpus
+  cancel-in-progress: false
+
+jobs:
+  merge-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PT_RUN_ID: ${{ inputs.pt_run_id || '45906162082' }}
+      EN_RUN_ID: ${{ inputs.en_run_id || '45485734710' }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Baixar artefato PT-BR já coletado
+        run: |
+          set -euo pipefail
+          mkdir -p sources/pt sources/en
+          gh run download "$PT_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name apolo-zenith-ptbr-corpus --dir sources/pt
+      - name: Baixar artefato inglês já coletado
+        run: |
+          set -euo pipefail
+          gh run download "$EN_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name apolo-zenith-english-corpus --dir sources/en
+      - name: Unir e validar 30.000 documentos
+        run: |
+          set -euo pipefail
+          python scripts/merge_corpora.py \
+            --pt sources/pt --en sources/en --out datasets_storage \
+            --pt-run-id "$PT_RUN_ID" --en-run-id "$EN_RUN_ID" \
+            --source-commit "$GITHUB_SHA"
+      - name: Publicar corpus bilíngue validado
+        uses: actions/upload-artifact@v4
+        with:
+          name: apolo-zenith-bilingual-corpus-30000
+          path: datasets_storage/
+          if-no-files-found: error
+          retention-days: 90
