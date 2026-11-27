@@ -69,7 +69,7 @@ def main():
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
     combined = pt + en
-    (a.out / "manifest.json").write_text(json.dumps(combined, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    (a.out / "manifest.json").write_text(json.dumps(combined, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     provenance = {
         "project": "APOLO ZENITH 1.9", "documents_total": len(combined),
         "documents_pt": len(pt), "documents_en": len(en),
@@ -78,7 +78,7 @@ def main():
         "integrity": "all source files SHA-256 verified; no duplicate hashes",
         "license_policy": "CC BY-SA 4.0 attribution metadata preserved per document"
     }
-    (a.out / "corpus_provenance.json").write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    (a.out / "corpus_provenance.json").write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(provenance, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
