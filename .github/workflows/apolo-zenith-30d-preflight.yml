@@ -11,6 +11,7 @@ on:
       - "training/**"
       - "tests/**"
       - ".github/workflows/apolo-zenith-30d-*.yml"
+      - ".github/workflows/apolo-zenith-corpus-processing.yml"
   push:
     branches: [main]
     paths:
@@ -70,19 +71,23 @@ jobs:
           import yaml
           paths = sorted(Path(".github/workflows").glob("apolo-zenith-30d-*.yml"))
           assert len(paths) == 3, f"Esperados 3 workflows novos; encontrados {len(paths)}"
-          for path in paths:
+          for path in paths + [Path(".github/workflows/apolo-zenith-corpus-processing.yml")]:
               data = yaml.load(path.read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
               assert isinstance(data, dict) and isinstance(data.get("jobs"), dict), path
               print(f"YAML válido: {path}")
           PY
           python - <<'PY'
-          import json
+          import hashlib, json
           from pathlib import Path
+          tokenizer_path = Path("tokenizers/tokenizer/tokenizer.json")
+          expected_sha256 = "15a4d3e9f5bdd525cb721afdd9f387ec58983474b5502a67577f8620e3a73d8"
+          actual_sha256 = hashlib.sha256(tokenizer_path.read_bytes()).hexdigest()
+          assert actual_sha256 == expected_sha256, f"SHA-256 BPE divergente: {actual_sha256}"
           meta = json.loads(Path("tokenizers/tokenizer/tokenizer_meta.json").read_text())
           assert meta["vocab_size"] == 8192
           assert meta["special_tokens"]["<|vision|>"] == 7
           assert meta["special_tokens"]["<|audio|>"] == 9
-          print("Tokenizer BPE 8192 e tokens multimodais preservados.")
+          print(f"Tokenizer BPE 8192 e tokens multimodais preservados; SHA-256={actual_sha256}.")
           PY
       - name: Registrar resultado do preflight
         run: |
