@@ -193,6 +193,6 @@ jobs:
           path: |
             reports/corpus-audit.json
             reports/cpu-1000-step-benchmark.json
-            ${{ env.CORPUS_ROOT }}/processed
+            corpus-artifact/**/processed
           if-no-files-found: warn
           retention-days: 90
