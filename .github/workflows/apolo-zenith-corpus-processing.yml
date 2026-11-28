@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/apolo-zenith-corpus-processing.yml"
+      - ".github/workflows/apolo-zenith-30d-cycle.yml"
   workflow_dispatch:
     inputs:
       merge_run_id:
@@ -15,7 +16,7 @@ on:
         default: "46061821358"
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 concurrency:
@@ -28,6 +29,7 @@ jobs:
     timeout-minutes: 390
     env:
       MERGE_RUN_ID: ${{ inputs.merge_run_id || '46061821358' }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PYTHONUNBUFFERED: "1"
       OMP_NUM_THREADS: "2"
       MKL_NUM_THREADS: "2"
@@ -186,6 +188,39 @@ jobs:
           print("Evidências vinculadas ao commit", os.environ["GITHUB_SHA"])
           PY
 
+      - name: Preparar pacote imutável para o ciclo de 30 dias
+        run: |
+          set -euo pipefail
+          rm -rf datasets_storage
+          mkdir -p datasets_storage
+          cp "$CORPUS_ROOT/manifest.json" datasets_storage/manifest.json
+          cp "$CORPUS_ROOT/corpus_provenance.json" datasets_storage/corpus_provenance.json
+          cp -a "$CORPUS_ROOT/processed" datasets_storage/processed
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          tag = "apolo-zenith-corpus-30000-" + os.environ["GITHUB_RUN_ID"]
+          audit_path = Path("reports/corpus-audit.json")
+          audit = json.loads(audit_path.read_text())
+          audit["release_tag"] = tag
+          audit["source_commit"] = os.environ["GITHUB_SHA"]
+          audit["source_run_id"] = os.environ["GITHUB_RUN_ID"]
+          audit["manifest_sha256"] = hashlib.sha256(Path("datasets_storage/manifest.json").read_bytes()).hexdigest()
+          audit_path.write_text(json.dumps(audit, indent=2, ensure_ascii=False) + "\\n")
+          print("Release do corpus:", tag)
+          PY
+          tar -czf corpus.tar.gz datasets_storage
+          SIZE=$(stat -c%s corpus.tar.gz)
+          test "$SIZE" -le 1000000000
+      - name: Publicar corpus aprovado para retomada durante 30 dias
+        env:
+          RELEASE_TAG: apolo-zenith-corpus-30000-${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" \
+            --title "APOLO ZENITH 1.9 — corpus processado e auditado" \
+            --notes "Corpus bilíngue existente, processado e auditado. Commit: $GITHUB_SHA; run: $GITHUB_RUN_ID. Inclui manifesto, proveniência, divisões processadas e relatórios."
+          gh release upload "$RELEASE_TAG" corpus.tar.gz reports/corpus-audit.json reports/cpu-1000-step-benchmark.json
       - name: Publicar relatórios e corpus processado
         if: always()
         uses: actions/upload-artifact@v4
@@ -194,6 +229,6 @@ jobs:
           path: |
             reports/corpus-audit.json
             reports/cpu-1000-step-benchmark.json
-            corpus-artifact/**/processed
+            datasets_storage/
           if-no-files-found: warn
           retention-days: 90
