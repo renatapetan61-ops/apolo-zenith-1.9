@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "17 */6 * * *"
   workflow_run:
-    workflows: ["APOLO ZENITH 1.9 — construir e auditar corpus de 30.000 documentos"]
+    workflows: ["APOLO ZENITH 1.9 — processar corpus bilíngue existente"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
@@ -110,7 +110,7 @@ jobs:
             unzip -q "$DEST.zip" -d "$DEST"
           }
           PREFLIGHT_RUN=$(latest_run "apolo-zenith-30d-preflight.yml")
-          CORPUS_RUN=$(latest_run "apolo-zenith-30d-corpus.yml")
+          CORPUS_RUN=$(latest_run "apolo-zenith-corpus-processing.yml")
           test -n "$PREFLIGHT_RUN"
           test -n "$CORPUS_RUN"
           download_artifact "$PREFLIGHT_RUN" "apolo-zenith-30d-preflight" "artifacts/preflight"
