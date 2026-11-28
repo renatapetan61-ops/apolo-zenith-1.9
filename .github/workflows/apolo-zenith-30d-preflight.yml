@@ -1,5 +1,5 @@
 name: APOLO ZENITH 1.9 — preflight do ciclo de 30 dias
-# Reexecutar validação após corrigir a mensagem esperada do teste de integridade.
+# Preflight sincronizado com o workflow de processamento do corpus.
 
 on:
   pull_request:
