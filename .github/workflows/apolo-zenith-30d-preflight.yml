@@ -80,7 +80,7 @@ jobs:
           import hashlib, json
           from pathlib import Path
           tokenizer_path = Path("tokenizers/tokenizer/tokenizer.json")
-          expected_sha256 = "15a4d3e9f5bdd525cb721afdd9f387ec58983474b5502a67577f8620e3a73d8"
+          expected_sha256 = "15a4d3e9f5bdd525cb721afddf9f387ec58983474b5502a67577f8620e3a73d8"
           actual_sha256 = hashlib.sha256(tokenizer_path.read_bytes()).hexdigest()
           assert actual_sha256 == expected_sha256, f"SHA-256 BPE divergente: {actual_sha256}"
           meta = json.loads(Path("tokenizers/tokenizer/tokenizer_meta.json").read_text())
