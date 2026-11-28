@@ -87,7 +87,7 @@ jobs:
           path = Path("tokenizers/tokenizer/tokenizer.json")
           meta = json.loads(Path("tokenizers/tokenizer/tokenizer_meta.json").read_text())
           digest = hashlib.sha256(path.read_bytes()).hexdigest()
-          expected = "15a4d3e9f5bdd525cb721afdd9f387ec58983474b5502a67577f8620e3a73d8"
+          expected = "15a4d3e9f5bdd525cb721afddf9f387ec58983474b5502a67577f8620e3a73d8"
           assert digest == expected, f"SHA-256 do BPE divergente: {digest}"
           assert meta["vocab_size"] == 8192
           assert meta["special_tokens"]["<|vision|>"] == 7
@@ -125,7 +125,7 @@ jobs:
           original = Path("tokenizers/tokenizer")
           processed = Path(__import__("os").environ["CORPUS_ROOT"]) / "processed/tokenizer"
           def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
-          expected = "15a4d3e9f5bdd525cb721afdd9f387ec58983474b5502a67577f8620e3a73d8"
+          expected = "15a4d3e9f5bdd525cb721afddf9f387ec58983474b5502a67577f8620e3a73d8"
           assert digest(original / "tokenizer.json") == expected
           assert digest(processed / "tokenizer.json") == expected
           assert json.loads((original / "tokenizer_meta.json").read_text()) == json.loads((processed / "tokenizer_meta.json").read_text())
