@@ -1,5 +1,5 @@
 name: APOLO ZENITH 1.9 — processar corpus bilíngue existente
-# Reexecução após correção do SHA-256 BPE (64 caracteres).
+# Reexecução validada: preflight e processamento devem compartilhar o mesmo commit.
 
 on:
   push:
